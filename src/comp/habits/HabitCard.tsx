@@ -37,7 +37,7 @@ export default function HabitCard({
   const logsError = habitLogsResult.error;
   const refetchLogs = habitLogsResult.refetch;
 
-  let showLoading = isLoading as boolean;
+  const showLoading = isLoading as boolean;
 
   // Filter today's log from all logs
   const todayLog = React.useMemo(() => {
