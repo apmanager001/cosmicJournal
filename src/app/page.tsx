@@ -1,13 +1,11 @@
 "use client";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
-import { useLogout } from "@/comp/utility/tanstack/authHooks";
 import CosmicTheme from "@/comp/utility/CosmicTheme";
 import Link from "next/link";
 import { Rocket, Star, Moon, Zap } from "lucide-react";
 
 export default function HomePage() {
-  const { user, isLoading } = useAuth();
-  const logoutMutation = useLogout();
+  const { user, isLoading, logout } = useAuth();
 
   if (isLoading) {
     return (
@@ -55,11 +53,10 @@ export default function HomePage() {
                   Go to Dashboard
                 </Link>
                 <button
-                  onClick={() => logoutMutation.mutate()}
-                  disabled={logoutMutation.isPending}
-                  className="px-8 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-lg font-semibold disabled:opacity-50"
+                  onClick={logout}
+                  className="px-8 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-lg font-semibold"
                 >
-                  {logoutMutation.isPending ? "Signing out..." : "Sign Out"}
+                  Sign Out
                 </button>
               </div>
             </div>

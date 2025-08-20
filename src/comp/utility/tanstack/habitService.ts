@@ -73,12 +73,12 @@ export const habitService = {
       const record = await pb.collection("user_habits").create(dataToSend);
       console.log("Successfully created user habit:", record);
       return record as UserHabit;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error in createUserHabit:", error);
       console.error("Error details:", {
-        message: error.message,
-        data: error.data,
-        status: error.status,
+        message: (error as any).message,
+        data: (error as any).data,
+        status: (error as any).status,
       });
       throw error;
     }
@@ -117,12 +117,12 @@ export const habitService = {
         requestKey: null,
       });
       return records.items as HabitLog[];
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log("getHabitLogs: Error occurred:", error);
       // Handle auto-cancelled requests gracefully
       if (
-        error?.message?.includes("autocancelled") ||
-        error?.name === "AbortError"
+        (error as any)?.message?.includes("autocancelled") ||
+        (error as any)?.name === "AbortError"
       ) {
         // Re-throw the error so React Query can handle cancellation properly
         throw error;
@@ -168,11 +168,11 @@ export const habitService = {
         });
         return record as HabitLog;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle auto-cancelled requests gracefully
       if (
-        error?.message?.includes("autocancelled") ||
-        error?.name === "AbortError"
+        (error as any)?.message?.includes("autocancelled") ||
+        (error as any)?.name === "AbortError"
       ) {
         console.log("Request was auto-cancelled (this is normal)");
         throw new Error("Request was cancelled");
@@ -257,11 +257,12 @@ export const habitService = {
       };
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle auto-cancelled requests gracefully
       if (
-        error?.message?.includes("autocancelled") ||
-        error?.name === "AbortError"
+        (error as any)?.message?.includes("autocancelled") ||
+        (error as any)?.message?.includes("Request was cancelled") ||
+        (error as any)?.name === "AbortError"
       ) {
         throw new Error("Request was cancelled");
       }

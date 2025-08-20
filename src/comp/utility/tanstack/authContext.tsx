@@ -1,12 +1,19 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { pb } from "./pocketbase";
-import { User } from "./auth";
+import { User, authService } from "./auth";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    passwordConfirm: string,
+    name?: string
+  ) => Promise<void>;
   logout: () => void;
   refreshUser: () => void;
 }
@@ -56,6 +63,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  const login = async (email: string, password: string) => {
+    try {
+      const authData = await authService.login({ email, password });
+      setUser(authData.record as User);
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
+    }
+  };
+
+  const register = async (
+    email: string,
+    password: string,
+    passwordConfirm: string,
+    name?: string
+  ) => {
+    try {
+      await authService.register({ email, password, passwordConfirm, name });
+      // After registration, log the user in
+      await login(email, password);
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error;
+    }
+  };
+
   const logout = () => {
     pb.authStore.clear();
     setUser(null);
@@ -77,12 +110,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     isLoading,
     isAuthenticated,
+    login,
+    register,
     logout,
     refreshUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-
-

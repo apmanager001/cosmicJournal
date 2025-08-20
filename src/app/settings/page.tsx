@@ -6,10 +6,7 @@ import {
   useNotificationSettings,
   useUpdateNotificationSettings,
 } from "@/comp/utility/tanstack/habitHooks";
-import {
-  stripeService,
-  SUBSCRIPTION_PLANS,
-} from "@/comp/utility/tanstack/stripeService";
+import { SUBSCRIPTION_PLANS } from "@/comp/utility/tanstack/stripeService";
 import CosmicTheme from "@/comp/utility/CosmicTheme";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -34,8 +31,7 @@ export default function SettingsPage() {
 
 function SettingsContent() {
   const { user, logout } = useAuth();
-  const { data: notificationSettings, isLoading: settingsLoading } =
-    useNotificationSettings();
+  const { data: notificationSettings } = useNotificationSettings();
   const updateSettingsMutation = useUpdateNotificationSettings();
 
   const [localSettings, setLocalSettings] = useState({
@@ -45,7 +41,10 @@ function SettingsContent() {
     weeklyReport: false,
   });
 
-  const [subscription, setSubscription] = useState<any>(null);
+  const [subscription, setSubscription] = useState<{
+    hasSubscription: boolean;
+    subscription: unknown;
+  } | null>(null);
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
   const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
 
@@ -393,7 +392,7 @@ function SettingsContent() {
 
             {/* Available Plans */}
             {!subscription?.hasSubscription && (
-              <div className="space-y-4" id='subscribe'>
+              <div className="space-y-4" id="subscribe">
                 {SUBSCRIPTION_PLANS.map((plan) => (
                   <div
                     key={plan.id}

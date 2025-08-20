@@ -14,7 +14,10 @@ export type SubscriptionStatus = "free" | "pro" | "trial" | "loading";
 interface SubscriptionContextType {
   subscriptionStatus: SubscriptionStatus;
   isLoading: boolean;
-  currentSubscription: any | null;
+  currentSubscription: {
+    hasSubscription: boolean;
+    subscription: unknown;
+  } | null;
   canPerformAction: (
     action: keyof typeof import("@/config/subscription").FEATURES.FREE
   ) => boolean;
@@ -53,9 +56,10 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   const { user, isAuthenticated } = useAuth();
   const [subscriptionStatus, setSubscriptionStatus] =
     useState<SubscriptionStatus>("loading");
-  const [currentSubscription, setCurrentSubscription] = useState<any | null>(
-    null
-  );
+  const [currentSubscription, setCurrentSubscription] = useState<{
+    hasSubscription: boolean;
+    subscription: unknown;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Check subscription status

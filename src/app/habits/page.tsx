@@ -4,9 +4,6 @@ import {
   useUserHabits,
   usePublicHabits,
   useCreateUserHabit,
-  useUpdateUserHabit,
-  useDeleteUserHabit,
-  useHabitStreak,
   useHabitLogs,
 } from "@/comp/utility/tanstack/habitHooks";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
@@ -22,8 +19,6 @@ import {
   BarChart3,
   Flame,
   CheckCircle,
-  Circle,
-  Clock,
 } from "lucide-react";
 import Link from "next/link";
 import HabitCard from "@/comp/habits/HabitCard";
@@ -42,12 +37,10 @@ export default function HabitsPage() {
 }
 
 function HabitsContent() {
-  const { user } = useAuth();
-  const { subscriptionStatus, hasReachedLimit, canPerformAction } =
-    useSubscription();
+  const {} = useAuth();
+  const { hasReachedLimit, canPerformAction } = useSubscription();
   const { data: userHabits, isLoading: habitsLoading } = useUserHabits();
-  const { data: publicHabits, isLoading: publicHabitsLoading } =
-    usePublicHabits();
+  const { isLoading: publicHabitsLoading } = usePublicHabits();
 
   const [viewMode, setViewMode] = useState<"cards" | "list" | "analytics">(
     "cards"
@@ -701,7 +694,9 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
                 <span className="font-medium text-blue-800">
                   Creating New Habit Type
                 </span>
-                <span className="text-blue-600 ml-1">• "{searchTerm}"</span>
+                <span className="text-blue-600 ml-1">
+                  • &quot;{searchTerm}&quot;
+                </span>
               </div>
               <button
                 type="button"
@@ -771,7 +766,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
                         Create New Habit Type
                       </div>
                       <div className="text-sm text-green-600">
-                        Add "{searchTerm}" to the public habits
+                        Add &quot;{searchTerm}&quot; to the public habits
                       </div>
                     </div>
                   </div>
@@ -787,7 +782,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg p-3">
                   <div className="text-center text-gray-500">
                     <p className="text-sm">
-                      No habits found starting with "{searchTerm}"
+                      No habits found starting with &quot;{searchTerm}&quot;
                     </p>
                     <button
                       type="button"
@@ -815,7 +810,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-sm text-blue-800">
-              <strong>Creating new habit type: "{searchTerm}"</strong>
+              <strong>Creating new habit type: &quot;{searchTerm}&quot;</strong>
               <br />
               This will be available for all users. Make sure to use a clear,
               descriptive name.

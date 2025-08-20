@@ -271,7 +271,7 @@ export default function HabitCard({
             <div className="mb-3 p-3 bg-blue-50 rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-blue-800">
-                  Today's Notes:
+                  Today&apos;s Notes:
                 </span>
                 <button
                   onClick={() => setShowNotes(true)}

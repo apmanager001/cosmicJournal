@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRegister } from "../utility/tanstack/authHooks";
+import { useAuth } from "../utility/tanstack/authContext";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 
 const RegisterForm: React.FC = () => {
@@ -14,7 +14,7 @@ const RegisterForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
-  const registerMutation = useRegister();
+  const { register, isLoading } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,24 +31,23 @@ const RegisterForm: React.FC = () => {
       return;
     }
 
-    registerMutation.mutate({
-      email: formData.email,
-      password: formData.password,
-      passwordConfirm: formData.passwordConfirm,
-      name: formData.name,
-    });
+    try {
+      await register(
+        formData.email,
+        formData.password,
+        formData.passwordConfirm,
+        formData.name
+      );
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   };
-
-  const isLoading = registerMutation.isPending;
 
   return (
     <div className="bg-white/20 rounded-lg shadow-xl p-8 backdrop-blur-sm">
       <form onSubmit={handleSubmit} className="space-y-4 text-gray-500">
         <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium  mb-2"
-          >
+          <label htmlFor="name" className="block text-sm font-medium  mb-2">
             Full Name
           </label>
           <div className="relative">
@@ -70,10 +69,7 @@ const RegisterForm: React.FC = () => {
         </div>
 
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium  mb-2"
-          >
+          <label htmlFor="email" className="block text-sm font-medium  mb-2">
             Email Address
           </label>
           <div className="relative">
@@ -95,10 +91,7 @@ const RegisterForm: React.FC = () => {
         </div>
 
         <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium mb-2"
-          >
+          <label htmlFor="password" className="block text-sm font-medium mb-2">
             Password
           </label>
           <div className="relative">
@@ -220,6 +213,3 @@ const RegisterForm: React.FC = () => {
 };
 
 export default RegisterForm;
-
-
-

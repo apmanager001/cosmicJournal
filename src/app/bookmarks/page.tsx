@@ -6,7 +6,7 @@ import {
 } from "@/comp/utility/tanstack/habitHooks";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
-import { Bookmark, Calendar, Edit3, Trash2, Heart } from "lucide-react";
+import { Bookmark, Calendar, Edit3, Heart } from "lucide-react";
 import SubscriptionLimitBanner from "@/comp/utility/SubscriptionLimitBanner";
 import SubscriptionStatusIndicator from "@/comp/utility/SubscriptionStatusIndicator";
 import Link from "next/link";
@@ -20,9 +20,8 @@ export default function BookmarksPage() {
 }
 
 function BookmarksContent() {
-  const { user } = useAuth();
-  const { subscriptionStatus, hasReachedLimit, canPerformAction } =
-    useSubscription();
+  const {} = useAuth();
+  const {} = useSubscription();
   const { data: bookmarkedEntries, isLoading } = useBookmarkedJournalEntries();
   const toggleBookmarkMutation = useToggleBookmark();
 

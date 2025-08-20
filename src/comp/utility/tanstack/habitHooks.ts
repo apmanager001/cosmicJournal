@@ -45,15 +45,18 @@ export const useCreateUserHabit = () => {
 
   return useMutation({
     mutationFn: (
-      habitData: Omit<any, "id" | "created" | "updated" | "habit">
+      habitData: Omit<UserHabit, "id" | "created" | "updated" | "habit">
     ) => habitService.createUserHabit(habitData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userHabits", user?.id] });
       toast.success("Habit created successfully!");
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const message =
-        error?.data?.message || error?.message || "Failed to create habit";
+        (error as { data?: { message?: string }; message?: string })?.data
+          ?.message ||
+        (error as { message?: string })?.message ||
+        "Failed to create habit";
       toast.error(message);
     },
   });
@@ -64,15 +67,22 @@ export const useUpdateUserHabit = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: ({ id, updates }: { id: string; updates: Partial<any> }) =>
-      habitService.updateUserHabit(id, updates),
+    mutationFn: ({
+      id,
+      updates,
+    }: {
+      id: string;
+      updates: Partial<UserHabit>;
+    }) => habitService.updateUserHabit(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userHabits", user?.id] });
       toast.success("Habit updated successfully!");
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const message =
-        error?.data?.message || error?.message || "Failed to update habit";
+        (error as any)?.data?.message ||
+        (error as any)?.message ||
+        "Failed to update habit";
       toast.error(message);
     },
   });
@@ -88,9 +98,11 @@ export const useDeleteUserHabit = () => {
       queryClient.invalidateQueries({ queryKey: ["userHabits", user?.id] });
       toast.success("Habit deleted successfully!");
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const message =
-        error?.data?.message || error?.message || "Failed to delete habit";
+        (error as any)?.data?.message ||
+        (error as any)?.message ||
+        "Failed to delete habit";
       toast.error(message);
     },
   });
@@ -142,10 +154,10 @@ export const useLogHabitCompletion = () => {
         : "Habit marked as incomplete";
       toast.success(message);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const message =
-        error?.data?.message ||
-        error?.message ||
+        (error as any)?.data?.message ||
+        (error as any)?.message ||
         "Failed to log habit completion";
       toast.error(message);
     },
@@ -159,13 +171,13 @@ export const useHabitLogs = (habitId: string) => {
       try {
         const result = await habitService.getHabitLogs(habitId);
         return result;
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Handle auto-cancelled requests gracefully
         if (
-          error?.message?.includes("Request was cancelled") ||
-          error?.message?.includes("autocancelled") ||
-          error?.name === "AbortError" ||
-          error?.isAbort === true
+          (error as any)?.message?.includes("Request was cancelled") ||
+          (error as any)?.message?.includes("autocancelled") ||
+          (error as any)?.name === "AbortError" ||
+          (error as any)?.isAbort === true
         ) {
           // Don't return empty array for auto-cancelled requests
           // Let React Query handle the cancellation properly
@@ -180,13 +192,13 @@ export const useHabitLogs = (habitId: string) => {
     refetchOnWindowFocus: false, // Don't refetch when window regains focus
     refetchOnMount: true, // Changed to true to ensure data loads on mount
     refetchOnReconnect: true, // Refetch when reconnecting
-    retry: (failureCount, error: any) => {
+    retry: (failureCount, error: unknown) => {
       // Don't retry auto-cancelled requests
       if (
-        error?.message?.includes("Request was cancelled") ||
-        error?.message?.includes("autocancelled") ||
-        error?.name === "AbortError" ||
-        error?.isAbort === true
+        (error as any)?.message?.includes("Request was cancelled") ||
+        (error as any)?.message?.includes("autocancelled") ||
+        (error as any)?.name === "AbortError" ||
+        (error as any)?.isAbort === true
       ) {
         return false;
       }
@@ -286,7 +298,7 @@ export const useSaveJournalEntry = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: (entry: Omit<any, "id" | "created" | "updated">) =>
+    mutationFn: (entry: Omit<JournalEntry, "id" | "created" | "updated">) =>
       journalService.saveJournalEntry(entry),
     onSuccess: (data) => {
       // Invalidate specific entry and all entries
@@ -301,10 +313,10 @@ export const useSaveJournalEntry = () => {
       });
       toast.success("Journal entry saved successfully!");
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const message =
-        error?.data?.message ||
-        error?.message ||
+        (error as any)?.data?.message ||
+        (error as any)?.message ||
         "Failed to save journal entry";
       toast.error(message);
     },
@@ -340,9 +352,11 @@ export const useToggleBookmark = () => {
         : "Bookmark removed!";
       toast.success(message);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const message =
-        error?.data?.message || error?.message || "Failed to update bookmark";
+        (error as any)?.data?.message ||
+        (error as any)?.message ||
+        "Failed to update bookmark";
       toast.error(message);
     },
   });
@@ -365,7 +379,7 @@ export const useUpdateNotificationSettings = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: (settings: Partial<any>) =>
+    mutationFn: (settings: Partial<NotificationSettings>) =>
       notificationService.updateNotificationSettings(settings),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -373,10 +387,10 @@ export const useUpdateNotificationSettings = () => {
       });
       toast.success("Notification settings updated!");
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const message =
-        error?.data?.message ||
-        error?.message ||
+        (error as any)?.data?.message ||
+        (error as any)?.message ||
         "Failed to update notification settings";
       toast.error(message);
     },
@@ -387,21 +401,4 @@ export const useUpdateNotificationSettings = () => {
 export const useTodayJournalEntry = () => {
   const today = new Date().toISOString().split("T")[0];
   return useJournalEntry(today);
-};
-
-export const useTodayHabitLogs = () => {
-  const { user } = useAuth();
-  const { data: userHabits } = useUserHabits();
-
-  const today = new Date().toISOString().split("T")[0];
-
-  // Get logs for all user habits for today
-  const habitLogsQueries =
-    userHabits?.map((habit) => useHabitLogs(habit.id)) || [];
-
-  return {
-    data: habitLogsQueries.map((query) => query.data).filter(Boolean),
-    isLoading: habitLogsQueries.some((query) => query.isLoading),
-    error: habitLogsQueries.find((query) => query.error)?.error,
-  };
 };

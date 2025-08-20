@@ -8,16 +8,7 @@ import CosmicTheme from "@/comp/utility/CosmicTheme";
 import SubscriptionLimitBanner from "@/comp/utility/SubscriptionLimitBanner";
 import SubscriptionStatusIndicator from "@/comp/utility/SubscriptionStatusIndicator";
 import { useState, useMemo } from "react";
-import {
-  Calendar,
-  Bookmark,
-  TrendingUp,
-  Heart,
-  Edit,
-  Trash2,
-  Star,
-} from "lucide-react";
-import toast from "react-hot-toast";
+import { Calendar, Edit, Star } from "lucide-react";
 import Link from "next/link";
 
 export default function JournalPage() {
@@ -29,14 +20,13 @@ export default function JournalPage() {
 }
 
 function JournalContent() {
-  const { user } = useAuth();
-  const { subscriptionStatus, hasReachedLimit, canPerformAction } =
-    useSubscription();
+  const {} = useAuth();
+  const {} = useSubscription();
   const { data: allEntries, isLoading, error } = useAllJournalEntries();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Generate calendar days for the current month
-  const generateCalendarDays = (entries: any[]) => {
+  const generateCalendarDays = (entries: unknown[]) => {
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
 
@@ -386,7 +376,7 @@ function JournalContent() {
 
           {/* New Journal Entry Form - Separate section */}
           <div className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-purple-200/50">
-              <JournalEntryForm />
+            <JournalEntryForm />
           </div>
         </div>
         {/* Entries List */}
@@ -395,7 +385,7 @@ function JournalContent() {
             filteredEntries.map((entry) => (
               <div
                 key={entry.id}
-                className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4 lg:p-6 border border-purple-200/50 border-l-4 border-purple-500"
+                className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4 lg:p-6 border border-purple-200/50 border-l-4"
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
                   <div className="flex items-center gap-3">
