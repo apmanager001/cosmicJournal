@@ -37,7 +37,6 @@ export default function HabitsPage() {
 }
 
 function HabitsContent() {
-  const {} = useAuth();
   const { hasReachedLimit, canPerformAction } = useSubscription();
   const { data: userHabits, isLoading: habitsLoading } = useUserHabits();
   const { isLoading: publicHabitsLoading } = usePublicHabits();
@@ -469,6 +468,7 @@ function HabitsContent() {
 
 // Simple Create Habit Form Component
 function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
+  const { user } = useAuth();
   const { hasReachedLimit, canPerformAction, upgradeToPro } = useSubscription();
   const { data: userHabits } = useUserHabits();
 
@@ -569,12 +569,18 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
       // Update formData with the new habit ID
       setFormData((prev) => ({ ...prev, habitId: newPublicHabit.id }));
 
+      if (!user) {
+        alert("User not authenticated");
+        return;
+      }
+
       const userHabitData = {
         habitId: newPublicHabit.id,
+        userId: user.id,
         personalDescription: formData.personalDescription,
         streakType: formData.streakType,
         weeklyGoal:
-          formData.streakType === "weekly" ? formData.weeklyGoal : null,
+          formData.streakType === "weekly" ? formData.weeklyGoal : undefined,
         isActive: true,
       };
 
@@ -630,13 +636,19 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
         return;
       }
 
+      if (!user) {
+        alert("User not authenticated");
+        return;
+      }
+
       try {
         const habitData = {
           habitId: formData.habitId,
+          userId: user.id,
           personalDescription: formData.personalDescription,
           streakType: formData.streakType,
           weeklyGoal:
-            formData.streakType === "weekly" ? formData.weeklyGoal : null,
+            formData.streakType === "weekly" ? formData.weeklyGoal : undefined,
           isActive: true,
         };
 

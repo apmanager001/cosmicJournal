@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { JournalEntry } from "../utility/tanstack/habitTypes";
 import {
   useSaveJournalEntry,
   useJournalEntry,
@@ -103,7 +102,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
       setIsEditing(false);
       onSave?.();
-    } catch (error) {
+    } catch {
       // Error handling is done in the mutation
     }
   };

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Rocket, Star, Moon, Heart, Github, Twitter, Mail } from "lucide-react";
+import { Rocket, Moon, Heart, Github, Twitter, Mail } from "lucide-react";
 
 const CosmicFooter: React.FC = () => {
   return (
@@ -157,6 +157,3 @@ const CosmicFooter: React.FC = () => {
 };
 
 export default CosmicFooter;
-
-
-

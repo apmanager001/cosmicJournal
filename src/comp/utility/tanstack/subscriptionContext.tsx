@@ -1,9 +1,14 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { useAuth } from "./authContext";
 import { stripeService } from "./stripeService";
 import {
-  SUBSCRIPTION_CONFIG,
   canPerformAction,
   getCurrentLimit,
   hasReachedLimit,
@@ -53,7 +58,7 @@ interface SubscriptionProviderProps {
 export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   children,
 }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [subscriptionStatus, setSubscriptionStatus] =
     useState<SubscriptionStatus>("loading");
   const [currentSubscription, setCurrentSubscription] = useState<{
@@ -63,7 +68,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   // Check subscription status
-  const checkSubscriptionStatus = async () => {
+  const checkSubscriptionStatus = useCallback(async () => {
     if (!isAuthenticated) {
       setSubscriptionStatus("free");
       setIsLoading(false);
@@ -96,7 +101,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isAuthenticated]);
 
   // Refresh subscription status
   const refreshSubscription = async () => {
@@ -122,7 +127,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
   // Check subscription status when auth changes
   useEffect(() => {
     checkSubscriptionStatus();
-  }, [isAuthenticated, user]);
+  }, [checkSubscriptionStatus]);
 
   const value: SubscriptionContextType = {
     subscriptionStatus,

@@ -3,6 +3,7 @@ import ProtectedRoute from "@/comp/utility/tanstack/ProtectedRoute";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { useAllJournalEntries } from "@/comp/utility/tanstack/habitHooks";
+import type { JournalEntry } from "@/comp/utility/tanstack/habitTypes";
 import JournalEntryForm from "@/comp/journal/JournalEntryForm";
 import CosmicTheme from "@/comp/utility/CosmicTheme";
 import SubscriptionLimitBanner from "@/comp/utility/SubscriptionLimitBanner";
@@ -26,13 +27,12 @@ function JournalContent() {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Generate calendar days for the current month
-  const generateCalendarDays = (entries: unknown[]) => {
+  const generateCalendarDays = (entries: JournalEntry[]) => {
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
 
     // Get first day of month and number of days
     const firstDay = new Date(currentYear, currentMonth, 1);
-    const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay()); // Start from Sunday
 
@@ -44,7 +44,7 @@ function JournalContent() {
       const dateStr = loopDate.toISOString().split("T")[0];
 
       // Check if any entry matches this date (normalize entry dates to YYYY-MM-DD)
-      const hasEntry = entries?.some((entry, index) => {
+      const hasEntry = entries?.some((entry) => {
         if (!entry.date) return false;
         const entryDate = new Date(entry.date);
         const entryDateStr = entryDate.toISOString().split("T")[0];
@@ -104,14 +104,6 @@ function JournalContent() {
     return [...new Set(moods)];
   }, [allEntries]);
 
-  // Get available dates from entries
-  const availableDates = useMemo(() => {
-    if (!allEntries) return [];
-    return allEntries
-      .map((entry) => entry.date)
-      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-  }, [allEntries]);
-
   // Filter entries based on selected criteria
   const filteredEntries = useMemo(() => {
     if (!allEntries) return [];
@@ -121,10 +113,6 @@ function JournalContent() {
   }, [allEntries]);
 
   // Utility functions
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
   const formatDateLong = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",

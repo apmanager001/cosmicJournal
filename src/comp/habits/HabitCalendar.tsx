@@ -1,10 +1,9 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { HabitLog } from "../utility/tanstack/habitTypes";
 
 interface HabitCalendarProps {
   habitLogs: HabitLog[];
-  year?: number;
   className?: string;
 }
 
@@ -15,7 +14,6 @@ interface CalendarState {
 
 const HabitCalendar: React.FC<HabitCalendarProps> = ({
   habitLogs,
-  year = new Date().getFullYear(),
   className = "",
 }) => {
   const [calendarState, setCalendarState] = useState<CalendarState>(() => {
@@ -25,8 +23,9 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({
       currentYear: now.getFullYear(),
     };
   });
+
   // Generate calendar data for 2 months
-  const generateCalendarData = () => {
+  const generateCalendarData = useCallback(() => {
     const calendar: { date: string; completed: boolean; intensity: number }[] =
       [];
 
@@ -64,7 +63,7 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({
             if (!isNaN(dateObj.getTime())) {
               normalizedDate = dateObj.toISOString().split("T")[0];
             }
-          } catch (error) {
+          } catch {
             console.warn("Could not parse date:", log.date);
           }
         }
@@ -93,51 +92,40 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({
     }
 
     return calendar;
-  };
+  }, [calendarState, habitLogs]);
 
   // Group calendar data by weeks
-  const groupByWeeks = (
-    calendar: { date: string; completed: boolean; intensity: number }[]
-  ) => {
-    const weeks: { date: string; completed: boolean; intensity: number }[][] =
-      [];
-    let currentWeek: { date: string; completed: boolean; intensity: number }[] =
-      [];
+  const groupByWeeks = useCallback(
+    (calendar: { date: string; completed: boolean; intensity: number }[]) => {
+      const weeks: { date: string; completed: boolean; intensity: number }[][] =
+        [];
+      let currentWeek: {
+        date: string;
+        completed: boolean;
+        intensity: number;
+      }[] = [];
 
-    calendar.forEach((day, index) => {
-      // Start new week on Sundays (day 0)
-      if (index % 7 === 0 && currentWeek.length > 0) {
+      calendar.forEach((day, index) => {
+        // Start new week on Sundays (day 0)
+        if (index % 7 === 0 && currentWeek.length > 0) {
+          weeks.push(currentWeek);
+          currentWeek = [];
+        }
+        currentWeek.push(day);
+      });
+
+      // Add the last week if it has days
+      if (currentWeek.length > 0) {
         weeks.push(currentWeek);
-        currentWeek = [];
       }
-      currentWeek.push(day);
-    });
 
-    // Add the last week if it has days
-    if (currentWeek.length > 0) {
-      weeks.push(currentWeek);
-    }
-
-    // Find month boundaries for debugging
-    const firstMonthEnd = new Date(
-      calendarState.currentYear,
-      calendarState.currentMonth + 1,
-      0
-    );
-    const firstMonthEndDate = firstMonthEnd.toISOString().split("T")[0];
-
-    let firstMonthWeekIndex = -1;
-    weeks.forEach((week, weekIndex) => {
-      if (week.some((day) => day.date === firstMonthEndDate)) {
-        firstMonthWeekIndex = weekIndex;
-      }
-    });
-
-    return weeks;
-  };
+      return weeks;
+    },
+    []
+  );
 
   // Get month labels for the 2-month period
-  const getMonthLabels = () => {
+  const getMonthLabels = useCallback(() => {
     const months = [
       "Jan",
       "Feb",
@@ -191,7 +179,7 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({
     labels.push({ month: secondMonth, offset: offset });
 
     return labels;
-  };
+  }, [calendarState]);
 
   // Navigation functions
   const goToPreviousPeriod = () => {
@@ -225,10 +213,10 @@ const HabitCalendar: React.FC<HabitCalendarProps> = ({
   // Memoize calendar data to avoid unnecessary recalculations
   const calendar = useMemo(
     () => generateCalendarData(),
-    [calendarState, habitLogs]
+    [generateCalendarData]
   );
-  const weeks = useMemo(() => groupByWeeks(calendar), [calendar]);
-  const monthLabels = useMemo(() => getMonthLabels(), [calendarState]);
+  const weeks = useMemo(() => groupByWeeks(calendar), [groupByWeeks, calendar]);
+  const monthLabels = useMemo(() => getMonthLabels(), [getMonthLabels]);
 
   // Get color based on completion
   const getDayColor = (completed: boolean, intensity: number) => {

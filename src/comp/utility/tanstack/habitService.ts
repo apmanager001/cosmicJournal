@@ -76,9 +76,11 @@ export const habitService = {
     } catch (error: unknown) {
       console.error("Error in createUserHabit:", error);
       console.error("Error details:", {
-        message: (error as any).message,
-        data: (error as any).data,
-        status: (error as any).status,
+        message: (
+          error as { message?: string; data?: unknown; status?: number }
+        ).message,
+        data: (error as { data?: unknown }).data,
+        status: (error as { status?: number }).status,
       });
       throw error;
     }
@@ -121,8 +123,10 @@ export const habitService = {
       console.log("getHabitLogs: Error occurred:", error);
       // Handle auto-cancelled requests gracefully
       if (
-        (error as any)?.message?.includes("autocancelled") ||
-        (error as any)?.name === "AbortError"
+        (error as { message?: string; name?: string })?.message?.includes(
+          "autocancelled"
+        ) ||
+        (error as { name?: string })?.name === "AbortError"
       ) {
         // Re-throw the error so React Query can handle cancellation properly
         throw error;
@@ -171,8 +175,8 @@ export const habitService = {
     } catch (error: unknown) {
       // Handle auto-cancelled requests gracefully
       if (
-        (error as any)?.message?.includes("autocancelled") ||
-        (error as any)?.name === "AbortError"
+        (error as PocketBaseError)?.message?.includes("autocancelled") ||
+        (error as PocketBaseError)?.name === "AbortError"
       ) {
         console.log("Request was auto-cancelled (this is normal)");
         throw new Error("Request was cancelled");
@@ -260,9 +264,13 @@ export const habitService = {
     } catch (error: unknown) {
       // Handle auto-cancelled requests gracefully
       if (
-        (error as any)?.message?.includes("autocancelled") ||
-        (error as any)?.message?.includes("Request was cancelled") ||
-        (error as any)?.name === "AbortError"
+        (error as { message?: string; name?: string })?.message?.includes(
+          "autocancelled"
+        ) ||
+        (error as { message?: string; name?: string })?.message?.includes(
+          "Request was cancelled"
+        ) ||
+        (error as { name?: string })?.name === "AbortError"
       ) {
         throw new Error("Request was cancelled");
       }

@@ -14,13 +14,8 @@ export default function SubscriptionLimitBanner({
   currentCount,
   className = "",
 }: SubscriptionLimitBannerProps) {
-  const {
-    subscriptionStatus,
-    getCurrentLimit,
-    hasReachedLimit,
-    upgradeToPro,
-    isLoading,
-  } = useSubscription();
+  const { getCurrentLimit, hasReachedLimit, upgradeToPro, isLoading } =
+    useSubscription();
 
   if (isLoading) {
     return null;
@@ -29,7 +24,6 @@ export default function SubscriptionLimitBanner({
   const limit = getCurrentLimit(resource);
   const isUnlimited = limit === -1;
   const hasReached = hasReachedLimit(resource, currentCount);
-  const isFreeTier = subscriptionStatus === "free";
 
   // Don't show banner for pro users or if not near limit
   if (isUnlimited || (!hasReached && currentCount < limit * 0.8)) {

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 // For now, we'll use a mock subscription system
 // In a real implementation, you would integrate with Stripe properly

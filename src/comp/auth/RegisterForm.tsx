@@ -199,15 +199,6 @@ const RegisterForm: React.FC = () => {
           </Link>
         </p>
       </div>
-
-      {/* Error Display */}
-      {registerMutation.error && (
-        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-600">
-            {registerMutation.error.message || "Registration failed"}
-          </p>
-        </div>
-      )}
     </div>
   );
 };

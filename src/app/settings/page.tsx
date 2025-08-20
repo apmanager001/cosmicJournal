@@ -43,7 +43,7 @@ function SettingsContent() {
 
   const [subscription, setSubscription] = useState<{
     hasSubscription: boolean;
-    subscription: unknown;
+    subscription: { id?: string } | null;
   } | null>(null);
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(false);
   const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
@@ -90,13 +90,14 @@ function SettingsContent() {
       onSuccess: () => {
         toast.success("Notification settings saved successfully!");
       },
-      onError: (error) => {
+      onError: () => {
         toast.error("Failed to save settings. Please try again.");
       },
     });
   };
 
-  const handleStripeSubscribe = async (planId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleStripeSubscribe = async (_planId: string) => {
     setIsCreatingCheckout(true);
     try {
       // For demo purposes, we'll simulate the checkout process

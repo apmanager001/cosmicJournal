@@ -7,6 +7,19 @@ import {
 } from "./habitService";
 import { useAuth } from "./authContext";
 import toast from "react-hot-toast";
+import type {
+  UserHabit,
+  JournalEntry,
+  NotificationSettings,
+} from "./habitTypes";
+
+// Error interface for better type safety
+interface ApiError {
+  message?: string;
+  data?: { message?: string };
+  name?: string;
+  isAbort?: boolean;
+}
 
 // Public habits hooks
 export const usePublicHabits = () => {
@@ -80,8 +93,8 @@ export const useUpdateUserHabit = () => {
     },
     onError: (error: unknown) => {
       const message =
-        (error as any)?.data?.message ||
-        (error as any)?.message ||
+        (error as ApiError)?.data?.message ||
+        (error as ApiError)?.message ||
         "Failed to update habit";
       toast.error(message);
     },
@@ -100,8 +113,8 @@ export const useDeleteUserHabit = () => {
     },
     onError: (error: unknown) => {
       const message =
-        (error as any)?.data?.message ||
-        (error as any)?.message ||
+        (error as ApiError)?.data?.message ||
+        (error as ApiError)?.message ||
         "Failed to delete habit";
       toast.error(message);
     },
@@ -156,8 +169,8 @@ export const useLogHabitCompletion = () => {
     },
     onError: (error: unknown) => {
       const message =
-        (error as any)?.data?.message ||
-        (error as any)?.message ||
+        (error as ApiError)?.data?.message ||
+        (error as ApiError)?.message ||
         "Failed to log habit completion";
       toast.error(message);
     },
@@ -174,10 +187,10 @@ export const useHabitLogs = (habitId: string) => {
       } catch (error: unknown) {
         // Handle auto-cancelled requests gracefully
         if (
-          (error as any)?.message?.includes("Request was cancelled") ||
-          (error as any)?.message?.includes("autocancelled") ||
-          (error as any)?.name === "AbortError" ||
-          (error as any)?.isAbort === true
+          (error as ApiError)?.message?.includes("Request was cancelled") ||
+          (error as ApiError)?.message?.includes("autocancelled") ||
+          (error as ApiError)?.name === "AbortError" ||
+          (error as ApiError)?.isAbort === true
         ) {
           // Don't return empty array for auto-cancelled requests
           // Let React Query handle the cancellation properly
@@ -195,10 +208,10 @@ export const useHabitLogs = (habitId: string) => {
     retry: (failureCount, error: unknown) => {
       // Don't retry auto-cancelled requests
       if (
-        (error as any)?.message?.includes("Request was cancelled") ||
-        (error as any)?.message?.includes("autocancelled") ||
-        (error as any)?.name === "AbortError" ||
-        (error as any)?.isAbort === true
+        (error as ApiError)?.message?.includes("Request was cancelled") ||
+        (error as ApiError)?.message?.includes("autocancelled") ||
+        (error as ApiError)?.name === "AbortError" ||
+        (error as ApiError)?.isAbort === true
       ) {
         return false;
       }
@@ -221,13 +234,13 @@ export const useHabitStreak = (habitId: string) => {
       try {
         const result = await habitService.calculateHabitStreak(habitId);
         return result;
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Handle auto-cancelled requests gracefully
         if (
-          error?.message?.includes("Request was cancelled") ||
-          error?.message?.includes("autocancelled") ||
-          error?.name === "AbortError" ||
-          error?.isAbort === true
+          (error as ApiError)?.message?.includes("Request was cancelled") ||
+          (error as ApiError)?.message?.includes("autocancelled") ||
+          (error as ApiError)?.name === "AbortError" ||
+          (error as ApiError)?.isAbort === true
         ) {
           throw error; // Re-throw to let React Query handle it
         }
@@ -240,13 +253,13 @@ export const useHabitStreak = (habitId: string) => {
     refetchOnWindowFocus: false, // Don't refetch when window regains focus
     refetchOnMount: true, // Changed to true to ensure data loads on mount
     refetchOnReconnect: true, // Refetch when reconnecting
-    retry: (failureCount, error: any) => {
+    retry: (failureCount, error: unknown) => {
       // Don't retry auto-cancelled requests
       if (
-        error?.message?.includes("Request was cancelled") ||
-        error?.message?.includes("autocancelled") ||
-        error?.name === "AbortError" ||
-        error?.isAbort === true
+        (error as ApiError)?.message?.includes("Request was cancelled") ||
+        (error as ApiError)?.message?.includes("autocancelled") ||
+        (error as ApiError)?.name === "AbortError" ||
+        (error as ApiError)?.isAbort === true
       ) {
         return false;
       }
@@ -315,8 +328,8 @@ export const useSaveJournalEntry = () => {
     },
     onError: (error: unknown) => {
       const message =
-        (error as any)?.data?.message ||
-        (error as any)?.message ||
+        (error as ApiError)?.data?.message ||
+        (error as ApiError)?.message ||
         "Failed to save journal entry";
       toast.error(message);
     },
@@ -354,8 +367,8 @@ export const useToggleBookmark = () => {
     },
     onError: (error: unknown) => {
       const message =
-        (error as any)?.data?.message ||
-        (error as any)?.message ||
+        (error as ApiError)?.data?.message ||
+        (error as ApiError)?.message ||
         "Failed to update bookmark";
       toast.error(message);
     },
@@ -389,8 +402,8 @@ export const useUpdateNotificationSettings = () => {
     },
     onError: (error: unknown) => {
       const message =
-        (error as any)?.data?.message ||
-        (error as any)?.message ||
+        (error as ApiError)?.data?.message ||
+        (error as ApiError)?.message ||
         "Failed to update notification settings";
       toast.error(message);
     },

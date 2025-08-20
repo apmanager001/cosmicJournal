@@ -1,17 +1,12 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
-import { UserHabit, HabitStreak } from "../utility/tanstack/habitTypes";
+import React, { useState, useMemo } from "react";
+import { UserHabit } from "../utility/tanstack/habitTypes";
 import {
   useLogHabitCompletion,
   useHabitStreak,
   useHabitLogs,
 } from "../utility/tanstack/habitHooks";
 import { CheckCircle, Circle, TrendingUp, Flame } from "lucide-react";
-
-interface HabitCardProps {
-  habit: UserHabit;
-  className?: string;
-}
 
 export default function HabitCard({
   habit,
@@ -36,12 +31,11 @@ export default function HabitCard({
   }, []); // Empty dependency array - only calculate once per component mount
 
   // Get all habit logs for this habit (no date filtering to avoid query key changes)
-  const {
-    data: allLogs,
-    isLoading: logsLoading,
-    error: logsError,
-    refetch: refetchLogs,
-  } = useHabitLogs(habit.id);
+  const habitLogsResult = useHabitLogs(habit.id);
+  const allLogs = habitLogsResult.data;
+  const logsLoading = Boolean(habitLogsResult.isLoading);
+  const logsError = habitLogsResult.error;
+  const refetchLogs = habitLogsResult.refetch;
 
   // Filter today's log from all logs
   const todayLog = React.useMemo(() => {
@@ -54,8 +48,8 @@ export default function HabitCard({
 
   // If there's an error, try to refetch
   React.useEffect(() => {
-    if (logsError && !todayLog && !logsLoading && !logsError.isAbort) {
-      // Only retry if there's an error, no data, not loading, and not auto-cancelled
+    if (logsError && !todayLog && !logsLoading) {
+      // Only retry if there's an error, no data, and not loading
       const timer = setTimeout(() => {
         refetchLogs();
       }, 1000);
@@ -63,11 +57,6 @@ export default function HabitCard({
     }
   }, [logsError, todayLog, logsLoading, refetchLogs]);
   const { data: streakData } = useHabitStreak(habit.id);
-
-  // Utility function to normalize dates for comparison
-  const normalizeDate = (dateString: string) => {
-    return dateString.split(" ")[0]; // Remove time part, keep only YYYY-MM-DD
-  };
 
   const isCompletedToday = useMemo(() => {
     // Check if we have a log for today and it's marked as completed
@@ -236,7 +225,7 @@ export default function HabitCard({
       )}
 
       {/* Error State - Only show when not loading and there's an error */}
-      {logsError && !logsLoading && !allLogs && !logsError.isAbort && (
+      {logsError && !logsLoading && !allLogs && (
         <div className="border-t border-gray-100 pt-4 mb-4">
           <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
             <span className="text-sm text-red-700">
