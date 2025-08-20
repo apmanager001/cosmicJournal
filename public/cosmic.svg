@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0;">
+  <defs>
+    <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050517" /> <!-- Dark top -->
+      <stop offset="85%" stop-color="#0b0b22" />
+      <stop offset="100%" stop-color="#4a3082" /> <!-- Bluish-purple bottom -->
+    </linearGradient>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#skyGradient)" />
+  <!-- Stars -->
+  <circle cx="30" cy="50" r="2" fill="white" />
+  <circle cx="35" cy="200" r="1.5" fill="white" />
+  <circle cx="180" cy="225" r="1.5" fill="white" />
+  <circle cx="200" cy="80" r="2.5" fill="white" />
+  <circle cx="100" cy="425" r="2.5" fill="white" />
+  <circle cx="200" cy="600" r="2" fill="white" />
+  <circle cx="200" cy="400" r="1.8" fill="white" />
+  <circle cx="35" cy="550" r="2" fill="white" />
+
+  <!-- Planets -->
+  <circle cx="250" cy="300" r="40" fill="darkorange" />
+  <circle cx="150" cy="500" r="30" fill="skyblue" />
+  
+  <!-- Asteroids -->
+  <ellipse cx="500" cy="200" rx="15" ry="8" fill="gray" />
+  <ellipse cx="600" cy="400" rx="10" ry="5" fill="darkgray" />
+</svg>

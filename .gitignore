@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#readme
+POCKETBASE_DB_STRUCTURE.md
+AUTH_SETUP.md
+STRIPE_SETUP.md
