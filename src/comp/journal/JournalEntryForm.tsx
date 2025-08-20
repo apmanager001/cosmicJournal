@@ -6,6 +6,7 @@ import {
   useAllJournalEntries,
 } from "../utility/tanstack/habitHooks";
 import { useSubscription } from "../utility/tanstack/subscriptionContext";
+import { useAuth } from "../utility/tanstack/authContext";
 import { Calendar, Edit3, Save } from "lucide-react";
 
 interface JournalEntryFormProps {
@@ -19,6 +20,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
   className = "",
   onSave,
 }) => {
+  const { user } = useAuth();
   const { hasReachedLimit, canPerformAction, upgradeToPro } = useSubscription();
   const { data: allEntries } = useAllJournalEntries();
 
@@ -56,7 +58,10 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
     }
   }, [existingEntry]);
 
-  const handleChange = (field: keyof typeof formData, value: string) => {
+  const handleChange = (
+    field: keyof typeof formData,
+    value: string | boolean
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -93,11 +98,18 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
     }
 
     try {
+      if (!user) {
+        alert("User not authenticated");
+        return;
+      }
+
       await saveMutation.mutateAsync({
         date,
+        userId: user.id,
         whatIDid: formData.whatIDid.trim(),
         whatILearned: formData.whatILearned.trim(),
         additionalNotes: formData.additionalNotes.trim(),
+        bookmarked: formData.bookmarked,
       });
 
       setIsEditing(false);
@@ -117,12 +129,16 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
         whatIDid: existingEntry.whatIDid || "",
         whatILearned: existingEntry.whatILearned || "",
         additionalNotes: existingEntry.additionalNotes || "",
+        mood: existingEntry.mood || "",
+        bookmarked: existingEntry.bookmarked || false,
       });
     } else {
       setFormData({
         whatIDid: "",
         whatILearned: "",
         additionalNotes: "",
+        mood: "",
+        bookmarked: false,
       });
     }
     setIsEditing(false);

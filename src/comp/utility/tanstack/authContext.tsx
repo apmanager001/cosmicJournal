@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const initializeAuth = () => {
       // Check if user is already authenticated
       if (pb.authStore.isValid && pb.authStore.model) {
-        setUser(pb.authStore.model as User);
+        setUser(pb.authStore.model as unknown as User);
       }
       setIsLoading(false);
     };
@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Listen for auth changes
     const unsubscribe = pb.authStore.onChange((token, model) => {
       if (token && model) {
-        setUser(model as User);
+        setUser(model as unknown as User);
       } else {
         setUser(null);
       }
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string) => {
     try {
       const authData = await authService.login({ email, password });
-      setUser(authData.record as User);
+      setUser(authData.record as unknown as User);
     } catch (error) {
       console.error("Login failed:", error);
       throw error;
@@ -98,7 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       if (pb.authStore.isValid) {
         const authData = await pb.collection("users").authRefresh();
-        setUser(authData.record as User);
+        setUser(authData.record as unknown as User);
       }
     } catch (error) {
       console.error("Failed to refresh auth:", error);

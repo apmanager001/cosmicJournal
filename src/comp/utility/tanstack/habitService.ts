@@ -15,7 +15,7 @@ export const habitService = {
       const records = await pb.collection("public_habits").getList(1, 50, {
         sort: "name",
       });
-      return records.items as PublicHabit[];
+      return records.items as unknown as PublicHabit[];
     } catch (error) {
       throw error;
     }
@@ -27,7 +27,7 @@ export const habitService = {
   ): Promise<PublicHabit> => {
     try {
       const record = await pb.collection("public_habits").create(habitData);
-      return record as PublicHabit;
+      return record as unknown as PublicHabit;
     } catch (error) {
       throw error;
     }
@@ -46,7 +46,7 @@ export const habitService = {
       return records.items.map((record) => ({
         ...record,
         habit: record.expand?.habitId || record.habitId, // Map expanded data to habit field
-      })) as UserHabit[];
+      })) as unknown as UserHabit[];
     } catch (error) {
       throw error;
     }
@@ -72,7 +72,7 @@ export const habitService = {
 
       const record = await pb.collection("user_habits").create(dataToSend);
       console.log("Successfully created user habit:", record);
-      return record as UserHabit;
+      return record as unknown as UserHabit;
     } catch (error: unknown) {
       console.error("Error in createUserHabit:", error);
       console.error("Error details:", {
@@ -93,7 +93,7 @@ export const habitService = {
   ): Promise<UserHabit> => {
     try {
       const record = await pb.collection("user_habits").update(id, updates);
-      return record as UserHabit;
+      return record as unknown as UserHabit;
     } catch (error) {
       throw error;
     }
@@ -118,7 +118,7 @@ export const habitService = {
         sort: "-date",
         requestKey: null,
       });
-      return records.items as HabitLog[];
+      return records.items as unknown as HabitLog[];
     } catch (error: unknown) {
       console.log("getHabitLogs: Error occurred:", error);
       // Handle auto-cancelled requests gracefully
@@ -160,7 +160,7 @@ export const habitService = {
             completed,
             notes,
           });
-        return record as HabitLog;
+        return record as unknown as HabitLog;
       } else {
         // Create new log
         const record = await pb.collection("habit_logs").create({
@@ -170,13 +170,15 @@ export const habitService = {
           completed,
           notes,
         });
-        return record as HabitLog;
+        return record as unknown as HabitLog;
       }
     } catch (error: unknown) {
       // Handle auto-cancelled requests gracefully
       if (
-        (error as PocketBaseError)?.message?.includes("autocancelled") ||
-        (error as PocketBaseError)?.name === "AbortError"
+        (error as { message?: string; name?: string })?.message?.includes(
+          "autocancelled"
+        ) ||
+        (error as { name?: string })?.name === "AbortError"
       ) {
         console.log("Request was auto-cancelled (this is normal)");
         throw new Error("Request was cancelled");
@@ -289,7 +291,7 @@ export const journalService = {
       });
 
       return records.items.length > 0
-        ? (records.items[0] as JournalEntry)
+        ? (records.items[0] as unknown as JournalEntry)
         : null;
     } catch (error) {
       throw error;
@@ -303,7 +305,7 @@ export const journalService = {
         filter: `userId = "${pb.authStore.model?.id}"`,
         sort: "-date",
       });
-      return records.items as JournalEntry[];
+      return records.items as unknown as JournalEntry[];
     } catch (error) {
       throw error;
     }
@@ -316,7 +318,7 @@ export const journalService = {
         filter: `userId = "${pb.authStore.model?.id}" && bookmarked = true`,
         sort: "-date",
       });
-      return records.items as JournalEntry[];
+      return records.items as unknown as JournalEntry[];
     } catch (error) {
       throw error;
     }
@@ -341,7 +343,7 @@ export const journalService = {
             mood: entry.mood,
             bookmarked: entry.bookmarked,
           });
-        return record as JournalEntry;
+        return record as unknown as JournalEntry;
       } else {
         // Create new entry
         const record = await pb.collection("journal_entries").create({
@@ -349,7 +351,7 @@ export const journalService = {
           userId: pb.authStore.model?.id,
           bookmarked: entry.bookmarked || false, // Default to false if not provided
         });
-        return record as JournalEntry;
+        return record as unknown as JournalEntry;
       }
     } catch (error) {
       throw error;
@@ -365,7 +367,7 @@ export const journalService = {
       const record = await pb.collection("journal_entries").update(entryId, {
         bookmarked,
       });
-      return record as JournalEntry;
+      return record as unknown as JournalEntry;
     } catch (error) {
       throw error;
     }
@@ -383,7 +385,7 @@ export const notificationService = {
         });
 
       return records.items.length > 0
-        ? (records.items[0] as NotificationSettings)
+        ? (records.items[0] as unknown as NotificationSettings)
         : null;
     } catch (error) {
       throw error;
@@ -402,13 +404,13 @@ export const notificationService = {
         const record = await pb
           .collection("notification_settings")
           .update(existingSettings.id, settings);
-        return record as NotificationSettings;
+        return record as unknown as NotificationSettings;
       } else {
         const record = await pb.collection("notification_settings").create({
           ...settings,
           userId: pb.authStore.model?.id,
         });
-        return record as NotificationSettings;
+        return record as unknown as NotificationSettings;
       }
     } catch (error) {
       throw error;
