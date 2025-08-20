@@ -11,6 +11,8 @@ import type {
   UserHabit,
   JournalEntry,
   NotificationSettings,
+  HabitLog,
+  PublicHabit,
 } from "./habitTypes";
 
 // Error interface for better type safety
@@ -23,7 +25,7 @@ interface ApiError {
 
 // Public habits hooks
 export const usePublicHabits = () => {
-  return useQuery({
+  return useQuery<PublicHabit[], unknown, PublicHabit[], [string]>({
     queryKey: ["publicHabits"],
     queryFn: async () => {
       try {
@@ -44,7 +46,12 @@ export const usePublicHabits = () => {
 export const useUserHabits = () => {
   const { user } = useAuth();
 
-  return useQuery({
+  return useQuery<
+    UserHabit[],
+    unknown,
+    UserHabit[],
+    [string, string | undefined]
+  >({
     queryKey: ["userHabits", user?.id],
     queryFn: () => habitService.getUserHabits(user!.id),
     enabled: !!user?.id,
@@ -177,8 +184,12 @@ export const useLogHabitCompletion = () => {
   });
 };
 
-export const useHabitLogs = (habitId: string) => {
-  return useQuery({
+export const useHabitLogs = (
+  habitId: string
+): ReturnType<
+  typeof useQuery<HabitLog[], Error, HabitLog[], [string, string]>
+> => {
+  const result = useQuery<HabitLog[], Error, HabitLog[], [string, string]>({
     queryKey: ["habitLogs", habitId],
     queryFn: async () => {
       try {
@@ -225,6 +236,8 @@ export const useHabitLogs = (habitId: string) => {
     networkMode: "online",
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
+
+  return result;
 };
 
 export const useHabitStreak = (habitId: string) => {

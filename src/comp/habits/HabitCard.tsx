@@ -33,9 +33,11 @@ export default function HabitCard({
   // Get all habit logs for this habit (no date filtering to avoid query key changes)
   const habitLogsResult = useHabitLogs(habit.id);
   const allLogs = habitLogsResult.data;
-  const logsLoading = Boolean(habitLogsResult.isLoading);
+  const isLoading = habitLogsResult.isLoading;
   const logsError = habitLogsResult.error;
   const refetchLogs = habitLogsResult.refetch;
+
+  let showLoading = isLoading as boolean;
 
   // Filter today's log from all logs
   const todayLog = React.useMemo(() => {
@@ -48,14 +50,14 @@ export default function HabitCard({
 
   // If there's an error, try to refetch
   React.useEffect(() => {
-    if (logsError && !todayLog && !logsLoading) {
+    if (logsError && !todayLog && !showLoading) {
       // Only retry if there's an error, no data, and not loading
       const timer = setTimeout(() => {
         refetchLogs();
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [logsError, todayLog, logsLoading, refetchLogs]);
+  }, [logsError, todayLog, showLoading, refetchLogs]);
   const { data: streakData } = useHabitStreak(habit.id);
 
   const isCompletedToday = useMemo(() => {
@@ -177,9 +179,8 @@ export default function HabitCard({
           )}
         </button>
       </div>
-
       {/* Loading State - Skeleton */}
-      {logsLoading && (
+      {showLoading && (
         <div className="border-t border-gray-100 pt-4 mb-4">
           <div className="space-y-3">
             {/* Streak skeleton */}
@@ -198,7 +199,7 @@ export default function HabitCard({
       )}
 
       {/* Streak Information */}
-      {!logsLoading && streakData && (
+      {!showLoading && streakData && (
         <div className="border-t border-gray-100 pt-4 mb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -225,7 +226,7 @@ export default function HabitCard({
       )}
 
       {/* Error State - Only show when not loading and there's an error */}
-      {logsError && !logsLoading && !allLogs && (
+      {logsError && !showLoading && !allLogs && (
         <div className="border-t border-gray-100 pt-4 mb-4">
           <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
             <span className="text-sm text-red-700">
@@ -244,7 +245,7 @@ export default function HabitCard({
       {/* Notes Section */}
       <div className="border-t border-gray-100 pt-4">
         {/* Loading skeleton for notes */}
-        {logsLoading && (
+        {showLoading && (
           <div className="space-y-3">
             <div className="w-32 h-4 bg-gray-200 rounded animate-pulse"></div>
             <div className="w-full h-16 bg-gray-200 rounded animate-pulse"></div>
@@ -252,7 +253,7 @@ export default function HabitCard({
         )}
 
         {/* Show existing notes if they exist */}
-        {!logsLoading &&
+        {!showLoading &&
           todayLog &&
           todayLog.length > 0 &&
           todayLog[0]?.notes &&
@@ -274,7 +275,7 @@ export default function HabitCard({
           )}
 
         {/* Notes button and form - only show when not loading */}
-        {!logsLoading && (
+        {!showLoading && (
           <>
             <button
               onClick={() => setShowNotes(!showNotes)}
