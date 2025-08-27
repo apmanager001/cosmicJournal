@@ -1,11 +1,9 @@
 "use client";
 import Link from "next/link";
-import CosmicTheme from "@/comp/utility/CosmicTheme";
 import { Rocket, Star, Home, ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <CosmicTheme>
       <div className="container mx-auto px-4 py-16">
         <div className="text-center">
           {/* 404 Icon */}
@@ -114,6 +112,5 @@ export default function NotFound() {
           </div>
         </div>
       </div>
-    </CosmicTheme>
   );
 }

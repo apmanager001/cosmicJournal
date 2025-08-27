@@ -1,6 +1,5 @@
 "use client";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
-import CosmicTheme from "@/comp/utility/CosmicTheme";
 import Link from "next/link";
 import { Rocket, Star, Moon, Zap } from "lucide-react";
 
@@ -9,19 +8,16 @@ export default function HomePage() {
 
   if (isLoading) {
     return (
-      <CosmicTheme>
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto"></div>
             <p className="text-white mt-4">Loading...</p>
           </div>
         </div>
-      </CosmicTheme>
     );
   }
 
   return (
-    <CosmicTheme>
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-16">
@@ -142,6 +138,5 @@ export default function HomePage() {
           </div>
         )}
       </div>
-    </CosmicTheme>
   );
 }

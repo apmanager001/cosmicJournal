@@ -7,7 +7,6 @@ import {
   useUpdateNotificationSettings,
 } from "@/comp/utility/tanstack/habitHooks";
 import { SUBSCRIPTION_PLANS } from "@/comp/utility/tanstack/stripeService";
-import CosmicTheme from "@/comp/utility/CosmicTheme";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import {
@@ -135,7 +134,6 @@ function SettingsContent() {
   };
 
   return (
-    <CosmicTheme variant="light">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-6 mb-8 border border-purple-200/50">
@@ -436,6 +434,5 @@ function SettingsContent() {
           </div>
         </div>
       </div>
-    </CosmicTheme>
   );
 }

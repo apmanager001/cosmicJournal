@@ -5,7 +5,6 @@ import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { useAllJournalEntries } from "@/comp/utility/tanstack/habitHooks";
 import type { JournalEntry } from "@/comp/utility/tanstack/habitTypes";
 import JournalEntryForm from "@/comp/journal/JournalEntryForm";
-import CosmicTheme from "@/comp/utility/CosmicTheme";
 import SubscriptionLimitBanner from "@/comp/utility/SubscriptionLimitBanner";
 import SubscriptionStatusIndicator from "@/comp/utility/SubscriptionStatusIndicator";
 import { useState, useMemo } from "react";
@@ -180,7 +179,6 @@ function JournalContent() {
   }
 
   return (
-    <CosmicTheme variant="light">
       <div className="container mx-auto px-4 py-8 flex flex-col gap-4">
         {/* Header */}
         <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-6 mb-8 border border-purple-200/50">
@@ -463,6 +461,5 @@ function JournalContent() {
           )}
         </div>
       </div>
-    </CosmicTheme>
   );
 }
