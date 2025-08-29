@@ -310,9 +310,6 @@ function SettingsContent() {
                   <h3 className="font-medium">Email</h3>
                   <p className="text-sm text-gray-400">{user?.email}</p>
                 </div>
-                <span className="text-sm text-gray-400">
-                  {user?.verified ? "Verified" : "Unverified"}
-                </span>
               </div>
 
               <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
