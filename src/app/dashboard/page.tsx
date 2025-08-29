@@ -135,13 +135,10 @@ function DashboardContent() {
               </div>
               <div>
                 <p className="text-sm font-medium text-base-content">
-                  Total Streaks
+                  Active Habits
                 </p>
                 <p className="text-2xl font-bold text-base-content">
-                  {userHabits?.reduce(
-                    (total, habit) => total + (habit.currentStreak || 0),
-                    0
-                  ) || 0}
+                  {userHabits?.filter((habit) => habit.isActive).length || 0}
                 </p>
               </div>
             </div>
