@@ -6,6 +6,7 @@ import {
   useCreateUserHabit,
   useHabitLogs,
 } from "@/comp/utility/tanstack/habitHooks";
+import WeeklyCalendar from "../dashboard/comp/WeeklyCalendar";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { useState, useMemo } from "react";
@@ -97,50 +98,60 @@ function HabitsContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen ">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-6 mb-8">
+          {/* Left Section - Icon, Title, and Description */}
+          <div className="flex-1 customContainer p-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                 <Target className="w-6 h-6 text-green-600" />
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Habits</h1>
-                <p className="text-gray-600">
+              <div className="flex flex-col gap-2 w-full">
+                <div className="flex flex-row justify-between items-center gap-2">
+                  <h1 className="text-3xl font-bold">Habits</h1>
+                  <div className="flex gap-4 items-center justify-center flex-wrap">
+                    <Link
+                      href="/dashboard"
+                      className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setShowCreateForm(true);
+                        // Scroll to the form section smoothly
+                        setTimeout(() => {
+                          document
+                            .getElementById("showCreateForm")
+                            ?.scrollIntoView({
+                              behavior: "smooth",
+                              block: "start",
+                            });
+                        }, 100); // Small delay to ensure the form is rendered
+                      }}
+                      disabled={
+                        !canPerformAction("canCreateHabits") ||
+                        hasReachedLimit("habits", userHabits?.length || 0)
+                      }
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Plus className="w-4 h-4" />
+                      New Habit
+                    </button>
+                  </div>
+                </div>
+                <p className="text-gray-400">
                   Track your daily habits and build consistency
                 </p>
               </div>
             </div>
-            <div className="flex gap-4">
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                Dashboard
-              </Link>
-              <button
-                onClick={() => {
-                  setShowCreateForm(true);
-                  // Scroll to the form section smoothly
-                  setTimeout(() => {
-                    document.getElementById("showCreateForm")?.scrollIntoView({
-                      behavior: "smooth",
-                      block: "start",
-                    });
-                  }, 100); // Small delay to ensure the form is rendered
-                }}
-                disabled={
-                  !canPerformAction("canCreateHabits") ||
-                  hasReachedLimit("habits", userHabits?.length || 0)
-                }
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Plus className="w-4 h-4" />
-                New Habit
-              </button>
-            </div>
+          </div>
+
+          {/* Right Section - Subscription Status */}
+          <div className="min-w-72">
+            <SubscriptionStatusIndicator />
           </div>
         </div>
 
@@ -153,80 +164,68 @@ function HabitsContent() {
 
         {/* Stats Overview */}
         <div className="grid md:grid-cols-6 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+          <div className="customContainer p-6">
+            <div className="flex items-center gap-3">
+              <div className="min-w-10 min-h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Target className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Total Habits
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.total}
-                </p>
+                <p className="text-sm font-medium text-center">Total Habits</p>
+                <p className="text-2xl font-bold text-center">{stats.total}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+          <div className="customContainer p-6">
+            <div className="flex items-center gap-3">
+              <div className="min-w-10 min-h-10 bg-green-100 rounded-lg flex items-center justify-center">
                 <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Active</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.active}
-                </p>
+                <p className="text-sm font-medium text-center">Active</p>
+                <p className="text-2xl text-center font-bold">{stats.active}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+          <div className="customContainer p-6">
+            <div className="flex items-center gap-3">
+              <div className="min-w-10 min-h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-5 h-5 text-purple-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Daily</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.daily}
-                </p>
+                <p className="text-sm font-medium text-center">Daily</p>
+                <p className="text-2xl font-bold text-center">{stats.daily}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
+          <div className="customContainer p-6">
+            <div className="flex items-center gap-3">
+              <div className="min-w-10 min-h-10 bg-orange-100 rounded-lg flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Weekly</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.weekly}
-                </p>
+                <p className="text-sm font-medium text-center">Weekly</p>
+                <p className="text-2xl font-bold text-center">{stats.weekly}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+          <div className="customContainer p-6">
+            <div className="flex items-center gap-3">
+              <div className="min-w-10 min-h-10 bg-red-100 rounded-lg flex items-center justify-center">
                 <Flame className="w-5 h-5 text-red-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Total Streaks
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm font-medium text-center">Total Streaks</p>
+                <p className="text-2xl font-bold text-center">
                   {stats.totalStreaks}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="customContainer p-6">
             {/* View Mode Toggle */}
             <div className="flex flex-col gap-2 justify-center">
               <button
@@ -261,13 +260,8 @@ function HabitsContent() {
               </button>
             </div>
           </div>
-
-          {/* Subscription Status */}
-          <div className="md:col-span-2">
-            <SubscriptionStatusIndicator />
-          </div>
         </div>
-
+        <WeeklyCalendar />
         {/* Create New Habit Form */}
         {showCreateForm && (
           <div
@@ -812,7 +806,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
 
       {/* Create New Habit Form */}
       {showCreateNew && (
-        <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+        <div className="customContainer p-4 space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             <span className="text-sm font-medium text-gray-700">
@@ -820,7 +814,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
             </span>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="customContainer p-3">
             <p className="text-sm text-blue-800">
               <strong>Creating new habit type: &quot;{searchTerm}&quot;</strong>
               <br />
@@ -1023,7 +1017,7 @@ function HabitCalendarWithLogs({ habit }: { habit: UserHabit }) {
 
   if (isLoading) {
     return (
-      <div className="border rounded-lg p-4">
+      <div className="customContainer p-4">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xl">{habit.habit.icon}</span>
           <h4 className="font-medium text-gray-900">{habit.habit.name}</h4>
@@ -1037,7 +1031,7 @@ function HabitCalendarWithLogs({ habit }: { habit: UserHabit }) {
   }
 
   return (
-    <div className="border rounded-lg p-4">
+    <div className="customContainer p-4">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-xl">{habit.habit.icon}</span>
         <h4 className="font-medium text-gray-900">{habit.habit.name}</h4>

@@ -24,20 +24,20 @@ export default function HomePage() {
           <div className="flex justify-center mb-6">
             <Rocket className="w-20 h-20 text-purple-400" />
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
             Welcome to{" "}
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               Cosmic Journal
             </span>
           </h1>
-          <p className="text-xl text-purple-200 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-purple-400 mb-8 max-w-3xl mx-auto">
             Track your habits and journal your journey through the cosmos. Build
             consistency, explore your thoughts, and reach for the stars.
           </p>
 
           {user ? (
             <div className="space-y-4">
-              <p className="text-purple-200 text-lg">
+              <p className="text-purple-400 text-lg">
                 Welcome back, {user.name || user.email || "Cosmic Explorer"}! 🚀
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -50,7 +50,7 @@ export default function HomePage() {
                 </Link>
                 <button
                   onClick={logout}
-                  className="px-8 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-lg font-semibold"
+                  className="px-8 py-3 bg-red-600 rounded-lg text-white hover:bg-red-700 transition-colors text-lg font-semibold"
                 >
                   Sign Out
                 </button>
@@ -79,39 +79,39 @@ export default function HomePage() {
         {/* Features Section */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-purple-200/20 text-center">
-            <div className="w-16 h-16 bg-purple-100/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-purple-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Rocket className="w-8 h-8 text-purple-400" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-3">
+            <h3 className="text-xl font-semibold mb-3">
               Habit Tracking
             </h3>
-            <p className="text-purple-200">
+            <p className="text-purple-400">
               Build consistent habits with streak tracking and daily reminders.
               Watch your progress soar to new heights.
             </p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-purple-200/20 text-center">
-            <div className="w-16 h-16 bg-purple-100/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-purple-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Star className="w-8 h-8 text-purple-400" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-3">
+            <h3 className="text-xl font-semibold mb-3">
               Daily Journaling
             </h3>
-            <p className="text-purple-200">
+            <p className="text-purple-400">
               Reflect on your day, capture insights, and track your personal
               growth through thoughtful journal entries.
             </p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-purple-200/20 text-center">
-            <div className="w-16 h-16 bg-purple-100/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-purple-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Zap className="w-8 h-8 text-purple-400" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-3">
+            <h3 className="text-xl font-semibold mb-3">
               Smart Analytics
             </h3>
-            <p className="text-purple-200">
+            <p className="text-purple-400">
               Get insights into your habits and journal patterns with beautiful
               visualizations and progress tracking.
             </p>

@@ -95,7 +95,7 @@ const RecentActivity = () => {
 
   if (recentActivities.length === 0) {
     return (
-      <div className="bg-base-200/90 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-primary/20">
+      <div className= "customContainer p-6" >
         <h2 className="text-xl font-semibold text-base-content mb-4">
           Recent Activity
         </h2>
@@ -123,7 +123,7 @@ const RecentActivity = () => {
   }
 
   return (
-    <div className="bg-base-200/90 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-primary/20">
+    <div className="customContainer p-6 ">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-base-content">
           Recent Activity

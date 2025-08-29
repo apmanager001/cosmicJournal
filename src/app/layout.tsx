@@ -27,7 +27,7 @@ export default function RootLayout({
         <QueryProvider>
           <AuthProvider>
             <SubscriptionProvider>
-              <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+              <div className="min-h-screen">
                 <Header />
                 <main className="relative z-10">{children}</main>
                 <CosmicFooter />

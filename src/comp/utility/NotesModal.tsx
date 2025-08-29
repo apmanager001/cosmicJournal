@@ -68,7 +68,7 @@ export default function NotesModal({
 
   return (
     <div className="modal modal-open">
-      <div className="modal-box max-w-md">
+      <div className="modal-box max-w-md customContainer">
         <div className="flex items-center gap-3 mb-4">
           <span className="text-2xl">{habit.habit.icon}</span>
           <div>
@@ -88,11 +88,11 @@ export default function NotesModal({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Add your notes, thoughts, or observations..."
-              className="textarea textarea-bordered w-full h-24 resize-none"
+              className="textarea textarea-bordered border-primary w-full h-24 resize-none text-base-content"
               disabled={isSubmitting}
             />
             <div className="label">
-              <span className="label-text-alt text-base-content/60">
+              <span className="label-text-alt ">
                 {note.length}/500 characters
               </span>
             </div>
@@ -136,4 +136,3 @@ export default function NotesModal({
     </div>
   );
 }
-

@@ -1,119 +1,148 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CircleUser, Star, Rocket, Moon } from "lucide-react";
+import { CircleUser, Star, Rocket, Menu, X } from "lucide-react";
 import HeaderLinks from "./headerLinks";
 import { useAuth } from "../utility/tanstack/authContext";
+import ThemeToggle from "../utility/ThemeToggle";
 
 const Header = () => {
   const { user, isLoading } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   if (isLoading) {
     return (
-      <div className="hidden md:navbar bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 border-b border-purple-500/20">
+      <header className="navbar bg-base-100 border-b border-base-300 shadow-sm">
         <div className="navbar-start">
+          <div className="w-10 h-10 bg-base-300 rounded-lg animate-pulse"></div>
+          <div className="w-32 h-6 bg-base-300 rounded animate-pulse ml-3"></div>
+        </div>
+        <div className="navbar-end">
+          <div className="w-20 h-8 bg-base-300 rounded animate-pulse"></div>
+        </div>
+      </header>
+    );
+  }
+
+  return (
+    <header className="navbar bg-base-100 border-b border-base-300 shadow-sm sticky top-0 z-50">
+      {/* Desktop Header */}
+      <div className="navbar-start">
+        <div className="flex items-center gap-3">
           <Image
             src="/icon.png"
-            height={100}
-            width={100}
+            height={40}
+            width={40}
             alt="Logo Icon"
             className="w-auto h-auto"
             priority
           />
           <Link
             href="/"
-            className="btn btn-ghost text-xl text-white hover:bg-purple-600/20"
+            className="btn btn-ghost text-xl font-bold text-base-content hover:bg-base-200"
           >
-            <Rocket className="w-6 h-6 mr-2 text-purple-400" />
             Cosmic Journal
           </Link>
         </div>
-        <div className="navbar-center hidden md:block">
-          <ul className="menu menu-horizontal px-1">
-            <HeaderLinks />
-          </ul>
-        </div>
-        <div className="navbar-end hidden lg:flex justify-end">
-          <div className="flex justify-center items-center gap-4 mr-2">
-            <div className="animate-pulse bg-purple-300/20 h-8 w-20 rounded"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="hidden md:navbar bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 border-b border-purple-500/20 relative overflow-hidden">
-      {/* Animated stars background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-4 left-1/4 w-1 h-1 bg-yellow-300 rounded-full animate-pulse"></div>
-        <div
-          className="absolute top-8 right-1/3 w-1 h-1 bg-blue-300 rounded-full animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute top-12 left-2/3 w-1 h-1 bg-purple-300 rounded-full animate-pulse"
-          style={{ animationDelay: "2s" }}
-        ></div>
-        <div
-          className="absolute top-6 left-1/2 w-1 h-1 bg-white rounded-full animate-pulse"
-          style={{ animationDelay: "0.5s" }}
-        ></div>
       </div>
 
-      <div className="navbar-start relative z-10">
-        <Image
-          src="/icon.png"
-          height={50}
-          width={50}
-          alt="Logo Icon"
-          className="w-auto h-auto"
-          priority
-        />
-        <Link
-          href="/"
-          className="btn btn-ghost text-xl text-white hover:bg-purple-600/20 transition-all duration-300 rounded-full"
-        >
-          Cosmic Journal
-        </Link>
-      </div>
-      {/* <div className="navbar-center hidden md:block">
-        <ul className="menu menu-horizontal px-1">
+      {/* Desktop Navigation */}
+      <div className="navbar-center hidden lg:block">
+        <ul className="menu menu-horizontal gap-2">
           <HeaderLinks />
         </ul>
-      </div> */}
+      </div>
 
-      <div className="navbar-end hidden lg:flex justify-end relative z-10">
+      {/* Desktop Right Section */}
+      <div className="navbar-end hidden lg:flex items-center gap-4">
+        <ThemeToggle />
         {user ? (
-          <div className="flex items-center gap-4 mr-4">
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-purple-200">
-                Welcome, {user.name || user.email || "User"}
-              </span>
-              <Link
-                href="/dashboard"
-                data-name="profile"
-                aria-label="This link will take you to your profile"
-                className="hover:bg-purple-600/20 p-2 rounded-lg transition-all duration-300"
-              >
-                <CircleUser size={32} className="text-purple-300" />
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="flex justify-center items-center gap-4 mr-2">
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-base-content/70">
+              Welcome, {user.name || user.email || "User"}
+            </span>
             <Link
-              href="/login"
-              className="btn btn-ghost text-white hover:bg-purple-600/20 transition-all duration-300"
+              href="/dashboard"
+              className="btn btn-ghost btn-circle hover:bg-base-200"
+              aria-label="Go to dashboard"
             >
-              <Star className="w-4 h-4 mr-2" />
-              Sign In
+              <CircleUser size={24} className="text-base-content" />
             </Link>
           </div>
+        ) : (
+          <Link href="/login" className="btn btn-primary btn-sm">
+            <Star className="w-4 h-4 mr-2" />
+            Sign In
+          </Link>
         )}
       </div>
-    </div>
+
+      {/* Mobile Menu Button */}
+      <div className="navbar-end lg:hidden">
+        <button
+          onClick={toggleMobileMenu}
+          className="btn btn-ghost btn-circle"
+          aria-label="Toggle mobile menu"
+        >
+          {isMobileMenuOpen ? (
+            <X size={24} className="text-base-content" />
+          ) : (
+            <Menu size={24} className="text-base-content" />
+          )}
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 bg-black/90 z-50 lg:hidden">
+          <div className="fixed top-0 right-0 w-80 h-full bg-base-100 shadow-2xl p-6 ">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold text-base-content">Menu</h3>
+              <button
+                onClick={toggleMobileMenu}
+                className="btn btn-ghost btn-circle btn-sm"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Mobile Navigation */}
+            <nav className="mb-6">
+              <ul className="menu menu-vertical gap-2">
+                <HeaderLinks />
+              </ul>
+            </nav>
+
+            {/* Mobile Actions */}
+            <div className="space-y-4">
+              <ThemeToggle />
+              {user ? (
+                <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
+                  <CircleUser size={20} className="text-base-content" />
+                  <span className="text-sm text-base-content">
+                    {user.name || user.email || "User"}
+                  </span>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={toggleMobileMenu}
+                  className="btn btn-primary w-full"
+                >
+                  <Star className="w-4 h-4 mr-2" />
+                  Sign In
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
   );
 };
 

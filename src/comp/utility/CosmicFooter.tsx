@@ -1,55 +1,59 @@
 import React from "react";
 import Link from "next/link";
-import { Rocket, Moon, Heart, Github, Twitter, Mail } from "lucide-react";
+import {
+  Rocket,
+  Moon,
+  Heart,
+  Github,
+  Twitter,
+  Mail,
+  Home,
+  BookOpen,
+  Target,
+  Bookmark,
+  Settings,
+  HelpCircle,
+  Phone,
+  Shield,
+} from "lucide-react";
 
 const CosmicFooter: React.FC = () => {
   return (
-    <footer className="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 border-t border-purple-500/20 relative overflow-hidden">
-      {/* Animated stars background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-4 left-1/4 w-1 h-1 bg-yellow-300 rounded-full animate-pulse"></div>
-        <div
-          className="absolute top-8 right-1/3 w-1 h-1 bg-blue-300 rounded-full animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute top-12 left-2/3 w-1 h-1 bg-purple-300 rounded-full animate-pulse"
-          style={{ animationDelay: "2s" }}
-        ></div>
-        <div
-          className="absolute top-6 left-1/2 w-1 h-1 bg-white rounded-full animate-pulse"
-          style={{ animationDelay: "0.5s" }}
-        ></div>
-      </div>
-
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="grid md:grid-cols-4 gap-8">
+    <footer className="bg-base-200 border-t border-base-300 mt-auto">
+      <div className="container mx-auto px-4 py-12">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
-          <div className="md:col-span-2">
+          <div className="lg:col-span-2">
             <div className="flex items-center mb-4">
-              <Rocket className="w-8 h-8 mr-3 text-purple-400" />
-              <h3 className="text-2xl font-bold text-white">Cosmic Journal</h3>
+              <Rocket className="w-8 h-8 mr-3 text-primary" />
+              <h3 className="text-2xl font-bold text-base-content">
+                Cosmic Journal
+              </h3>
             </div>
-            <p className="text-purple-200 mb-4 max-w-md">
+            <p className="text-base-content/70 mb-6 max-w-md">
               Track your habits and journal your journey through the cosmos.
               Build consistency, explore your thoughts, and reach for the stars.
             </p>
             <div className="flex space-x-4">
               <Link
                 href="#"
-                className="text-purple-300 hover:text-white transition-colors"
+                className="btn btn-ghost btn-circle btn-sm hover:bg-base-300"
+                aria-label="GitHub"
               >
                 <Github className="w-5 h-5" />
               </Link>
               <Link
                 href="#"
-                className="text-purple-300 hover:text-white transition-colors"
+                className="btn btn-ghost btn-circle btn-sm hover:bg-base-300"
+                aria-label="Twitter"
               >
                 <Twitter className="w-5 h-5" />
               </Link>
               <Link
                 href="#"
-                className="text-purple-300 hover:text-white transition-colors"
+                className="btn btn-ghost btn-circle btn-sm hover:bg-base-300"
+                aria-label="Email"
               >
                 <Mail className="w-5 h-5" />
               </Link>
@@ -58,39 +62,43 @@ const CosmicFooter: React.FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold text-white mb-4">
+            <h4 className="text-lg font-semibold text-base-content mb-4">
               Quick Links
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               <li>
                 <Link
                   href="/dashboard"
-                  className="text-purple-200 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
                 >
+                  <Home className="w-4 h-4 group-hover:text-primary" />
                   Dashboard
                 </Link>
               </li>
               <li>
                 <Link
                   href="/journal"
-                  className="text-purple-200 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
                 >
+                  <BookOpen className="w-4 h-4 group-hover:text-primary" />
                   Journal
                 </Link>
               </li>
               <li>
                 <Link
                   href="/habits"
-                  className="text-purple-200 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
                 >
+                  <Target className="w-4 h-4 group-hover:text-primary" />
                   Habits
                 </Link>
               </li>
               <li>
                 <Link
                   href="/bookmarks"
-                  className="text-purple-200 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
                 >
+                  <Bookmark className="w-4 h-4 group-hover:text-primary" />
                   Bookmarks
                 </Link>
               </li>
@@ -99,37 +107,43 @@ const CosmicFooter: React.FC = () => {
 
           {/* Support */}
           <div>
-            <h4 className="text-lg font-semibold text-white mb-4">Support</h4>
-            <ul className="space-y-2">
+            <h4 className="text-lg font-semibold text-base-content mb-4">
+              Support
+            </h4>
+            <ul className="space-y-3">
               <li>
                 <Link
                   href="/settings"
-                  className="text-purple-200 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
                 >
+                  <Settings className="w-4 h-4 group-hover:text-primary" />
                   Settings
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-purple-200 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
                 >
+                  <HelpCircle className="w-4 h-4 group-hover:text-primary" />
                   Help Center
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-purple-200 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
                 >
+                  <Phone className="w-4 h-4 group-hover:text-primary" />
                   Contact Us
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-purple-200 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
                 >
+                  <Shield className="w-4 h-4 group-hover:text-primary" />
                   Privacy Policy
                 </Link>
               </li>
@@ -138,15 +152,15 @@ const CosmicFooter: React.FC = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-purple-500/20 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center text-purple-200 mb-4 md:mb-0">
+        <div className="border-t border-base-300 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center text-base-content/70">
               <Moon className="w-4 h-4 mr-2" />
               <span>© 2024 Cosmic Journal. All rights reserved.</span>
             </div>
-            <div className="flex items-center text-purple-200">
+            <div className="flex items-center text-base-content/70">
               <span className="mr-2">Made with</span>
-              <Heart className="w-4 h-4 text-red-400 animate-pulse" />
+              <Heart className="w-4 h-4 text-error animate-pulse" />
               <span className="ml-2">for cosmic explorers</span>
             </div>
           </div>

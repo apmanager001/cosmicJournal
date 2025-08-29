@@ -163,7 +163,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
   if (isLoading) {
     return (
-      <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
+      <div className={`customContainer p-6 ${className}`}>
         <div className="animate-pulse space-y-4">
           <div className="h-4 bg-gray-200 rounded w-1/4"></div>
           <div className="space-y-3">
@@ -177,7 +177,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
+    <div className={`customContainer p-6 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -185,10 +185,10 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
             <Calendar className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold">
               {isToday ? "Today's Journal" : formatDate(date)}
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-400">
               {isToday ? "Reflect on your day" : "Journal entry for this date"}
             </p>
           </div>
@@ -209,7 +209,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* What I Did Today */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium mb-2">
             What did I do today?
           </label>
           <textarea
@@ -231,7 +231,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
         {/* What I Learned Today */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium  mb-2">
             What did I learn today?
           </label>
           <textarea
@@ -253,7 +253,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
         {/* Mood Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium  mb-2">
             How are you feeling today?
           </label>
           <select
@@ -289,7 +289,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
         {/* Additional Notes */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium mb-2">
             Additional notes
           </label>
           <textarea
@@ -311,7 +311,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
         {/* Bookmark Toggle */}
         <div className="flex items-center justify-between">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium ">
             Bookmark this entry
           </label>
           <button

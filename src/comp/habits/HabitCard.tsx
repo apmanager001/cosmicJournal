@@ -126,7 +126,7 @@ export default function HabitCard({
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-lg p-6 ${className}`}>
+    <div className={`customContainer p-6 ${className}`}>
       {/* Habit Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
@@ -136,14 +136,14 @@ export default function HabitCard({
                 {habit.habit.icon || "🎯"}
               </span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold ">
               {habit.habit.name}
             </h3>
           </div>
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="text-sm text-gray-400 mb-2">
             {habit.personalDescription}
           </p>
-          <div className="flex items-center gap-4 text-xs text-gray-500">
+          <div className="flex items-center gap-4 text-xs text-gray-400">
             <span
               className={`px-2 py-1 rounded-full ${
                 habit.streakType === "daily"

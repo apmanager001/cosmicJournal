@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { NotebookPen, NotebookText } from "lucide-react";
+import { NotebookPen, NotebookText, MoveRight } from "lucide-react";
 import {
   useUserHabits,
   useTodayJournalEntry,
@@ -81,7 +81,7 @@ function HabitRow({
 
   return (
     <>
-      <div className="flex flex-col md:flex-row items-center space-x-4 p-4 bg-base-300/50 rounded-lg hover:bg-base-300/70 transition-colors">
+      <div className="flex flex-col md:flex-row items-center gap-4 p-4 bg-base-300/50 rounded-lg hover:bg-base-300/70 transition-colors">
         <span className="text-3xl flex-shrink-0">{habit.habit.icon}</span>
         <div className="flex-1 min-w-0">
           <h4 className="font-semibold text-base-content truncate text-lg">
@@ -91,7 +91,7 @@ function HabitRow({
             {habit.habit.category}
           </p>
         </div>
-        <div className="flex space-x-3 items-center">
+        <div className="flex flex-wrap gap-3 items-center justify-center md:justify-start">
           {weekDates.map((date) => {
             const isCompleted = isHabitCompletedOnDate(
               habit,
@@ -100,7 +100,6 @@ function HabitRow({
             );
             const isTodayDate = isToday(date);
             const hasNote = getExistingNote(date).length > 0;
-
             return (
               <div
                 key={date.toISOString()}
@@ -115,8 +114,8 @@ function HabitRow({
                     w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200
                     ${
                       isCompleted
-                        ? "bg-success hover:bg-success-focus text-success-content shadow-lg"
-                        : "bg-base-200 hover:bg-base-300 text-base-content border border-base-content/20"
+                        ? "bg-success hover:bg-success-focus text-success-content shadow-lg "
+                        : "bg-base-200 hover:bg-base-300 text-base-content border border-base-content/20 cursor-pointer"
                     }
                     disabled:opacity-50 disabled:cursor-not-allowed
                     hover:scale-110 active:scale-95
@@ -198,9 +197,9 @@ function HabitRow({
                     //     clipRule="evenodd"
                     //   />
                     // </svg>
-                    <NotebookText className="w-4 h-4" />
+                    <NotebookText className="w-4 h-4 cursor-pointer" />
                   ) : (
-                    <NotebookPen className="w-4 h-4" />
+                    <NotebookPen className="w-4 h-4 cursor-pointer" />
                   )}
                 </button>
               </div>
@@ -264,23 +263,26 @@ export default function WeeklyCalendar({
   // Get today's date in YYYY-MM-DD format using user's timezone
   const today = useMemo(() => {
     const now = new Date();
-    const localDate = new Date(
-      now.toLocaleString("en-US", { timeZone: userTimezone })
-    );
-
-    const year = localDate.getFullYear();
-    const month = String(localDate.getMonth() + 1).padStart(2, "0");
-    const day = String(localDate.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
+    // Use Intl.DateTimeFormat for more reliable timezone handling
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: userTimezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    return formatter.format(now);
   }, [userTimezone]);
 
   // Check if a date is today using user's timezone
   const isToday = (date: Date) => {
-    const inputDateLocal = new Date(
-      date.toLocaleString("en-US", { timeZone: userTimezone })
-    );
-    const inputDateStr = inputDateLocal.toISOString().split("T")[0];
+    // Use Intl.DateTimeFormat for more reliable timezone handling
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: userTimezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const inputDateStr = formatter.format(date);
     return inputDateStr === today;
   };
 
@@ -294,10 +296,12 @@ export default function WeeklyCalendar({
 
   // Get date number
   const getDateNumber = (date: Date) => {
-    const localDate = new Date(
-      date.toLocaleString("en-US", { timeZone: userTimezone })
-    );
-    return localDate.getDate();
+    // Use Intl.DateTimeFormat for more reliable timezone handling
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: userTimezone,
+      day: "numeric",
+    });
+    return parseInt(formatter.format(date));
   };
 
   // Check if a habit was completed on a specific date
@@ -347,9 +351,10 @@ export default function WeeklyCalendar({
   };
 
   return (
-    <div
-      className={`bg-white/10 backdrop-blur-sm rounded-xl shadow-lg border border-primary/20 pt-4 md:p-6 ${className}`}
-    >
+    // <div
+    //   className={`bg-white/10 backdrop-blur-sm rounded-xl shadow-lg border border-primary/20 pt-4 md:p-6 ${className}`}
+    // >
+    <div className={`customContainer pt-4 md:p-6 ${className}`}>
       <div className="flex items-center justify-between mb-6 mx-4 md:mx-0">
         <div>
           <h2 className="text-xl font-semibold text-base-content">
@@ -361,14 +366,14 @@ export default function WeeklyCalendar({
         </div>
         <Link
           href="/habits"
-          className="text-primary hover:text-primary-focus text-sm font-medium"
+          className="text-primary hover:text-primary-focus text-sm font-medium flex items-center gap-2"
         >
-          View All →
+          Manage Habits <MoveRight />
         </Link>
       </div>
 
       {/* Week Header with Navigation */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 bg-base-300/50 rounded-lg p-2">
         <button
           onClick={goToPreviousWeek}
           className="md:p-2 rounded-full hover:bg-base-300 transition-colors"
