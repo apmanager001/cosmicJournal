@@ -39,8 +39,8 @@ export default function ConfirmEmailChangePage({
           const payload = JSON.parse(atob(token.split(".")[1]));
           setOldEmail(payload.email || "your previous email");
           setNewEmail(payload.newEmail || "your new email");
-        } catch (e) {
-          console.log("Could not parse token payload");
+        } catch (parseError) {
+          console.log("Could not parse token payload:", parseError);
         }
 
         // Confirm the email change with PocketBase
@@ -48,10 +48,14 @@ export default function ConfirmEmailChangePage({
         try {
           // Method 1: Try confirmEmailChange with token and empty password
           await pb.collection("users").confirmEmailChange(token, "");
-        } catch (confirmError: any) {
+        } catch (confirmError: unknown) {
+          const error = confirmError as {
+            response?: { data?: unknown };
+            status?: number;
+          };
           console.log("Method 1 (confirmEmailChange) failed:", confirmError);
-          console.log("Error details:", confirmError.response?.data);
-          console.log("Error status:", confirmError.status);
+          console.log("Error details:", error.response?.data);
+          console.log("Error status:", error.status);
 
           try {
             // Method 2: Try using the token directly in an update operation
@@ -63,9 +67,13 @@ export default function ConfirmEmailChangePage({
             await pb.collection("users").update(decodedToken.id, {
               email: decodedToken.newEmail,
             });
-          } catch (updateError: any) {
+          } catch (updateError: unknown) {
+            const error = updateError as {
+              response?: { data?: unknown };
+              status?: number;
+            };
             console.log("Method 2 (direct update) failed:", updateError);
-            console.log("Update error details:", updateError.response?.data);
+            console.log("Update error details:", error.response?.data);
             throw new Error(
               "Email change confirmation failed. Please check the console for details and try again from the settings page."
             );
@@ -77,15 +85,16 @@ export default function ConfirmEmailChangePage({
 
         // Refresh auth to get the new email
         await pb.collection("users").authRefresh();
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorObj = error as { status?: number };
         console.error("Email change confirmation error:", error);
         setStatus("error");
 
-        if (error.status === 400) {
+        if (errorObj.status === 400) {
           setMessage(
             "The confirmation link has expired or is invalid. Please request a new email change."
           );
-        } else if (error.status === 404) {
+        } else if (errorObj.status === 404) {
           setMessage("User not found. Please make sure you're logged in.");
         } else {
           setMessage(
@@ -100,7 +109,7 @@ export default function ConfirmEmailChangePage({
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <h1 className="text-2xl font-bold text-white mb-2">
@@ -115,7 +124,7 @@ export default function ConfirmEmailChangePage({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
       <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full text-center">
         {status === "success" ? (
           <>

@@ -128,8 +128,9 @@ export const authService = {
         if (existingUser && existingUser.id !== pb.authStore.model.id) {
           throw new Error("This email is already in use by another user");
         }
-      } catch (checkError: any) {
-        if (checkError.status === 404) {
+      } catch (checkError: unknown) {
+        const error = checkError as { status?: number };
+        if (error.status === 404) {
           // Email doesn't exist, which is good
           console.log("Email availability check passed");
         } else {
@@ -144,7 +145,7 @@ export const authService = {
         success: true,
         message: `Email change requested. Please check your email at ${sanitizedEmail} and click the confirmation link to complete the change.`,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Email update error details:", error);
       throw error;
     }
