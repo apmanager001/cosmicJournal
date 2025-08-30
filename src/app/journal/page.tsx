@@ -181,11 +181,11 @@ function JournalContent() {
   return (
       <div className="container mx-auto px-4 py-8 flex flex-col gap-4">
         {/* Header */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-6 mb-8 border border-purple-200/50">
+        <div className="customContainer backdrop-blur-sm rounded-lg shadow-lg p-6 mb-8 border border-purple-200/50">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Journal</h1>
-              <p className="text-gray-600">
+              <h1 className="text-3xl font-bold ">Journal</h1>
+              <p className="text-gray-400">
                 Reflect on your day and track your personal growth
               </p>
             </div>
@@ -203,11 +203,11 @@ function JournalContent() {
         />
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Calendar and Stats */}
-          <div className="w-full lg:w-96 lg:flex-shrink-0 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-purple-200/50">
+          <div className="w-full lg:w-96 lg:flex-shrink-0 customContainer backdrop-blur-sm rounded-lg shadow-lg p-6 border border-purple-200/50">
             <div className="flex flex-col gap-6">
               {/* Journal Calendar Title - Its own row */}
               <div className="text-center lg:text-left">
-                <h3 className="text-xl font-semibold text-gray-900">
+                <h3 className="text-xl font-semibold ">
                   Journal Calendar
                 </h3>
               </div>
@@ -252,11 +252,11 @@ function JournalContent() {
               <div className="flex items-center justify-center gap-4 mb-4">
                 <button
                   onClick={goToPreviousMonth}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 btn btn-ghost rounded-lg transition-colors"
                   title="Previous Month"
                 >
                   <svg
-                    className="w-5 h-5 text-gray-600"
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -271,12 +271,12 @@ function JournalContent() {
                 </button>
 
                 <div className="flex items-center gap-2">
-                  <h4 className="text-base lg:text-lg font-semibold text-gray-900">
+                  <h4 className="text-base lg:text-lg font-semibold">
                     {formatMonthYear(currentDate)}
                   </h4>
                   <button
                     onClick={goToCurrentMonth}
-                    className="px-2 lg:px-3 py-1 text-xs lg:text-sm bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
+                    className="cursor-pointer px-2 lg:px-3 py-1 text-xs lg:text-sm bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
                     title="Go to Current Month"
                   >
                     Today
@@ -285,11 +285,11 @@ function JournalContent() {
 
                 <button
                   onClick={goToNextMonth}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 btn btn-ghost rounded-lg transition-colors"
                   title="Next Month"
                 >
                   <svg
-                    className="w-5 h-5 text-gray-600"
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -361,7 +361,7 @@ function JournalContent() {
           </div>
 
           {/* New Journal Entry Form - Separate section */}
-          <div className="flex-1 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-purple-200/50">
+          <div className="flex-1 customContainer">
             <JournalEntryForm />
           </div>
         </div>
@@ -371,7 +371,7 @@ function JournalContent() {
             filteredEntries.map((entry) => (
               <div
                 key={entry.id}
-                className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4 lg:p-6 border border-purple-200/50 border-l-4"
+                className="customContainer backdrop-blur-sm rounded-lg shadow-lg p-4 lg:p-6 border border-purple-200/50 border-l-4"
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
                   <div className="flex items-center gap-3">
@@ -379,11 +379,11 @@ function JournalContent() {
                       {entry.mood ? getMoodEmoji(entry.mood) : "📝"}
                     </div>
                     <div>
-                      <h3 className="text-base lg:text-lg font-semibold text-gray-900">
+                      <h3 className="text-base lg:text-lg font-semibold ">
                         {formatDateLong(entry.date)}
                       </h3>
                       {entry.mood && (
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm">
                           Mood: {entry.mood}
                         </p>
                       )}
@@ -395,7 +395,7 @@ function JournalContent() {
                     )}
                     <Link
                       href={`/journal/edit/${entry.id}`}
-                      className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                      className="p-2 transition-colors"
                       title="Edit entry"
                     >
                       <Edit className="w-5 h-5" />
@@ -405,7 +405,7 @@ function JournalContent() {
 
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-2 text-sm lg:text-base">
+                    <h4 className="font-medium mb-2 text-sm lg:text-base">
                       What I Did Today
                     </h4>
                     <p className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm lg:text-base">
@@ -414,7 +414,7 @@ function JournalContent() {
                   </div>
 
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-2 text-sm lg:text-base">
+                    <h4 className="font-medium mb-2 text-sm lg:text-base">
                       What I Learned Today
                     </h4>
                     <p className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm lg:text-base">
@@ -424,7 +424,7 @@ function JournalContent() {
 
                   {entry.additionalNotes && (
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-2 text-sm lg:text-base">
+                      <h4 className="font-medium  mb-2 text-sm lg:text-base">
                         Additional Notes
                       </h4>
                       <p className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm lg:text-base">

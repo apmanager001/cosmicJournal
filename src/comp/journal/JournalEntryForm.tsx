@@ -177,7 +177,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
   }
 
   return (
-    <div className={`customContainer p-6 ${className}`}>
+    <div className={`p-6 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -188,7 +188,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
             <h3 className="text-lg font-semibold">
               {isToday ? "Today's Journal" : formatDate(date)}
             </h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm">
               {isToday ? "Reflect on your day" : "Journal entry for this date"}
             </p>
           </div>

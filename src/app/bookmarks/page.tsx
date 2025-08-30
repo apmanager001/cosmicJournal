@@ -41,7 +41,7 @@ function BookmarksContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen">
         <div className="container mx-auto px-4 py-8">
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-gray-200 rounded w-1/3"></div>
@@ -57,20 +57,20 @@ function BookmarksContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen ">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="customContainer rounded-lg shadow-lg p-6 mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Bookmark className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-3xl font-bold ">
                   Bookmarked Entries
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-gray-400">
                   Your favorite journal entries and reflections
                 </p>
               </div>
@@ -108,7 +108,7 @@ function BookmarksContent() {
         {bookmarkedEntries && bookmarkedEntries.length > 0 ? (
           <div className="space-y-6">
             {bookmarkedEntries.map((entry) => (
-              <div key={entry.id} className="bg-white rounded-lg shadow-lg p-6">
+              <div key={entry.id} className="customContainer rounded-lg shadow-lg p-6">
                 {/* Entry Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -116,13 +116,13 @@ function BookmarksContent() {
                       <Calendar className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-lg font-semibold">
                         {formatDate(entry.date)}
                       </h3>
                       {entry.mood && (
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-2xl">{entry.mood}</span>
-                          <span className="text-sm text-gray-600">Mood</span>
+                          <span className="text-sm text-gray-400">Mood</span>
                         </div>
                       )}
                     </div>
@@ -150,7 +150,7 @@ function BookmarksContent() {
                 {/* Entry Content */}
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-2">
+                    <h4 className="font-medium mb-2">
                       What I did today:
                     </h4>
                     <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
@@ -159,7 +159,7 @@ function BookmarksContent() {
                   </div>
 
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-2">
+                    <h4 className="font-medium mb-2">
                       What I learned today:
                     </h4>
                     <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
@@ -169,7 +169,7 @@ function BookmarksContent() {
 
                   {entry.additionalNotes && (
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-2">
+                      <h4 className="font-medium mb-2">
                         Additional notes:
                       </h4>
                       <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
@@ -191,14 +191,14 @@ function BookmarksContent() {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
+          <div className="customContainer rounded-lg shadow-lg p-12 text-center">
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Bookmark className="w-10 h-10 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-xl font-semibold  mb-2">
               No bookmarked entries yet
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-400 mb-6">
               Start journaling and bookmark your favorite entries to see them
               here
             </p>

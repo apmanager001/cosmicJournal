@@ -270,7 +270,7 @@ function DashboardContent() {
           </div>
 
           {/* Today's Journal */}
-          <div className={`flex-1 mb-8`}>
+          <div className={`flex-1 mb-8 customContainer`}>
             <JournalEntryForm />
           </div>
         </div>
