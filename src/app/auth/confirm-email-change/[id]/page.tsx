@@ -9,22 +9,51 @@ export default function ConfirmEmailChangePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const [status, setStatus] = useState<"loading" | "success" | "error">(
-    "loading"
-  );
+  const [status, setStatus] = useState<
+    "loading" | "password" | "success" | "error"
+  >("loading");
   const [message, setMessage] = useState("");
   const [oldEmail, setOldEmail] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Unwrap the params Promise
   const resolvedParams = use(params);
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!password.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      const token = resolvedParams.id;
+      console.log("Attempting to confirm verification with token:", token);
+
+      // Use confirmVerification with the provided password
+      await pb.collection("users").confirmEmailChange(token, password);
+      console.log("Email verification successful via confirmVerification");
+
+      setStatus("success");
+      setMessage("Your email has been successfully updated!");
+
+      // Refresh auth to get the new email
+      await pb.collection("users").authRefresh();
+    } catch (error: unknown) {
+      console.log("confirmVerification failed:", error);
+      setStatus("error");
+      setMessage(
+        "Email change confirmation failed. Please check your password and try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const confirmEmailChange = async () => {
       try {
         const token = resolvedParams.id;
-
-        console.log("token", token);
 
         if (!token) {
           setStatus("error");
@@ -44,61 +73,63 @@ export default function ConfirmEmailChangePage({
         }
 
         // Confirm the email change with PocketBase
-        // Based on PocketBase logs, confirmEmailChange requires a password
-        // and direct update hits validation rules. Let's use a different approach.
+        // The token contains the necessary information to confirm the email change
+        // We need to use the correct method for email change confirmation
+
+        // Check if user is currently authenticated
+        const isAuthenticated = pb.authStore.isValid;
+        console.log("User authenticated:", isAuthenticated);
 
         try {
-          // Decode the JWT token to get user info
+          // Decode the JWT token to get user info for display purposes
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
           console.log("Decoded token:", decodedToken);
 
-          // Method: Use the admin collection update method which bypasses validation rules
-          // This is the most reliable way to update user emails in PocketBase
-          if (decodedToken.id) {
-            await pb.collection("users").update(decodedToken.id, {
-              email: decodedToken.newEmail,
-              // Include other required fields to prevent validation issues
-              name: decodedToken.name || "User",
-              verified: true, // Mark as verified since they confirmed the email
-              emailVisibility: true,
-            });
-            console.log("Email update successful via admin update method");
-          } else {
-            throw new Error("Invalid token: missing user ID");
+          // The token from requestEmailChange should work with confirmEmailChange
+          // However, if that fails, we'll need to handle it differently
+          try {
+            // Try the standard confirmEmailChange method first
+            // Note: This method requires the user to be authenticated and provide their current password
+            const sessionUser = pb.authStore.model;
+            const decoded = JSON.parse(atob(token.split(".")[1]));
+            if (
+              !sessionUser ||
+              sessionUser.id !== decoded.id ||
+              sessionUser.email !== decoded.email
+            ) {
+              throw new Error(
+                "Email change confirmation requires you to be logged in as the original account. Please log in with your current email and try again."
+              );
+            }
+
+            // We need the user's password to confirm the email change
+            // Set status to password to show the password input form
+            setStatus("password");
+            return;
+          } catch (error: unknown) {
+            console.log("Email change confirmation failed:", error);
+
+            // Handle the error based on its type
+            if (error instanceof Error) {
+              throw error; // Re-throw our custom error messages
+            } else {
+              // For unexpected errors, provide a general message
+              throw new Error(
+                "Email change confirmation failed. This could be due to:\n" +
+                  "1. The confirmation link has expired\n" +
+                  "2. The confirmation link is invalid\n" +
+                  "3. A technical issue with the confirmation process\n\n" +
+                  "Please request a new email change from the settings page."
+              );
+            }
           }
-        } catch (updateError: unknown) {
-          const error = updateError as {
+        } catch (error: unknown) {
+          const errorObj = error as {
             response?: { data?: unknown };
             status?: number;
+            message?: string;
           };
-          console.log("Email update failed:", updateError);
-          console.log("Error details:", error.response?.data);
-          console.log("Error status:", error.status);
-
-          // If admin update fails, try the standard confirmEmailChange with a placeholder password
-          try {
-            console.log(
-              "Trying confirmEmailChange with placeholder password..."
-            );
-            await pb
-              .collection("users")
-              .confirmEmailChange(token, "placeholder_password_123");
-            console.log("Email update successful via confirmEmailChange");
-          } catch (confirmError: unknown) {
-            const confirmErrorObj = confirmError as {
-              response?: { data?: unknown };
-              status?: number;
-            };
-            console.log("confirmEmailChange also failed:", confirmError);
-            console.log(
-              "Confirm error details:",
-              confirmErrorObj.response?.data
-            );
-
-            throw new Error(
-              "Email change confirmation failed. Please check the console for details and try again from the settings page."
-            );
-          }
+          throw error;
         }
 
         setStatus("success");
@@ -130,7 +161,7 @@ export default function ConfirmEmailChangePage({
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <h1 className="text-2xl font-bold text-white mb-2">
@@ -144,8 +175,68 @@ export default function ConfirmEmailChangePage({
     );
   }
 
+  if (status === "password") {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg
+              className="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+              />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Enter Your Password
+          </h1>
+          <p className="text-white/80 mb-6">
+            To confirm your email change from{" "}
+            <span className="font-semibold">{oldEmail}</span> to{" "}
+            <span className="font-semibold">{newEmail}</span>, please enter your
+            current password.
+          </p>
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting || !password.trim()}
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? "Confirming..." : "Confirm Email Change"}
+            </button>
+          </form>
+          <div className="mt-6">
+            <Link
+              href="/settings"
+              className="text-white/60 hover:text-white text-sm underline"
+            >
+              Back to Settings
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full text-center">
         {status === "success" ? (
           <>
@@ -174,6 +265,7 @@ export default function ConfirmEmailChangePage({
             </p>
             <p className="text-white/60 text-sm mb-8">
               You can now use your new email address to log in to your account.
+              Please log out and log back in with your new email address.
             </p>
             <Link
               href="/settings"
@@ -218,6 +310,26 @@ export default function ConfirmEmailChangePage({
                   Try requesting email change again
                 </Link>
               </div>
+              {message.includes("authentication") && (
+                <div className="text-center mt-4">
+                  <Link
+                    href="/login"
+                    className="text-white/60 hover:text-white text-sm underline"
+                  >
+                    Log in to your account
+                  </Link>
+                </div>
+              )}
+              {message.includes("password") && (
+                <div className="text-center mt-4">
+                  <Link
+                    href="/settings"
+                    className="text-white/60 hover:text-white text-sm underline"
+                  >
+                    Go to Settings to change email
+                  </Link>
+                </div>
+              )}
             </div>
           </>
         )}

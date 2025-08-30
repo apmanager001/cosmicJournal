@@ -126,6 +126,11 @@ const EmailSettings = () => {
             {getVerificationBadge()}
           </div>
         )}
+        {user?.verified && (
+            <>
+            {getVerificationBadge()}
+            </>
+        )}
       </div>
 
       {/* Email Editing */}

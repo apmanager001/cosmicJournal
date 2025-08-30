@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../utility/tanstack/authContext";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
@@ -10,8 +11,16 @@ const LoginForm: React.FC = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, user } = useAuth();
+
+  // Redirect to dashboard on successful login
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
