@@ -148,7 +148,7 @@ function DashboardContent() {
 
         <div className="flex flex-col md:flex-row gap-4">
           {/* Quick Actions */}
-          <div className={`flex-1 customContainer p-6 mb-8`}>
+          <div className={`flex-1 customContainer p-6 mb-8 hidden md:block`}>
             <h2 className="text-xl font-semibold text-base-content mb-4">
               Quick Actions
             </h2>

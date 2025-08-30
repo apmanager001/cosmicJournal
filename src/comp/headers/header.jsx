@@ -122,12 +122,15 @@ const Header = () => {
             <div className="space-y-4">
               <ThemeToggle />
               {user ? (
-                <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-3 p-3 bg-base-200 rounded-lg"
+                >
                   <CircleUser size={20} className="text-base-content" />
                   <span className="text-sm text-base-content">
                     {user.name || user.email || "User"}
                   </span>
-                </div>
+                </Link>
               ) : (
                 <Link
                   href="/login"

@@ -1,7 +1,7 @@
 "use client";
 import ProtectedRoute from "@/comp/utility/tanstack/ProtectedRoute";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
-
+import EmailSettings from "./comp/email";
 import {
   useNotificationSettings,
   useUpdateNotificationSettings,
@@ -306,10 +306,7 @@ function SettingsContent() {
 
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
-                <div>
-                  <h3 className="font-medium">Email</h3>
-                  <p className="text-sm text-gray-400">{user?.email}</p>
-                </div>
+               <EmailSettings />
               </div>
 
               <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">

@@ -16,6 +16,8 @@ interface AuthContextType {
   ) => Promise<void>;
   logout: () => void;
   refreshUser: () => void;
+  requestEmailVerification: (email: string) => Promise<void>;
+  updateUserEmail: (newEmail: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -106,6 +108,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUserEmail = async (newEmail: string) => {
+    try {
+      await authService.updateEmail(newEmail);
+      console.log("User email updated to:", newEmail);
+      // Refresh user to ensure new email is reflected
+      await refreshUser();
+    } catch (error) {
+      console.error("Failed to update user email:", error);
+      throw error;
+    }
+  };
+
+  const requestEmailVerification = async (email: string) => {
+    try {
+      await authService.requestVerification(email);
+      console.log("Email verification requested for:", email);
+    } catch (error) {
+      console.error("Failed to request email verification:", error);
+      throw error;
+    }
+  };
+
   const value: AuthContextType = {
     user,
     isLoading,
@@ -114,6 +138,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     logout,
     refreshUser,
+    requestEmailVerification,
+    updateUserEmail,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
