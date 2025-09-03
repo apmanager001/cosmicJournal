@@ -7,7 +7,7 @@ import {
 } from "../utility/tanstack/habitHooks";
 import { useSubscription } from "../utility/tanstack/subscriptionContext";
 import { useAuth } from "../utility/tanstack/authContext";
-import { Calendar, Edit3, Save } from "lucide-react";
+import { Calendar, Save } from "lucide-react";
 
 interface JournalEntryFormProps {
   date?: string;
@@ -32,7 +32,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
     bookmarked: false,
   });
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
 
   const saveMutation = useSaveJournalEntry();
   const { data: existingEntry, isLoading } = useJournalEntry(date);
@@ -112,15 +112,10 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
         bookmarked: formData.bookmarked,
       });
 
-      setIsEditing(false);
       onSave?.();
     } catch {
       // Error handling is done in the mutation
     }
-  };
-
-  const handleEdit = () => {
-    setIsEditing(true);
   };
 
   const handleCancel = () => {
@@ -141,7 +136,6 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
         bookmarked: false,
       });
     }
-    setIsEditing(false);
   };
 
   const formatDate = (dateStr: string) => {
@@ -160,7 +154,6 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
     formData.additionalNotes.trim() ||
     formData.mood.trim();
   const isToday = date === new Date().toISOString().split("T")[0];
-
   if (isLoading) {
     return (
       <div className={`customContainer p-6 ${className}`}>
@@ -194,14 +187,10 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
           </div>
         </div>
 
-        {!isEditing && hasContent && (
-          <button
-            onClick={handleEdit}
-            className="flex items-center gap-2 px-3 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
-          >
-            <Edit3 className="w-4 h-4" />
-            Edit
-          </button>
+        {hasContent && (
+          <div className="text-sm text-green-600 font-medium">
+            ✓ Entry saved
+          </div>
         )}
       </div>
 
@@ -209,21 +198,18 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* What I Did Today */}
         <div>
-          <label className="block text-sm font-medium mb-2">
+          <label htmlFor="whatIDid" className="block text-sm font-medium mb-2">
             What did I do today?
           </label>
           <textarea
+            id="whatIDid"
             value={formData.whatIDid}
             onChange={(e) => handleChange("whatIDid", e.target.value)}
-            disabled={!isEditing}
+            disabled={false}
             rows={3}
             className={`
-              w-full p-3 border rounded-lg resize-none transition-colors
-              ${
-                isEditing
-                  ? "border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  : "border-gray-200 bg-gray-50"
-              }
+              w-full p-3 textarea textarea-primary rounded-lg resize-none
+          
             `}
             placeholder="Describe what you accomplished today..."
           />
@@ -231,21 +217,20 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
         {/* What I Learned Today */}
         <div>
-          <label className="block text-sm font-medium  mb-2">
+          <label
+            htmlFor="whatILearned"
+            className="block text-sm font-medium  mb-2"
+          >
             What did I learn today?
           </label>
           <textarea
+            id="whatILearned"
             value={formData.whatILearned}
             onChange={(e) => handleChange("whatILearned", e.target.value)}
-            disabled={!isEditing}
+            disabled={false}
             rows={3}
             className={`
-              w-full p-3 border rounded-lg resize-none transition-colors
-              ${
-                isEditing
-                  ? "border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  : "border-gray-200 bg-gray-50"
-              }
+              w-full p-3 rounded-lg resize-none textarea textarea-primary
             `}
             placeholder="Share something new you learned..."
           />
@@ -253,20 +238,16 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
         {/* Mood Selection */}
         <div>
-          <label className="block text-sm font-medium  mb-2">
+          <label htmlFor="mood" className="block text-sm font-medium  mb-2">
             How are you feeling today?
           </label>
           <select
+            id="mood"
             value={formData.mood}
             onChange={(e) => handleChange("mood", e.target.value)}
-            disabled={!isEditing}
+            disabled={false}
             className={`
-              w-full p-3 border rounded-lg transition-colors
-              ${
-                isEditing
-                  ? "border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  : "border-gray-200 bg-gray-50"
-              }
+              w-full select select-primary rounded-lg
             `}
           >
             <option value="">Select your mood...</option>
@@ -289,21 +270,20 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
         {/* Additional Notes */}
         <div>
-          <label className="block text-sm font-medium mb-2">
+          <label
+            htmlFor="additionalNotes"
+            className="block text-sm font-medium mb-2"
+          >
             Additional notes
           </label>
           <textarea
+            id="additionalNotes"
             value={formData.additionalNotes}
             onChange={(e) => handleChange("additionalNotes", e.target.value)}
-            disabled={!isEditing}
+            disabled={false}
             rows={3}
             className={`
-              w-full p-3 border rounded-lg resize-none transition-colors
-              ${
-                isEditing
-                  ? "border-blue-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  : "border-gray-200 bg-gray-50"
-              }
+              w-full p-3 textarea textarea-primary rounded-lg resize-none
             `}
             placeholder="Any other thoughts or reflections..."
           />
@@ -311,10 +291,11 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
         {/* Bookmark Toggle */}
         <div className="flex items-center justify-between">
-          <label className="block text-sm font-medium ">
+          <label htmlFor="bookmark" className="block text-sm font-medium ">
             Bookmark this entry
           </label>
           <button
+            id="bookmark"
             type="button"
             onClick={() => {
               // Check bookmark limits before allowing toggle
@@ -333,11 +314,11 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
               }
               handleChange("bookmarked", !formData.bookmarked);
             }}
-            disabled={!isEditing}
+            disabled={false}
             className={`
               relative inline-flex h-6 w-11 items-center rounded-full transition-colors
               ${formData.bookmarked ? "bg-blue-600" : "bg-gray-200"}
-              ${isEditing ? "cursor-pointer" : "cursor-not-allowed"}
+              cursor-pointer
             `}
           >
             <span
@@ -350,33 +331,33 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
         </div>
 
         {/* Action Buttons */}
-        {isEditing && (
-          <div className="flex gap-3 pt-4 border-t border-gray-200">
-            <button
-              type="submit"
-              disabled={saveMutation.isPending}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <Save className="w-4 h-4" />
-              {saveMutation.isPending ? "Saving..." : "Save Entry"}
-            </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-        )}
+        <div className="flex gap-3 pt-4 border-t border-gray-200">
+          <button
+            type="submit"
+            disabled={saveMutation.isPending}
+            className="flex items-center gap-2 px-4 py-2 btn btn-primary rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Save className="w-4 h-4" />
+            {saveMutation.isPending ? "Saving..." : "Save Entry"}
+          </button>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="px-4 py-2 rounded-lg btn btn-error btn-soft"
+          >
+            Clear Form
+          </button>
+        </div>
       </form>
 
-      {/* Empty State */}
-      {!hasContent && !isEditing && (
+      {/* Empty State - Only show when there's no content and no existing entry */}
+      {!hasContent && !existingEntry && (
         <div className="text-center py-8 text-gray-500">
           <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-          <p className="text-lg font-medium mb-2">No journal entry yet</p>
-          <p className="text-sm">Start writing to reflect on your day</p>
+          <p className="text-lg font-medium mb-2">Start your journal entry</p>
+          <p className="text-sm">
+            Fill out the form above to reflect on your day
+          </p>
         </div>
       )}
     </div>

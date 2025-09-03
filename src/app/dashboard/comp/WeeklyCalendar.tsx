@@ -10,6 +10,7 @@ import {
 import { UserHabit, HabitLog } from "@/comp/utility/tanstack/habitTypes";
 import Link from "next/link";
 import NotesModal from "@/comp/utility/NotesModal";
+import RainbowRing from "@/app/dashboard/comp/RainbowRing";
 
 interface WeeklyCalendarProps {
   className?: string;
@@ -100,18 +101,13 @@ function HabitRow({
             );
             const isTodayDate = isToday(date);
             const hasNote = getExistingNote(date).length > 0;
-            return (
-              <div
-                key={date.toISOString()}
-                className={`relative flex flex-col items-center ${
-                  isTodayDate ? "ring-2 ring-primary/30 rounded-full p-1" : ""
-                }`}
-              >
+            const dayContent = (
+              <>
                 <button
                   onClick={() => handleToggleCompletion(date, isCompleted)}
                   disabled={logCompletionMutation.isPending}
                   className={`
-                    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200
+                    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 z-50
                     ${
                       isCompleted
                         ? "bg-success hover:bg-success-focus text-success-content shadow-lg "
@@ -186,22 +182,26 @@ function HabitRow({
                   } notes for ${date.toLocaleDateString()}`}
                 >
                   {hasNote ? (
-                    // <svg
-                    //   className="w-3 h-3"
-                    //   fill="currentColor"
-                    //   viewBox="0 0 20 20"
-                    // >
-                    //   <path
-                    //     fillRule="evenodd"
-                    //     d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                    //     clipRule="evenodd"
-                    //   />
-                    // </svg>
                     <NotebookText className="w-4 h-4 cursor-pointer" />
                   ) : (
                     <NotebookPen className="w-4 h-4 cursor-pointer" />
                   )}
                 </button>
+              </>
+            );
+
+            return (
+              <div
+                key={date.toISOString()}
+                className="relative flex flex-col items-center"
+              >
+                {isTodayDate ? (
+                  <RainbowRing size="md" animated={true}>
+                    {dayContent}
+                  </RainbowRing>
+                ) : (
+                  dayContent
+                )}
               </div>
             );
           })}
@@ -376,7 +376,7 @@ export default function WeeklyCalendar({
       <div className="flex items-center justify-between mb-4 bg-base-300/50 rounded-lg p-2">
         <button
           onClick={goToPreviousWeek}
-          className="md:p-2 rounded-full hover:bg-base-300 transition-colors"
+          className="md:p-2 rounded-full hover:bg-base-300 transition-colors cursor-pointer"
           aria-label="Previous week"
         >
           <svg
@@ -414,7 +414,7 @@ export default function WeeklyCalendar({
 
         <button
           onClick={goToNextWeek}
-          className="md:p-2 rounded-full hover:bg-base-300 transition-colors"
+          className="md:p-2 rounded-full hover:bg-base-300 transition-colors cursor-pointer"
           aria-label="Next week"
         >
           <svg
