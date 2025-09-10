@@ -13,10 +13,10 @@ export default function LoginPage() {
     >
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white/30 mb-2">
+          <h1 className="text-3xl font-bold mb-2">
             Welcome Back
           </h1>
-          <p className="text-gray-600">
+          <p className="text-primary/60">
             Sign in to your Cosmic Journal account
           </p>
         </div>

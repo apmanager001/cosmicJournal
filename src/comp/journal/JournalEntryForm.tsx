@@ -32,8 +32,6 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
     bookmarked: false,
   });
 
-  const [isEditing, setIsEditing] = useState(true);
-
   const saveMutation = useSaveJournalEntry();
   const { data: existingEntry, isLoading } = useJournalEntry(date);
 

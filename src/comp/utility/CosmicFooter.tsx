@@ -140,11 +140,20 @@ const CosmicFooter: React.FC = () => {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/privacy"
                   className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
                 >
                   <Shield className="w-4 h-4 group-hover:text-primary" />
                   Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
+                >
+                  <BookOpen className="w-4 h-4 group-hover:text-primary" />
+                  Terms of Service
                 </Link>
               </li>
             </ul>

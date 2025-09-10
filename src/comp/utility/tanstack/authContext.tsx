@@ -14,6 +14,9 @@ interface AuthContextType {
     passwordConfirm: string,
     name?: string
   ) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  loginWithFacebook: () => Promise<void>;
+  loginWithApple: () => Promise<void>;
   logout: () => void;
   refreshUser: () => void;
   requestEmailVerification: (email: string) => Promise<void>;
@@ -91,6 +94,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = async () => {
+    try {
+      await authService.loginWithGoogle();
+    } catch (error) {
+      console.error("Google login failed:", error);
+      throw error;
+    }
+  };
+
+  const loginWithFacebook = async () => {
+    try {
+      await authService.loginWithFacebook();
+    } catch (error) {
+      console.error("Facebook login failed:", error);
+      throw error;
+    }
+  };
+
+  const loginWithApple = async () => {
+    try {
+      await authService.loginWithApple();
+    } catch (error) {
+      console.error("Apple login failed:", error);
+      throw error;
+    }
+  };
+
   const logout = () => {
     pb.authStore.clear();
     setUser(null);
@@ -136,6 +166,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAuthenticated,
     login,
     register,
+    loginWithGoogle,
+    loginWithFacebook,
+    loginWithApple,
     logout,
     refreshUser,
     requestEmailVerification,

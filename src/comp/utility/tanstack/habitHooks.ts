@@ -388,6 +388,32 @@ export const useToggleBookmark = () => {
   });
 };
 
+export const useDeleteJournalEntry = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: (entryId: string) => journalService.deleteJournalEntry(entryId),
+    onSuccess: () => {
+      // Invalidate all journal-related queries
+      queryClient.invalidateQueries({
+        queryKey: ["allJournalEntries", user?.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["bookmarkedJournalEntries", user?.id],
+      });
+      toast.success("Journal entry deleted successfully!");
+    },
+    onError: (error: unknown) => {
+      const message =
+        (error as ApiError)?.data?.message ||
+        (error as ApiError)?.message ||
+        "Failed to delete journal entry";
+      toast.error(message);
+    },
+  });
+};
+
 // Notification settings hooks
 export const useNotificationSettings = () => {
   const { user } = useAuth();

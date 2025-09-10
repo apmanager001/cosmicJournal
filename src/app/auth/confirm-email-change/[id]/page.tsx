@@ -124,11 +124,6 @@ export default function ConfirmEmailChangePage({
             }
           }
         } catch (error: unknown) {
-          const errorObj = error as {
-            response?: { data?: unknown };
-            status?: number;
-            message?: string;
-          };
           throw error;
         }
 

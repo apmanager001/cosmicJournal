@@ -2,13 +2,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CircleUser, Star, Rocket, Menu, X } from "lucide-react";
+import { CircleUser, Star, Rocket, Menu, X, LogOut } from "lucide-react";
 import HeaderLinks from "./headerLinks";
 import { useAuth } from "../utility/tanstack/authContext";
 import ThemeToggle from "../utility/ThemeToggle";
 
 const Header = () => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -99,7 +99,10 @@ const Header = () => {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/90 z-50 lg:hidden">
+        <div
+          className="fixed inset-0 bg-black/90 z-50 lg:hidden"
+          onClick={toggleMobileMenu}
+        >
           <div className="fixed top-0 right-0 w-80 h-full bg-base-100 shadow-2xl p-6 ">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold text-base-content">Menu</h3>
@@ -122,15 +125,28 @@ const Header = () => {
             <div className="space-y-4">
               <ThemeToggle />
               {user ? (
-                <Link
-                  href="/dashboard"
-                  className="flex items-center gap-3 p-3 bg-base-200 rounded-lg"
-                >
-                  <CircleUser size={20} className="text-base-content" />
-                  <span className="text-sm text-base-content">
-                    {user.name || user.email || "User"}
-                  </span>
-                </Link>
+                <div className="space-y-2">
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-3 p-3 bg-base-200 rounded-lg"
+                  >
+                    <CircleUser size={20} className="text-base-content" />
+                    <span className="text-sm text-base-content">
+                      {user.name || user.email || "User"}
+                    </span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      toggleMobileMenu();
+                      router.push("/");
+                    }}
+                    className="flex items-center gap-3 p-3 bg-error/10 hover:bg-error/20 rounded-lg w-full text-left transition-colors"
+                  >
+                    <LogOut size={20} className="text-error" />
+                    <span className="text-sm text-error">Sign Out</span>
+                  </button>
+                </div>
               ) : (
                 <Link
                   href="/login"

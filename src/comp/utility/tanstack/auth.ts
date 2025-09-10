@@ -64,6 +64,32 @@ export const authService = {
     }
   },
 
+  // Login with Facebook OAuth
+  loginWithFacebook: async () => {
+    try {
+      const authData = await pb.collection("users").authWithOAuth2({
+        provider: "facebook",
+        redirectUrl: `${window.location.origin}/auth/callback`,
+      });
+      return authData;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Login with Apple OAuth
+  loginWithApple: async () => {
+    try {
+      const authData = await pb.collection("users").authWithOAuth2({
+        provider: "apple",
+        redirectUrl: `${window.location.origin}/auth/callback`,
+      });
+      return authData;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   // Register new user
   register: async (credentials: RegisterCredentials) => {
     try {

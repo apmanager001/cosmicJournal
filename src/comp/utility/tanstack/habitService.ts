@@ -286,8 +286,13 @@ export const journalService = {
   // Get journal entry for a specific date
   getJournalEntry: async (date: string): Promise<JournalEntry | null> => {
     try {
+      // Query for entries on the specific date using date range
+      // This handles both YYYY-MM-DD and YYYY-MM-DD HH:MM:SS formats
+      const startOfDay = `${date} 00:00:00`;
+      const endOfDay = `${date} 23:59:59`;
+
       const records = await pb.collection("journal_entries").getList(1, 1, {
-        filter: `date = "${date}" && userId = "${pb.authStore.model?.id}"`,
+        filter: `date >= "${startOfDay}" && date <= "${endOfDay}" && userId = "${pb.authStore.model?.id}"`,
       });
 
       return records.items.length > 0

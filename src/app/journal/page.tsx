@@ -5,8 +5,6 @@ import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { useAllJournalEntries } from "@/comp/utility/tanstack/habitHooks";
 import type { JournalEntry } from "@/comp/utility/tanstack/habitTypes";
 import JournalEntryForm from "@/comp/journal/JournalEntryForm";
-import SubscriptionLimitBanner from "@/comp/utility/SubscriptionLimitBanner";
-import SubscriptionStatusIndicator from "@/comp/utility/SubscriptionStatusIndicator";
 import { useState, useMemo } from "react";
 import { Calendar, Edit, Star, CircleCheck } from "lucide-react";
 import Link from "next/link";
@@ -189,18 +187,15 @@ function JournalContent() {
               Reflect on your day and track your personal growth
             </p>
           </div>
-          <div className="flex gap-4">
-            {/* Removed Dashboard and Bookmarks links as per edit hint */}
-          </div>
         </div>
       </div>
 
       {/* Subscription Limit Banner */}
-      <SubscriptionLimitBanner
+      {/* <SubscriptionLimitBanner
         resource="journalEntries"
         currentCount={allEntries?.length || 0}
         className="mb-6"
-      />
+      /> */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Calendar and Stats */}
         <div className="w-full lg:w-96 lg:flex-shrink-0 customContainer backdrop-blur-sm rounded-lg shadow-lg p-2 md:p-6 border border-purple-200/50">
@@ -242,9 +237,9 @@ function JournalContent() {
             </div>
 
             {/* Subscription Status */}
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <SubscriptionStatusIndicator showUsage={false} />
-            </div>
+            </div> */}
 
             {/* Month Navigation */}
             <div className="flex items-center justify-center gap-4 mb-4">

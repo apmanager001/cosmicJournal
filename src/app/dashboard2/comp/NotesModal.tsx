@@ -81,10 +81,11 @@ export default function NotesModal({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="label">
+            <label htmlFor="notes" className="label">
               <span className="label-text font-medium">Notes for this day</span>
             </label>
             <textarea
+              id="notes"
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Add your notes, thoughts, or observations..."
