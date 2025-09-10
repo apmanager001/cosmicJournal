@@ -409,18 +409,14 @@ function JournalContent() {
                   <h4 className="font-medium mb-2 text-sm lg:text-base">
                     What I Did Today
                   </h4>
-                  <p className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm lg:text-base">
-                    {entry.whatIDid}
-                  </p>
+                  <input className="input input-bordered p-3 rounded-lg text-sm w-full" value={entry.whatIDid} disabled/>
                 </div>
 
                 <div>
                   <h4 className="font-medium mb-2 text-sm lg:text-base">
                     What I Learned Today
                   </h4>
-                  <p className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm lg:text-base">
-                    {entry.whatILearned}
-                  </p>
+                  <input className="input input-bordered p-3 rounded-lg text-sm w-full" value={entry.whatILearned} disabled/>
                 </div>
 
                 {entry.additionalNotes && (
@@ -428,9 +424,8 @@ function JournalContent() {
                     <h4 className="font-medium  mb-2 text-sm lg:text-base">
                       Additional Notes
                     </h4>
-                    <p className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm lg:text-base">
-                      {entry.additionalNotes}
-                    </p>
+                    <input className="input input-bordered p-3 rounded-lg text-sm w-full" value={entry.additionalNotes} disabled/>
+                 
                   </div>
                 )}
               </div>

@@ -34,7 +34,7 @@ function JournalEntryIndicator({
   userTimezone: string;
 }) {
   const dateString = date.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-  const { data: journalEntry, isLoading, error } = useJournalEntry(dateString);
+  const { data: journalEntry } = useJournalEntry(dateString);
 
   if (!journalEntry) {
     return (

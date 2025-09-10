@@ -377,6 +377,15 @@ export const journalService = {
       throw error;
     }
   },
+
+  // Delete a journal entry
+  deleteJournalEntry: async (entryId: string): Promise<void> => {
+    try {
+      await pb.collection("journal_entries").delete(entryId);
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export const notificationService = {
