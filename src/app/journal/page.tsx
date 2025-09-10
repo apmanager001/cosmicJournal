@@ -405,20 +405,22 @@ function JournalContent() {
               </div>
 
               <div className="space-y-4">
-                <div>
-                  <h4 className="font-medium mb-2 text-sm lg:text-base">
-                    What I Did Today
-                  </h4>
-                  <input className="input input-bordered p-3 rounded-lg text-sm w-full" value={entry.whatIDid} disabled/>
-                </div>
-
-                <div>
-                  <h4 className="font-medium mb-2 text-sm lg:text-base">
-                    What I Learned Today
-                  </h4>
-                  <input className="input input-bordered p-3 rounded-lg text-sm w-full" value={entry.whatILearned} disabled/>
-                </div>
-
+                {entry.whatIDid && (
+                  <div>
+                    <h4 className="font-medium mb-2 text-sm lg:text-base">
+                      What I Did
+                    </h4>
+                    <input className="input input-bordered p-3 rounded-lg text-sm w-full" value={entry.whatIDid} disabled/>
+                  </div>
+                )}
+                {entry.whatILearned && (
+                  <div>
+                    <h4 className="font-medium mb-2 text-sm lg:text-base">
+                      What I Learned Today
+                    </h4>
+                    <input className="input input-bordered p-3 rounded-lg text-sm w-full" value={entry.whatILearned} disabled/>
+                  </div>
+                )}
                 {entry.additionalNotes && (
                   <div>
                     <h4 className="font-medium  mb-2 text-sm lg:text-base">

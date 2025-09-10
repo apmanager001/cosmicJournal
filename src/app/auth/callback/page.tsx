@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { pb } from "../../../comp/utility/tanstack/pocketbase";
 import { useAuth } from "../../../comp/utility/tanstack/authContext";
 
-const OAuthCallback = () => {
+const OAuthCallbackContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { refreshUser } = useAuth();
@@ -104,6 +104,26 @@ const OAuthCallback = () => {
         </p>
       </div>
     </div>
+  );
+};
+
+const OAuthCallback = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+          <div className="bg-white/20 rounded-lg shadow-xl p-8 backdrop-blur-sm text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold text-white mb-2">
+              Loading...
+            </h2>
+            <p className="text-white/80">Please wait...</p>
+          </div>
+        </div>
+      }
+    >
+      <OAuthCallbackContent />
+    </Suspense>
   );
 };
 
