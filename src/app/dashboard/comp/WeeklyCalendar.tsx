@@ -466,7 +466,7 @@ export default function WeeklyCalendar({
       </div>
 
       {/* Week Header with Navigation */}
-      <div className="flex items-center justify-between mb-4 bg-base-300/50 rounded-lg p-2">
+      <div className="flex items-center justify-between mb-4 bg-base-300/50 md:rounded-lg p-2">
         <button
           onClick={goToPreviousWeek}
           className="md:p-2 rounded-full hover:bg-base-300 transition-colors cursor-pointer"
