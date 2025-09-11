@@ -1,30 +1,68 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { NotebookPen, NotebookText, MoveRight } from "lucide-react";
+import { NotebookPen, NotebookText } from "lucide-react";
 import {
   useUserHabits,
-  useTodayJournalEntry,
   useHabitLogs,
   useLogHabitCompletion,
+  useJournalEntry,
 } from "@/comp/utility/tanstack/habitHooks";
 import { UserHabit, HabitLog } from "@/comp/utility/tanstack/habitTypes";
 import Link from "next/link";
-import NotesModal from "@/comp/utility/NotesModal";
-import RainbowRing from "@/app/dashboard/comp/RainbowRing";
+import NotesModal from "./NotesModal";
+import RainbowRing from "./RainbowRing";
+import DailyJournal from "./dailyJournal";
+import ButtonComp from "./buttonComp";
 
 interface WeeklyCalendarProps {
   className?: string;
 }
 
+// Helper function to get single letter day name
+const getDayLetter = (date: Date, userTimezone: string) => {
+  return date.toLocaleDateString("en-US", {
+    timeZone: userTimezone,
+    weekday: "short",
+  })[0];
+};
+
+// Component to check if there's a journal entry for a specific date
+function JournalEntryIndicator({
+  date,
+  userTimezone,
+}: {
+  date: Date;
+  userTimezone: string;
+}) {
+  const dateString = date.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+  const { data: journalEntry } = useJournalEntry(dateString);
+
+  if (!journalEntry) {
+    return (
+      <span className="text-sm font-bold">
+        {getDayLetter(date, userTimezone)}
+      </span>
+    );
+  }
+
+  return (
+    <RainbowRing size="sm" animated={true} className="w-6 h-6">
+      <span className="text-sm font-bold">
+        {getDayLetter(date, userTimezone)}
+      </span>
+    </RainbowRing>
+  );
+}
+
 // Separate component for each habit row to safely use hooks
 function HabitRow({
   habit,
-  weekDates,
+  selectedDate,
   isToday,
   isHabitCompletedOnDate,
 }: {
   habit: UserHabit;
-  weekDates: Date[];
+  selectedDate: Date;
   isToday: (date: Date) => boolean;
   isHabitCompletedOnDate: (
     habit: UserHabit,
@@ -35,7 +73,7 @@ function HabitRow({
   const { data: habitLogs } = useHabitLogs(habit.id);
   const logCompletionMutation = useLogHabitCompletion();
   const [notesModalOpen, setNotesModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [notesDate, setNotesDate] = useState<Date | null>(null);
 
   const handleToggleCompletion = async (date: Date, isCompleted: boolean) => {
     try {
@@ -50,13 +88,13 @@ function HabitRow({
   };
 
   const handleOpenNotes = (date: Date) => {
-    setSelectedDate(date);
+    setNotesDate(date);
     setNotesModalOpen(true);
   };
 
   const handleCloseNotes = () => {
     setNotesModalOpen(false);
-    setSelectedDate(null);
+    setNotesDate(null);
   };
 
   // Get existing note for a specific date
@@ -82,32 +120,59 @@ function HabitRow({
 
   return (
     <>
-      <div className="flex flex-col md:flex-row items-center gap-4 p-4 bg-base-300/50 rounded-lg hover:bg-base-300/70 transition-colors">
+      <div className="flex flex-row items-center gap-4 p-4 bg-base-300/50 rounded-lg hover:bg-base-300/70 transition-colors">
         <span className="text-3xl flex-shrink-0">{habit.habit.icon}</span>
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-base-content truncate text-lg">
-            {habit.habit.name}
-          </h4>
-          <p className="text-center md:text-left text-sm text-base-content/70 capitalize">
+          <div className="flex items-center gap-2">
+            <h4 className="font-semibold text-base-content truncate text-lg">
+              {habit.habit.name}
+            </h4>
+            {/* Notes button - positioned next to habit name */}
+            <button
+              onClick={() => handleOpenNotes(selectedDate)}
+              disabled={logCompletionMutation.isPending}
+              className={`
+                w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 flex-shrink-0
+                ${
+                  getExistingNote(selectedDate).length > 0
+                    ? "bg-info/20 hover:bg-info/30 text-info"
+                    : "bg-base-200/50 hover:bg-base-300/50 text-base-content/40"
+                }
+                disabled:opacity-50 disabled:cursor-not-allowed
+                hover:scale-110 active:scale-95
+                focus:outline-none focus:ring-2 focus:ring-info/50
+              `}
+              aria-label={`${
+                getExistingNote(selectedDate).length > 0 ? "Edit" : "Add"
+              } notes for ${selectedDate.toLocaleDateString()}`}
+            >
+              {getExistingNote(selectedDate).length > 0 ? (
+                <NotebookText className="w-3 h-3 cursor-pointer" />
+              ) : (
+                <NotebookPen className="w-3 h-3 cursor-pointer" />
+              )}
+            </button>
+          </div>
+          <p className="badge badge-primary badge-soft text-center md:text-left text-sm text-base-content/70 capitalize">
             {habit.habit.category}
           </p>
         </div>
-        <div className="flex flex-wrap gap-3 items-center justify-center md:justify-start">
-          {weekDates.map((date) => {
+        <div className="flex items-center justify-center md:justify-start">
+          {(() => {
+            const date = selectedDate;
             const isCompleted = isHabitCompletedOnDate(
               habit,
               date,
               habitLogs || []
             );
             const isTodayDate = isToday(date);
-            const hasNote = getExistingNote(date).length > 0;
             const dayContent = (
               <>
                 <button
                   onClick={() => handleToggleCompletion(date, isCompleted)}
                   disabled={logCompletionMutation.isPending}
                   className={`
-                    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 z-50
+                    cursor-pointer m-1 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 z-50
                     ${
                       isCompleted
                         ? "bg-success hover:bg-success-focus text-success-content shadow-lg "
@@ -122,10 +187,10 @@ function HabitRow({
                   } for ${date.toLocaleDateString()}`}
                 >
                   {logCompletionMutation.isPending ? (
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
                   ) : isCompleted ? (
                     <svg
-                      className="w-5 h-5"
+                      className="w-6 h-6"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -137,7 +202,7 @@ function HabitRow({
                     </svg>
                   ) : (
                     <svg
-                      className="w-5 h-5"
+                      className="w-6 h-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -152,49 +217,24 @@ function HabitRow({
                   )}
                 </button>
 
-                {/* Day indicator below buttons */}
-                <div className="mt-2 text-center">
-                  <div className="text-xs font-bold text-base-content/80">
-                    {date.toLocaleDateString("en-US", { weekday: "short" })}
+                {/* Day info next to button */}
+                {/* <div className="ml-4 text-left flex-1">
+                  <div className="text-sm font-bold text-base-content">
+                    {date.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </div>
                   <div className="text-xs text-base-content/60">
-                    {date.getDate()}
+                    {isTodayDate ? "Today" : ""}
                   </div>
-                </div>
-
-                {/* Notes button below completion button */}
-                <button
-                  onClick={() => handleOpenNotes(date)}
-                  disabled={logCompletionMutation.isPending}
-                  className={`
-                    mt-1 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200
-                    ${
-                      hasNote
-                        ? "bg-info hover:bg-info-focus text-info-content shadow-md"
-                        : "bg-base-200 hover:bg-base-300 text-base-content/60 border border-base-content/20"
-                    }
-                    disabled:opacity-50 disabled:cursor-not-allowed
-                    hover:scale-110 active:scale-95
-                    focus:outline-none focus:ring-2 focus:ring-info/50
-                  `}
-                  aria-label={`${
-                    hasNote ? "Edit" : "Add"
-                  } notes for ${date.toLocaleDateString()}`}
-                >
-                  {hasNote ? (
-                    <NotebookText className="w-4 h-4 cursor-pointer" />
-                  ) : (
-                    <NotebookPen className="w-4 h-4 cursor-pointer" />
-                  )}
-                </button>
+                </div> */}
               </>
             );
 
             return (
-              <div
-                key={date.toISOString()}
-                className="relative flex flex-col items-center"
-              >
+              <div className="relative flex items-center w-full">
                 {isTodayDate ? (
                   <RainbowRing size="md" animated={true}>
                     {dayContent}
@@ -204,21 +244,21 @@ function HabitRow({
                 )}
               </div>
             );
-          })}
+          })()}
         </div>
       </div>
 
       {/* Notes Modal */}
-      {selectedDate && (
+      {notesDate && (
         <NotesModal
           isOpen={notesModalOpen}
           onClose={handleCloseNotes}
           habit={habit}
-          date={selectedDate}
-          existingNote={getExistingNote(selectedDate)}
+          date={notesDate}
+          existingNote={getExistingNote(notesDate)}
           isCompleted={isHabitCompletedOnDate(
             habit,
-            selectedDate,
+            notesDate,
             habitLogs || []
           )}
         />
@@ -231,8 +271,8 @@ export default function WeeklyCalendar({
   className = "",
 }: WeeklyCalendarProps) {
   const { data: userHabits } = useUserHabits();
-  const { data: todayJournalEntry } = useTodayJournalEntry();
   const [weekOffset, setWeekOffset] = useState(0);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   // Get user's current timezone
   const userTimezone = useMemo(() => {
@@ -286,14 +326,6 @@ export default function WeeklyCalendar({
     return inputDateStr === today;
   };
 
-  // Get single letter day name
-  const getDayLetter = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      timeZone: userTimezone,
-      weekday: "short",
-    })[0];
-  };
-
   // Get date number
   const getDateNumber = (date: Date) => {
     // Use Intl.DateTimeFormat for more reliable timezone handling
@@ -334,11 +366,13 @@ export default function WeeklyCalendar({
   // Navigate to previous week
   const goToPreviousWeek = () => {
     setWeekOffset((prev) => prev - 1);
+    setSelectedDate(null); // Reset selection when changing weeks
   };
 
   // Navigate to next week
   const goToNextWeek = () => {
     setWeekOffset((prev) => prev + 1);
+    setSelectedDate(null); // Reset selection when changing weeks
   };
 
   // Get week display text
@@ -350,26 +384,85 @@ export default function WeeklyCalendar({
     return `In ${weekOffset} Weeks`;
   };
 
+  // Handle day selection
+  const handleDaySelect = (date: Date) => {
+    setSelectedDate(date);
+  };
+
+  // Handle going to today
+  const goToToday = () => {
+    const today = new Date();
+    setSelectedDate(today);
+  };
+
+  // Get the currently selected date (defaults to today if none selected)
+  const currentSelectedDate =
+    selectedDate || weekDates.find(isToday) || weekDates[0];
+
+  // If selectedDate is set and it's not in the current week, we need to adjust the week offset
+  React.useEffect(() => {
+    if (selectedDate) {
+      const selectedDateStr = selectedDate.toDateString();
+      const isInCurrentWeek = weekDates.some(
+        (date) => date.toDateString() === selectedDateStr
+      );
+
+      if (!isInCurrentWeek) {
+        // Calculate which week the selected date belongs to
+        const today = new Date();
+        const selectedWeekStart = new Date(selectedDate);
+        const todayWeekStart = new Date(today);
+
+        // Get start of week for both dates
+        const selectedDayOfWeek = selectedDate.getDay();
+        const todayDayOfWeek = today.getDay();
+
+        selectedWeekStart.setDate(selectedDate.getDate() - selectedDayOfWeek);
+        todayWeekStart.setDate(today.getDate() - todayDayOfWeek);
+
+        // Calculate the difference in weeks
+        const timeDiff = selectedWeekStart.getTime() - todayWeekStart.getTime();
+        const weeksDiff = Math.round(timeDiff / (7 * 24 * 60 * 60 * 1000));
+
+        setWeekOffset(weeksDiff);
+      }
+    }
+  }, [selectedDate, weekDates]);
+
   return (
     // <div
     //   className={`bg-white/10 backdrop-blur-sm rounded-xl shadow-lg border border-primary/20 pt-4 md:p-6 ${className}`}
     // >
     <div className={`customContainer pt-4 md:p-6 ${className}`}>
-      <div className="flex items-center justify-between mb-6 mx-4 md:mx-0">
+      <div className="flex items-center justify-between mb-1 mx-2 md:mx-0 gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-base-content">
+          <h2 className="text-center text-xl font-semibold text-base-content">
             {getWeekDisplayText()}
           </h2>
-          <p className="text-xs text-base-content/50 mt-1">
-            Timezone: {userTimezone}
-          </p>
         </div>
-        <Link
-          href="/habits"
-          className="text-primary hover:text-primary-focus text-sm font-medium flex items-center gap-2"
+        <div className="bg-base-300/50 rounded-lg p-2 text-center">
+          <div className="text-lg font-bold text-base-content">
+            {currentSelectedDate.toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </div>
+          <div className="text-sm text-base-content/70">
+            {currentSelectedDate.toLocaleDateString("en-US", {
+              weekday: "long",
+            })}
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mx-2 mb-1">
+        <p className="text-xs text-base-content/50">Timezone: {userTimezone}</p>
+        <button
+          onClick={goToToday}
+          className="btn btn-sm btn-neutral rounded-full cursor-pointer text-base-content/70"
         >
-          Manage Habits <MoveRight />
-        </Link>
+          Today
+        </button>
       </div>
 
       {/* Week Header with Navigation */}
@@ -395,21 +488,40 @@ export default function WeeklyCalendar({
         </button>
 
         <div className="grid grid-cols-7 md:gap-2 flex-1 md:mx-4">
-          {weekDates.map((date) => (
-            <div
-              key={date.toISOString()}
-              className={`text-center p-2 rounded-lg ${
-                isToday(date)
-                  ? "bg-primary/20 text-primary font-semibold"
-                  : "text-base-content/70"
-              }`}
-            >
-              <div className="w-8 h-8 rounded-full bg-base-300 flex items-center justify-center mx-auto mb-1">
-                <span className="text-sm font-bold">{getDayLetter(date)}</span>
-              </div>
-              <div className="text-sm font-medium">{getDateNumber(date)}</div>
-            </div>
-          ))}
+          {weekDates.map((date) => {
+            const isSelected =
+              currentSelectedDate &&
+              currentSelectedDate.toDateString() === date.toDateString();
+            const isTodayDate = isToday(date);
+
+            return (
+              <button
+                key={date.toISOString()}
+                onClick={() => handleDaySelect(date)}
+                className={`cursor-pointer text-center p-2 rounded-lg transition-all duration-200 hover:bg-base-300/50 ${
+                  isSelected
+                    ? "bg-primary text-primary-content font-semibold shadow-md"
+                    : isTodayDate
+                    ? "bg-primary/20 text-primary font-semibold"
+                    : "text-base-content/70 hover:text-base-content"
+                }`}
+              >
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-1 ${
+                    isSelected
+                      ? "bg-primary-content/20"
+                      : "bg-white/10 backdrop-blur-md"
+                  }`}
+                >
+                  <JournalEntryIndicator
+                    date={date}
+                    userTimezone={userTimezone}
+                  />
+                </div>
+                <div className="text-sm font-medium">{getDateNumber(date)}</div>
+              </button>
+            );
+          })}
         </div>
 
         <button
@@ -432,7 +544,10 @@ export default function WeeklyCalendar({
           </svg>
         </button>
       </div>
-
+      <ButtonComp />
+      <div className="mb-3">
+        <DailyJournal selectedDate={currentSelectedDate} />
+      </div>
       {/* Habits Grid */}
       {userHabits && userHabits.length > 0 ? (
         <div className="space-y-3">
@@ -440,7 +555,7 @@ export default function WeeklyCalendar({
             <HabitRow
               key={habit.id}
               habit={habit}
-              weekDates={weekDates}
+              selectedDate={currentSelectedDate}
               isToday={isToday}
               isHabitCompletedOnDate={isHabitCompletedOnDate}
             />
@@ -472,36 +587,6 @@ export default function WeeklyCalendar({
           </Link>
         </div>
       )}
-
-      {/* Quick Stats */}
-      <div className="mt-6 pt-6 border-t border-base-300">
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-primary">
-              {userHabits?.length || 0}
-            </div>
-            <div className="text-sm text-base-content/70">Active Habits</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-success">
-              {todayJournalEntry ? "1" : "0"}
-            </div>
-            <div className="text-sm text-base-content/70">
-              Today&apos;s Entry
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-info">
-              {userHabits?.reduce(
-                (total, habit) =>
-                  total + (habit.streakType === "daily" ? 1 : 0),
-                0
-              ) || 0}
-            </div>
-            <div className="text-sm text-base-content/70">Daily Goals</div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
