@@ -9,11 +9,15 @@ import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 
 const DailyJournal = ({ selectedDate }) => {
+  // Ensure selectedDate is a Date object at the start
+  if (!(selectedDate instanceof Date)) {
+    selectedDate = new Date(selectedDate);
+  }
+
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const { hasReachedLimit, canPerformAction, upgradeToPro } = useSubscription();
   const { data: allEntries } = useAllJournalEntries();
-
   const [formData, setFormData] = useState({
     whatIDid: "",
     whatILearned: "",
@@ -27,7 +31,7 @@ const DailyJournal = ({ selectedDate }) => {
   // Format the selected date for the journal form
   const formatDateForJournal = (date) => {
     if (!date) return new Date().toISOString().split("T")[0];
-    // Ensure we get the date in YYYY-MM-DD format
+    if (!(date instanceof Date)) date = new Date(date); // Ensure 'date' is a Date object
     return date.toISOString().split("T")[0];
   };
 
@@ -180,7 +184,7 @@ const DailyJournal = ({ selectedDate }) => {
             <div className="flex items-center gap-2">
               <p className="text-xs text-base-content/60">
                 {selectedDate
-                  ? selectedDate.toLocaleDateString("en-US", {
+                  ? new Date(selectedDate).toLocaleDateString("en-US", {
                       weekday: "long",
                       month: "short",
                       day: "numeric",
@@ -218,6 +222,15 @@ const DailyJournal = ({ selectedDate }) => {
       {/* Dropdown Content */}
       {isOpen && (
         <div className="border-t border-base-content/10 p-6">
+          <div>
+            <p>
+              {selectedDate.toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
+          </div>
           {/* Header */}
           <div className="flex items-center justify-between w-full mb-6">
             <div className="flex items-center gap-3">

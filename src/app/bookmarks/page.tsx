@@ -1,15 +1,11 @@
 "use client";
 import ProtectedRoute from "@/comp/utility/tanstack/ProtectedRoute";
-import {
-  useBookmarkedJournalEntries,
-} from "@/comp/utility/tanstack/habitHooks";
+import { useBookmarkedJournalEntries } from "@/comp/utility/tanstack/habitHooks";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
-import {
-  Bookmark,
-} from "lucide-react";
+import { Bookmark } from "lucide-react";
 import Link from "next/link";
-import DropdownJournal from "../journal/comp/dropdownJournal";
+import DailyJournal from "../dashboard/comp/dailyJournal";
 
 export default function BookmarksPage() {
   return (
@@ -23,7 +19,6 @@ function BookmarksContent() {
   const {} = useAuth();
   const {} = useSubscription();
   const { data: bookmarkedEntries, isLoading } = useBookmarkedJournalEntries();
-
 
   if (isLoading) {
     return (
@@ -94,15 +89,11 @@ function BookmarksContent() {
         {bookmarkedEntries && bookmarkedEntries.length > 0 ? (
           <div className="space-y-3">
             {bookmarkedEntries.map((entry) => {
-              const hasContent =
-                entry.whatIDid?.trim() ||
-                entry.whatILearned?.trim() ||
-                entry.additionalNotes?.trim();
-
+              const formattedDate = new Date(entry.date).toString(); // Format the date to the required format
               return (
-                <DropdownJournal key={entry.id} entry={entry} hasContent={hasContent} />
+                <DailyJournal key={entry.id} selectedDate={formattedDate} />
               );
-            })}  
+            })}
           </div>
         ) : (
           <div className="customContainer rounded-lg shadow-lg p-12 text-center">
