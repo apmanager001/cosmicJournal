@@ -1,35 +1,62 @@
-import PocketBase, { ClientResponseError } from "pocketbase";
+import PocketBase from "pocketbase";
 import { authService } from "./auth";
 
 const pb = new PocketBase(
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000"
 );
 pb.autoCancellation(false);
+
+interface BucketlistItem {
+  id: string;
+  title: string;
+  description?: string;
+  created_by?: string;
+  is_global?: boolean;
+  is_public?: boolean;
+  flag_count?: number;
+}
+
+interface UserBucketlistItem {
+  id: string;
+  user: string;
+  item: BucketlistItem | null;
+  notes: string;
+  completed: boolean;
+  created: string;
+  updated: string;
+}
+
 export const fetchBucketlistItems = async (
   searchTerm: string
-): Promise<any> => {
+): Promise<BucketlistItem[]> => {
   const filter = `(title~"${searchTerm}" || description~"${searchTerm}")`;
 
   try {
     const resultList = await pb.collection("bucketlist_items").getList(1, 5, {
       filter,
     });
-    return resultList.items;
-  } catch (error: any) {
+    return resultList.items.map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      created_by: item.created_by,
+      is_global: item.is_global,
+      is_public: item.is_public,
+      flag_count: item.flag_count,
+    }));
+  } catch (error) {
     console.error("Error fetching bucketlist items:", error); // Log error details
     throw new Error(
-      `Error fetching bucketlist items: ${error.message || "Unknown error"}`
+      `Error fetching bucketlist items: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
     );
   }
 };
 
-export const addBucketlistItem = async (itemData: {
-  title: string;
-  created_by?: string;
-  description?: string;
-  is_global?: boolean;
-  is_public?: boolean;
-}): Promise<any> => {
+export const addBucketlistItem = async (
+  itemData: BucketlistItem
+): Promise<BucketlistItem> => {
   const response = await fetch(`${pb}/items`, {
     method: "POST",
     headers: {
@@ -40,21 +67,17 @@ export const addBucketlistItem = async (itemData: {
   if (!response.ok) {
     throw new Error(`Error adding bucketlist item: ${response.statusText}`);
   }
-  return response.json();
+  return (await response.json()) as BucketlistItem;
 };
 
-export const fetchUserBucketListItems = async (): Promise<any> => {
-//   const dedicatedClient = new PocketBase(
-//     process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000"
-//   ); // Dedicated client instance
-
+export const fetchUserBucketListItems = async (): Promise<
+  UserBucketlistItem[]
+> => {
   try {
-    const result = await pb
-      .collection("user_bucketlist")
-      .getFullList({
-        sort: "-created",
-        requestKey: `user_bucketlist_${Date.now()}`, // Unique request key
-      });
+    const result = await pb.collection("user_bucketlist").getFullList({
+      sort: "-created",
+      requestKey: `user_bucketlist_${Date.now()}`, // Unique request key
+    });
 
     // Fetch item details for each user_bucketlist entry
     const enrichedResult = await Promise.all(
@@ -63,31 +86,46 @@ export const fetchUserBucketListItems = async (): Promise<any> => {
           const itemDetails = await pb
             .collection("bucketlist_items")
             .getOne(entry.item);
-          return { ...entry, item: itemDetails }; // Replace item ID with full item object
+          return {
+            id: entry.id,
+            user: entry.user,
+            item: {
+              id: itemDetails.id,
+              title: itemDetails.title,
+              description: itemDetails.description,
+              created_by: itemDetails.created_by,
+              is_global: itemDetails.is_global,
+              is_public: itemDetails.is_public,
+              flag_count: itemDetails.flag_count,
+            },
+            notes: entry.notes,
+            completed: entry.completed,
+            created: entry.created,
+            updated: entry.updated,
+          };
         } catch (error) {
-          const typedError = error as { name?: string }; // Explicitly type the error
-          if (typedError.name === "AbortError") {
-            console.warn(
-              `Retrying fetch for item ID ${entry.item} due to AbortError.`
-            );
-            return await pb
-              .collection("bucketlist_items")
-              .getOne(entry.item);
-          }
           console.error(
             `Error fetching details for item ID ${entry.item}:`,
             error
           );
-          return { ...entry, item: null }; // Gracefully handle missing items
+          return {
+            id: entry.id,
+            user: entry.user,
+            item: null,
+            notes: entry.notes,
+            completed: entry.completed,
+            created: entry.created,
+            updated: entry.updated,
+          };
         }
       })
     );
     return enrichedResult;
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error fetching user bucket list items:", error);
     throw new Error(
       `Error fetching user bucket list items: ${
-        error.message || "Unknown error"
+        error instanceof Error ? error.message : "Unknown error"
       }`
     );
   }
@@ -110,8 +148,8 @@ export const addToUserBucketlist = async (itemId: string): Promise<void> => {
 
     await pb.collection("user_bucketlist").create(payload);
     console.log("Added to user_bucketlist");
-  } catch (error: any) {
-    console.error("Error adding to user_bucketlist:", error?.data || error); // Log detailed error response
+  } catch (error) {
+    console.error("Error adding to user_bucketlist:", error); // Log detailed error response
     throw error;
   }
 };
