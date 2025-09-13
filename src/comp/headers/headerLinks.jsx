@@ -22,6 +22,12 @@ const HeaderLinks = () => {
         <Link href="/bookmarks">Bookmarks</Link>
       </li>
       <li className="font-bold">
+        <Link href="/bucketlist">BucketList</Link>
+      </li>
+      <li className="font-bold">
+        <Link href="/goals">Goals</Link>
+      </li>
+      <li className="font-bold">
         <Link href="/settings">Settings</Link>
       </li>
     </>

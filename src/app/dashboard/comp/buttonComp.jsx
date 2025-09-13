@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Trophy, PaintBucket, X } from "lucide-react";
+import BucketList from "@/app/bucketlist/comp/bucketList";
 
 const ButtonComp = () => {
   const [showGoalsModal, setShowGoalsModal] = useState(false);
@@ -46,16 +47,15 @@ const ButtonComp = () => {
         <div className="modal modal-open">
           <div className="modal-box modalContainer">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold">Bucket List</h2>
               <button
-                className="btn btn-sm btn-circle btn-ghost"
+                className="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost"
                 onClick={() => setShowBucketListModal(false)}
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p>Example content for the Bucket List modal.</p>
+            <BucketList />
             <div className="modal-action"></div>
           </div>
         </div>

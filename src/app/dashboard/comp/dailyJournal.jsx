@@ -8,7 +8,7 @@ import {
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 
-const DailyJournal = ({ selectedDate }) => {
+const DailyJournal = ({ selectedDate, bookmarked=false }) => {
   // Ensure selectedDate is a Date object at the start
   if (!(selectedDate instanceof Date)) {
     selectedDate = new Date(selectedDate);
@@ -388,9 +388,9 @@ const DailyJournal = ({ selectedDate }) => {
                 placeholder="Any other thoughts or reflections..."
               />
             </div>
-
+                <div className='divider'></div>
             {/* Action Buttons */}
-            <div className="flex gap-3 pt-4 border-t border-gray-200">
+            <div className="flex gap-3 pt-4">
               <button
                 type="submit"
                 disabled={saveMutation.isPending}
