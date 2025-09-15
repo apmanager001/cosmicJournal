@@ -36,6 +36,7 @@ const BucketList = () => {
   const handleCheckboxChange = async (itemId, newCompletedValue) => {
     try {
       await updateUserBucketlistItem(itemId, { completed: newCompletedValue });
+      queryClient.invalidateQueries({ queryKey: ["userBucketlist"] });
     } catch (error) {
       console.error("Error updating bucket list item:", error);
     }
@@ -99,13 +100,13 @@ const BucketList = () => {
                 onChange={() => handleCheckboxChange(item.id, true)}
               />
               <div className="flex justify-between w-full">
-                <span className="flex-1 min-w-52 text-left flex justify-left items-center">
+                <span className="flex-1 min-w-36 md:min-w-52 text-left flex justify-left items-center">
                   {item.item?.title || "Unknown Item"}
                 </span>
-                <span className="flex-2 text-center w-32 flex justify-center items-center">
+                <span className="flex-1 md:flex-2 text-center w-32 flex justify-center items-center">
                   {formatDate(item.created)}
                 </span>
-                <span className="flex-2 text-right flex justify-center items-center">
+                <span className="flex-1 md:flex-2 text-right flex justify-center items-center">
                   <button className="btn btn-soft btn-error rounded-full">
                     <Trash2
                       color="red"

@@ -85,7 +85,7 @@ const SearchBucketlist = () => {
       <label htmlFor="search" className="label mb-3">
         <span className="label-text">Search Bucketlist</span>
         <div
-          className="tooltip tooltip-bottom"
+          className="tooltip tooltip-bottom cursor-pointer"
           data-tip="Search and add items to your bucketlist. If you don't see an item, you can add your own!"
         >
           <Info />
