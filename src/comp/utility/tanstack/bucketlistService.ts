@@ -1,5 +1,6 @@
 import PocketBase from "pocketbase";
 import { authService } from "./auth";
+import { toast } from "react-hot-toast";
 
 const pb = new PocketBase(
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000"
@@ -26,6 +27,12 @@ interface UserBucketlistItem {
   updated: string;
 }
 
+interface BucketlistCategory {
+  id: string;
+  name: string;
+  description?: string;
+}
+
 export const fetchBucketlistItems = async (
   searchTerm: string
 ): Promise<BucketlistItem[]> => {
@@ -45,6 +52,10 @@ export const fetchBucketlistItems = async (
       flag_count: item.flag_count,
     }));
   } catch (error) {
+    toast.error("Error getting your bucketlist items. Please try again.", {
+      position: "top-right",
+      duration: 3000,
+    });
     console.error("Error fetching bucketlist items:", error); // Log error details
     throw new Error(
       `Error fetching bucketlist items: ${
@@ -55,19 +66,43 @@ export const fetchBucketlistItems = async (
 };
 
 export const addBucketlistItem = async (
-  itemData: BucketlistItem
+  itemData: Omit<BucketlistItem, "id"> & { category: string }
 ): Promise<BucketlistItem> => {
-  const response = await fetch(`${pb}/items`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(itemData),
-  });
-  if (!response.ok) {
-    throw new Error(`Error adding bucketlist item: ${response.statusText}`);
+  try {
+    const currentUser = authService.getCurrentUser();
+    if (!currentUser) {
+      throw new Error("User not authenticated");
+    }
+
+    const payload = {
+      title: itemData.title,
+      description: itemData.description,
+      created_by: currentUser.id,
+      is_global: true,
+      is_public: true,
+      flag_count: 0,
+      status: "active",
+      category: itemData.category,
+    };
+
+    const createdItem = await pb.collection("bucketlist_items").create(payload);
+    toast.success("Bucketlist item added successfully!", {
+      position: "top-right",
+      duration: 3000,
+    });
+
+    return {
+      id: createdItem.id,
+      ...payload,
+    };
+  } catch (error) {
+    console.error("Error adding bucketlist item:", error);
+    toast.error("Failed to add bucketlist item. Please try again.", {
+      position: "top-right",
+      duration: 3000,
+    });
+    throw error;
   }
-  return (await response.json()) as BucketlistItem;
 };
 
 export const fetchUserBucketListItems = async (): Promise<
@@ -78,7 +113,7 @@ export const fetchUserBucketListItems = async (): Promise<
       sort: "-created",
       requestKey: `user_bucketlist_${Date.now()}`, // Unique request key
     });
-
+    console.log("testing refresh list");
     // Fetch item details for each user_bucketlist entry
     const enrichedResult = await Promise.all(
       result.map(async (entry) => {
@@ -131,7 +166,9 @@ export const fetchUserBucketListItems = async (): Promise<
   }
 };
 
-export const addToUserBucketlist = async (itemId: string): Promise<void> => {
+export const addToUserBucketlist = async (
+  itemId: string
+): Promise<UserBucketlistItem[]> => {
   try {
     const currentUser = authService.getCurrentUser();
     if (!currentUser) {
@@ -139,17 +176,24 @@ export const addToUserBucketlist = async (itemId: string): Promise<void> => {
     }
 
     const payload = {
-      user: currentUser.id, // Use the authenticated user's ID
+      user: currentUser.id,
       item: itemId,
       notes: "",
       completed: false,
     };
-    console.log("Payload for user_bucketlist:", payload); // Debugging log
-
     await pb.collection("user_bucketlist").create(payload);
-    console.log("Added to user_bucketlist");
+    toast.success("Added to your Bucketlist!", {
+      position: "top-right",
+      duration: 3000,
+    });
+
+    // Fetch updated bucketlist
+    return await fetchUserBucketListItems();
   } catch (error) {
-    console.error("Error adding to user_bucketlist:", error); // Log detailed error response
+    toast.error("Error adding to your bucketlist: Please try again.", {
+      position: "top-right",
+      duration: 3000,
+    });
     throw error;
   }
 };
@@ -172,9 +216,75 @@ export const flagBucketlistItem = async (
       flagged_by: currentUser.id,
       reason,
     });
-    console.log("Flag added with reason:", reason);
+    toast.success("Your Flag has been Submitted", {
+      position: "top-right",
+      duration: 3000,
+    });
   } catch (error) {
-    console.error("Error adding flag:", error);
+    toast.error("Error adding flag: Please refresh the page and try again.", {
+      position: "top-right",
+      duration: 3000,
+    });
+    throw error;
+  }
+};
+
+export const updateUserBucketlistItem = async (
+  itemId: string,
+  updates: Partial<{ completed: boolean; notes: string }>
+): Promise<void> => {
+  try {
+    await pb.collection("user_bucketlist").update(itemId, updates);
+    const message = updates.completed
+      ? "Item marked as completed!"
+      : "Item marked as uncompleted!";
+    toast.success(message, {
+      position: "top-right",
+      duration: 3000,
+    });
+  } catch (error) {
+    console.error(`Error updating user_bucketlist item ${itemId}:`, error);
+    toast.error("Failed to update item. Please try again.", {
+      position: "top-right",
+      duration: 3000,
+    });
+    throw error;
+  }
+};
+
+export const fetchCategories = async (): Promise<BucketlistCategory[]> => {
+  try {
+    const categories = await pb
+      .collection("bucketlist_categories")
+      .getFullList();
+
+    // Map the categories to match the BucketlistCategory interface
+    return categories.map((category) => ({
+      id: category.id,
+      name: category.name,
+      description: category.description || "",
+    }));
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw new Error("Failed to fetch categories.");
+  }
+};
+
+export const deleteUserBucketlistItem = async (
+  itemId: string
+): Promise<void> => {
+  try {
+    await pb.collection("user_bucketlist").delete(itemId);
+    toast.success("Item removed successfully!", {
+      position: "top-right",
+      duration: 3000,
+    });
+  } catch (error) {
+    console.error("Error deleting item:", error);
+    toast.error("Failed to remove item. Please try again.", {
+      position: "top-right",
+      duration: 3000,
+    });
     throw error;
   }
 };

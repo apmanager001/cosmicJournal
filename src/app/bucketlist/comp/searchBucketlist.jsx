@@ -1,18 +1,35 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   fetchBucketlistItems,
   addBucketlistItem,
   addToUserBucketlist,
   flagBucketlistItem,
+  fetchCategories,
 } from "@/comp/utility/tanstack/bucketlistService";
-import { Flag, Plus, X } from "lucide-react";
+import { Flag, Plus, X, Info } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const SearchBucketlist = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newItem, setNewItem] = useState({ title: "", description: "" });
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const loadCategories = async () => {
+      try {
+        const result = await fetchCategories();
+        setCategories(result);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    loadCategories();
+  }, [isModalOpen]);
 
   const handleSearchChange = async (e) => {
     const value = e.target.value;
@@ -32,37 +49,52 @@ const SearchBucketlist = () => {
   };
 
   const handleAddNewItem = async () => {
-    const bucketlistItem = await addBucketlistItem({
-      title: newItem.title,
-      description: newItem.description,
-      created_by: "current_user_id", // Replace with actual user ID
-      is_global: false,
-      is_public: false,
-    });
+    if (!newItem.category) {
+      toast.error("Please select a category before adding the item.", {
+        position: "top-right",
+        duration: 3000,
+      });
+      return;
+    }
 
-    // Simulate adding to user_bucketlist
-    console.log("Adding to user_bucketlist:", {
-      user: "current_user_id", // Replace with actual user ID
-      item: bucketlistItem.id,
-      notes: "",
-      completed: false,
-    });
+    try {
+      const bucketlistItem = await addBucketlistItem({
+        title: newItem.title,
+        description: newItem.description,
+        category: newItem.category,
+      });
 
-    setIsModalOpen(false);
-    setNewItem({ title: "", description: "" });
+      // Simulate adding to user_bucketlist
+      console.log("Adding to user_bucketlist:", {
+        user: "current_user_id", // Replace with actual user ID
+        item: bucketlistItem.id,
+        notes: "",
+        completed: false,
+      });
+
+      setIsModalOpen(false);
+      setNewItem({ title: "", description: "", category: "" });
+    } catch (error) {
+      console.error("Error adding new bucketlist item:", error);
+    }
   };
-  //   console.log("Search Results:", searchResults); // Debugging log
   return (
-    <div className="form-control relative">
-      <label htmlFor="search" className="label">
+    <div className="form-control relative max-w-96">
+      <label htmlFor="search" className="label mb-3">
         <span className="label-text">Search Bucketlist</span>
+        <div
+          className="tooltip tooltip-bottom"
+          data-tip="Search and add items to your bucketlist. If you don't see an item, you can add your own!"
+        >
+          <Info />
+        </div>
       </label>
       <div className="relative">
         <input
           type="text"
           id="search"
           placeholder="Type to search..."
-          className="input input-bordered w-full pr-10"
+          className="input input-bordered input-xl w-full pr-10"
           value={searchTerm}
           onChange={handleSearchChange}
           autoComplete="off"
@@ -76,14 +108,11 @@ const SearchBucketlist = () => {
           </button>
         )}
       </div>
-      <ul className="bg-base-100 w-full rounded-box mt-2 absolute z-10 shadow-lg">
+      <ul className=" flex flex-col gap-2 bg-base-100 w-full rounded-box mt-2 absolute z-10 shadow-lg">
         {searchResults.slice(0, 5).map((item) => (
-          <li
-            key={item.id}
-            className="flex justify-around items-center gap-2"
-          >
+          <li key={item.id} className="flex justify-between items-center gap-2">
             <button
-              className="btn btn-soft btn-success rounded-full"
+              className="btn btn-soft btn-success rounded-full ml-4"
               onClick={async () => {
                 try {
                   await addToUserBucketlist(item.id); // Replace with actual user ID
@@ -94,22 +123,21 @@ const SearchBucketlist = () => {
             >
               <Plus className="w-4 h-4 text-green-500" />
             </button>
-            <p className="font-bold">{item.title}</p>
-            <div className="dropdown dropdown-hover">
-              <button className="btn btn-error btn-soft rounded-full">
+            <p className="font-bold truncate flex-grow text-center">
+              {item.title}
+            </p>
+            <div className="dropdown dropdown-end dropdown-hover mr-4">
+              <button className="btn btn-error btn-soft rounded-full ">
                 <Flag className="w-4 h-4 text-red-500" />
               </button>
               <ul className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52">
                 {["Spam", "Inappropriate", "Other"].map((reason) => (
                   <li
                     key={reason}
-                    className="cursor-pointer border-b"
+                    className="cursor-pointer border-b hover:bg-primary"
                     onClick={async () => {
                       try {
-                        await flagBucketlistItem(
-                          item.id,
-                          reason
-                        ); // Replace with actual user ID
+                        await flagBucketlistItem(item.id, reason); // Replace with actual user ID
                       } catch (error) {
                         console.error("Error adding flag:", error);
                       }
@@ -135,13 +163,14 @@ const SearchBucketlist = () => {
 
       {isModalOpen && (
         <div className="modal modal-open flex items-center justify-center">
-          <div className="modal-box w-96 p-6">
+          <div className="modal-box min-w-96 p-6 modalContainer">
             <h3 className="font-bold text-2xl mb-4">Add New Bucketlist Item</h3>
-            <div className="form-control mb-4">
-              <label className="label">
+            <div className="fieldset mb-4">
+              <label htmlFor="title" className="label">
                 <span className="label-text">Title</span>
               </label>
               <input
+                id="title"
                 type="text"
                 className="input input-bordered"
                 value={newItem.title}
@@ -150,17 +179,38 @@ const SearchBucketlist = () => {
                 }
               />
             </div>
-            <div className="form-control mb-4">
-              <label className="label">
+            <div className="fieldset mb-4">
+              <label htmlFor="description" className="label">
                 <span className="label-text">Description</span>
               </label>
               <textarea
+                id="description"
                 className="textarea textarea-bordered"
                 value={newItem.description}
                 onChange={(e) =>
                   setNewItem({ ...newItem, description: e.target.value })
                 }
               ></textarea>
+            </div>
+            <div className="fieldset mb-4">
+              <span className="label-text">Category</span>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <span
+                    id={`category-${category.id}`}
+                    key={category.id}
+                    className={`badge badge-soft cursor-pointer ${
+                      newItem.category === category.id ? "badge-primary" : ""
+                    }`}
+                    onClick={() =>
+                      setNewItem({ ...newItem, category: category.id })
+                    }
+                    data-tip={category.description}
+                  >
+                    {category.name}
+                  </span>
+                ))}
+              </div>
             </div>
             <div className="modal-action flex justify-between">
               <button className="btn btn-primary" onClick={handleAddNewItem}>
