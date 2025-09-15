@@ -86,6 +86,13 @@ export const addBucketlistItem = async (
     };
 
     const createdItem = await pb.collection("bucketlist_items").create(payload);
+    const addItemForUser = {
+      user: currentUser.id,
+      item: createdItem.id,
+      notes: "",
+      completed: false,
+    };
+    await pb.collection("user_bucketlist").create(addItemForUser);
     toast.success("Bucketlist item added successfully!", {
       position: "top-right",
       duration: 3000,
@@ -113,7 +120,6 @@ export const fetchUserBucketListItems = async (): Promise<
       sort: "-created",
       requestKey: `user_bucketlist_${Date.now()}`, // Unique request key
     });
-    console.log("testing refresh list");
     // Fetch item details for each user_bucketlist entry
     const enrichedResult = await Promise.all(
       result.map(async (entry) => {
@@ -168,7 +174,10 @@ export const fetchUserBucketListItems = async (): Promise<
 
 export const addToUserBucketlist = async (
   itemId: string
-): Promise<UserBucketlistItem[]> => {
+): Promise<{
+  success: boolean;
+  payload: { user: string; item: string; notes: string; completed: boolean };
+}> => {
   try {
     const currentUser = authService.getCurrentUser();
     if (!currentUser) {
@@ -187,8 +196,8 @@ export const addToUserBucketlist = async (
       duration: 3000,
     });
 
-    // Fetch updated bucketlist
-    return await fetchUserBucketListItems();
+    // Return the payload and success status
+    return { success: true, payload };
   } catch (error) {
     toast.error("Error adding to your bucketlist: Please try again.", {
       position: "top-right",

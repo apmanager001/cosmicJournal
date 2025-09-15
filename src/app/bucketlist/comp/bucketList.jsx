@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   fetchUserBucketListItems,
   updateUserBucketlistItem,
@@ -7,6 +8,7 @@ import {
 } from "../../../comp/utility/tanstack/bucketlistService";
 import { Link, Trash2 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
 
 const formatDate = (isoDate) => {
   const date = new Date(isoDate);
@@ -18,37 +20,22 @@ const formatDate = (isoDate) => {
 };
 
 const BucketList = () => {
-  const [bucketListItems, setBucketListItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
+  const {
+    data: bucketListItems = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["userBucketlist"],
+    queryFn: fetchUserBucketListItems,
+  });
+
   const [deleteItemId, setDeleteItemId] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  useEffect(() => {
-    const fetchBucketListItems = async () => {
-      try {
-        console.log('fetching bucket list items');
-        const result = await fetchUserBucketListItems();
-        setBucketListItems(result);
-      } catch (err) {
-        console.error("Error fetching bucket list items:", err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBucketListItems();
-  }, [fetchUserBucketListItems]);
 
   const handleCheckboxChange = async (itemId, newCompletedValue) => {
     try {
       await updateUserBucketlistItem(itemId, { completed: newCompletedValue });
-      setBucketListItems((prevItems) =>
-        prevItems.map((item) =>
-          item.id === itemId ? { ...item, completed: newCompletedValue } : item
-        )
-      );
     } catch (error) {
       console.error("Error updating bucket list item:", error);
     }
@@ -62,9 +49,7 @@ const BucketList = () => {
   const confirmDelete = async () => {
     try {
       await deleteUserBucketlistItem(deleteItemId);
-      setBucketListItems((prevItems) =>
-        prevItems.filter((item) => item.id !== deleteItemId)
-      );
+      queryClient.invalidateQueries({ queryKey: ["userBucketlist"] });
     } catch (error) {
       console.error("Error deleting item:", error);
       toast.error("Failed to remove item. Please try again.", {
@@ -77,7 +62,7 @@ const BucketList = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
   if (error) {
     console.error("BucketList encountered an error:", error);
     return <div>Error loading bucket list items.</div>;
@@ -121,12 +106,14 @@ const BucketList = () => {
                   {formatDate(item.created)}
                 </span>
                 <span className="flex-2 text-right flex justify-center items-center">
-                  <Trash2
-                    color="red"
-                    size={24}
-                    className="cursor-pointer"
-                    onClick={() => handleDeleteClick(item.id)}
-                  />
+                  <button className="btn btn-soft btn-error rounded-full">
+                    <Trash2
+                      color="red"
+                      size={24}
+                      className="cursor-pointer"
+                      onClick={() => handleDeleteClick(item.id)}
+                    />
+                  </button>
                 </span>
               </div>
             </div>

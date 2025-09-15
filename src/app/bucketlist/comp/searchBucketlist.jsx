@@ -1,7 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   fetchBucketlistItems,
+  fetchUserBucketListItems,
   addBucketlistItem,
   addToUserBucketlist,
   flagBucketlistItem,
@@ -11,11 +14,16 @@ import { Flag, Plus, X, Info } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 const SearchBucketlist = () => {
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newItem, setNewItem] = useState({ title: "", description: "" });
   const [categories, setCategories] = useState([]);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["userBucketlist"],
+    queryFn: fetchUserBucketListItems,
+  });
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -49,7 +57,7 @@ const SearchBucketlist = () => {
   };
 
   const handleAddNewItem = async () => {
-    if (!newItem.category) {
+    if (!newItem.category || !newItem.title) {
       toast.error("Please select a category before adding the item.", {
         position: "top-right",
         duration: 3000,
@@ -63,14 +71,7 @@ const SearchBucketlist = () => {
         description: newItem.description,
         category: newItem.category,
       });
-
-      // Simulate adding to user_bucketlist
-      console.log("Adding to user_bucketlist:", {
-        user: "current_user_id", // Replace with actual user ID
-        item: bucketlistItem.id,
-        notes: "",
-        completed: false,
-      });
+      queryClient.invalidateQueries({ queryKey: ["userBucketlist"] });
 
       setIsModalOpen(false);
       setNewItem({ title: "", description: "", category: "" });
@@ -78,6 +79,7 @@ const SearchBucketlist = () => {
       console.error("Error adding new bucketlist item:", error);
     }
   };
+
   return (
     <div className="form-control relative max-w-96">
       <label htmlFor="search" className="label mb-3">
@@ -99,14 +101,14 @@ const SearchBucketlist = () => {
           onChange={handleSearchChange}
           autoComplete="off"
         />
-        {searchTerm && (
+        {searchTerm != "" ? 
           <button
-            className="cursor-pointer absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            className="z-10 cursor-pointer absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
             onClick={clearSearch}
           >
             <X className="w-5 h-5" />
-          </button>
-        )}
+          </button> : ""
+        }
       </div>
       <ul className=" flex flex-col gap-2 bg-base-100 w-full rounded-box mt-2 absolute z-10 shadow-lg">
         {searchResults.slice(0, 5).map((item) => (
@@ -115,7 +117,9 @@ const SearchBucketlist = () => {
               className="btn btn-soft btn-success rounded-full ml-4"
               onClick={async () => {
                 try {
-                  await addToUserBucketlist(item.id); // Replace with actual user ID
+                  clearSearch();
+                  await addToUserBucketlist(item.id);
+                  queryClient.invalidateQueries({ queryKey: ["userBucketlist"] });
                 } catch (error) {
                   console.error("Error adding to user_bucketlist:", error);
                 }
@@ -137,7 +141,8 @@ const SearchBucketlist = () => {
                     className="cursor-pointer border-b hover:bg-primary"
                     onClick={async () => {
                       try {
-                        await flagBucketlistItem(item.id, reason); // Replace with actual user ID
+                        clearSearch();
+                        await flagBucketlistItem(item.id, reason); 
                       } catch (error) {
                         console.error("Error adding flag:", error);
                       }
@@ -153,7 +158,10 @@ const SearchBucketlist = () => {
         {searchTerm.trim() !== "" && (
           <li
             className="bg-success-content text-success cursor-pointer flex justify-center items-center gap-2  shadow-md p-4 mt-2"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setIsModalOpen(true);
+              clearSearch();
+            }}
           >
             <Plus className="w-4 h-4 mr-2" />
             Add New Item
