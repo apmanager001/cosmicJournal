@@ -101,14 +101,16 @@ const SearchBucketlist = () => {
           onChange={handleSearchChange}
           autoComplete="off"
         />
-        {searchTerm != "" ? 
+        {searchTerm != "" ? (
           <button
             className="z-10 cursor-pointer absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
             onClick={clearSearch}
           >
             <X className="w-5 h-5" />
-          </button> : ""
-        }
+          </button>
+        ) : (
+          ""
+        )}
       </div>
       <ul className=" flex flex-col gap-2 bg-base-100 w-full rounded-box mt-2 absolute z-10 shadow-lg">
         {searchResults.slice(0, 5).map((item) => (
@@ -119,7 +121,9 @@ const SearchBucketlist = () => {
                 try {
                   clearSearch();
                   await addToUserBucketlist(item.id);
-                  queryClient.invalidateQueries({ queryKey: ["userBucketlist"] });
+                  queryClient.invalidateQueries({
+                    queryKey: ["userBucketlist"],
+                  });
                 } catch (error) {
                   console.error("Error adding to user_bucketlist:", error);
                 }
@@ -142,7 +146,7 @@ const SearchBucketlist = () => {
                     onClick={async () => {
                       try {
                         clearSearch();
-                        await flagBucketlistItem(item.id, reason); 
+                        await flagBucketlistItem(item.id, reason);
                       } catch (error) {
                         console.error("Error adding flag:", error);
                       }
