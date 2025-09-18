@@ -112,9 +112,9 @@ const SearchBucketlist = () => {
           ""
         )}
       </div>
-      <ul className=" flex flex-col gap-2 bg-base-100 w-full rounded-box mt-2 absolute z-10 shadow-lg">
+      <ul className={`flex flex-col gap-2 bg-base-100 pt-2 w-full rounded-b-2xl absolute z-10 shadow-lg ${searchTerm? 'border': ''} border-base-content/40`}>
         {searchResults.slice(0, 5).map((item) => (
-          <li key={item.id} className="flex justify-between items-center gap-2">
+          <li key={item.id} className="flex justify-between items-center gap-2 ">
             <button
               className="btn btn-soft btn-success rounded-full ml-4"
               onClick={async () => {
@@ -159,18 +159,29 @@ const SearchBucketlist = () => {
             </div>
           </li>
         ))}
-        {searchTerm.trim() !== "" && (
-          <li
-            className="bg-success-content text-success cursor-pointer flex justify-center items-center gap-2  shadow-md p-4 mt-2"
-            onClick={() => {
-              setIsModalOpen(true);
-              clearSearch();
-            }}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add New Item
-          </li>
-        )}
+        {searchTerm.trim() !== "" &&
+          (data?.length >
+          parseInt(
+            process.env.NEXT_PUBLIC_FREE_TIER_BUCKET_LIMIT || "0",
+            10
+          ) ? (
+            <button className="btn btn-lg btn-error text-error-content text-sm cursor-pointer flex justify-center items-center gap-2 shadow-md p-4 mt-2 rounded-b-2xl">
+              <Info className="w-6 h-6 mr-2" />
+              Bucketlist limit reached. Please upgrade your plan to add more
+              items.
+            </button>
+          ) : (
+            <button
+              className="btn btn-lg btn-success text-success-content cursor-pointer flex justify-center items-center gap-2 shadow-md p-4 mt-2 rounded-b-2xl"
+              onClick={() => {
+                setIsModalOpen(true);
+                clearSearch();
+              }}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add New Item
+            </button>
+          ))}
       </ul>
 
       {isModalOpen && (
