@@ -5,7 +5,7 @@ import { AuthProvider } from "@/comp/utility/tanstack/authContext";
 import { SubscriptionProvider } from "@/comp/utility/tanstack/subscriptionContext";
 import { QueryProvider } from "@/comp/utility/tanstack/queryProvider";
 import Header from "@/comp/headers/header";
-import CosmicFooter from "@/comp/utility/CosmicFooter";
+import CosmicFooter from "@/comp/headers/CosmicFooter";
 import Toasters from "@/comp/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -29,7 +29,7 @@ export default function RootLayout({
             <SubscriptionProvider>
               <div className="min-h-screen">
                 <Header />
-                <main className="relative z-10">{children}</main>
+                <main className="relative z-10 min-h-screen">{children}</main>
                 <CosmicFooter />
               </div>
               <Toasters />

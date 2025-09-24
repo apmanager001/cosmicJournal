@@ -76,6 +76,7 @@ const SearchGoals = () => {
                   setNewGoal({ ...newGoal, title: e.target.value })
                 }
                 autoComplete="off"
+                required
               />
               <textarea
                 id="goal-notes"

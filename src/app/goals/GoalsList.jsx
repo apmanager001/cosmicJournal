@@ -6,7 +6,7 @@ import {
   updateUserGoal,
   deleteUserGoal,
 } from "@/comp/utility/tanstack/goalsService";
-import { Trash2 } from "lucide-react";
+import { Trash2, NotebookText } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
@@ -22,6 +22,13 @@ const GoalsList = () => {
   });
   const [deleteGoalId, setDeleteGoalId] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [openNotesId, setOpenNotesId] = useState(null);
+
+  const toggleNotes = (id) => {
+    setOpenNotesId((prev) => (prev === id ? null : id));
+  };
+
+
 
   const handleCheckboxChange = async (goalId, newCompletedValue) => {
     try {
@@ -53,7 +60,11 @@ const GoalsList = () => {
     }
   };
 
-  if (isLoading) return <div>Loading goals...</div>;
+  if (isLoading) return (
+    <div className="min-h-72 flex justify-center items-center">
+      <span className="loading loading-bars loading-lg loading-primary"></span>
+    </div>
+  );
   if (error) return <div>Error loading goals.</div>;
 
   const incompleteGoals = goals.filter((goal) => !goal.completed);
@@ -79,22 +90,32 @@ const GoalsList = () => {
                 checked={goal.completed || false}
                 onChange={() => handleCheckboxChange(goal.id, true)}
               />
-              <div className="flex justify-between items-center w-full">
-                <span className="flex-1 text-left">
+              <div className="flex justify-around items-center w-full">
+                <span className="flex-2 text-left">
                   {goal.title || "Unknown Goal"}
                 </span>
-                <span className="flex-1 text-right">
+                <div className="flex justify-end gap-2">
+                  <button
+                    className="btn btn-soft btn-info rounded-full"
+                    onClick={() => toggleNotes(goal.id)}
+                  >
+                    <NotebookText />
+                  </button>
                   <button className="btn btn-soft btn-error rounded-full">
                     <Trash2
-                      color="red"
                       size={24}
                       className="cursor-pointer"
                       onClick={() => handleDeleteClick(goal.id)}
                     />
                   </button>
-                </span>
+                </div>
               </div>
             </div>
+            {openNotesId === goal.id && (
+              <div className="ml-8 mt-1 text-sm p-2 border border-base-content/10 rounded-2xl">
+                {goal.notes || "No notes available."}
+              </div>
+            )}
           </li>
         ))}
       </ul>
@@ -113,12 +134,32 @@ const GoalsList = () => {
                 checked={goal.completed || false}
                 onChange={() => handleCheckboxChange(goal.id, false)}
               />
-              <div className="flex justify-between w-full">
-                <span className="flex-1 text-left line-through">
+              <div className="flex justify-around items-center w-full">
+                <span className="flex-2 text-left">
                   {goal.title || "Unknown Goal"}
                 </span>
+                <div className="flex justify-end gap-2">
+                  <button
+                    className="btn btn-soft btn-info rounded-full"
+                    onClick={() => toggleNotes(goal.id)}
+                  >
+                    <NotebookText />
+                  </button>
+                  <button className="btn btn-soft btn-error rounded-full">
+                    <Trash2
+                      size={24}
+                      className="cursor-pointer"
+                      onClick={() => handleDeleteClick(goal.id)}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
+            {openNotesId === goal.id && (
+              <div className="ml-8 mt-1 text-sm p-2 border border-base-content/10 rounded-2xl">
+                {goal.notes || "No notes available."}
+              </div>
+            )}
           </li>
         ))}
       </ul>
@@ -129,7 +170,10 @@ const GoalsList = () => {
             <h3 className="font-bold text-lg">Confirm Deletion</h3>
             <p className="py-4">Are you sure you want to remove this goal?</p>
             <div className="modal-action">
-              <button className="btn btn-error rounded-2xl" onClick={confirmDelete}>
+              <button
+                className="btn btn-error rounded-2xl"
+                onClick={confirmDelete}
+              >
                 Yes, Delete
               </button>
               <button

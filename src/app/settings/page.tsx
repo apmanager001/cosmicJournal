@@ -134,9 +134,9 @@ function SettingsContent() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto md:px-4 md:py-8">
       {/* Header */}
-      <div className="customContainer p-6 mb-8">
+      <div className="hidden md:block customContainer p-6 mb-8">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Settings</h1>
@@ -162,8 +162,35 @@ function SettingsContent() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
+
+        <div className="md:col-span-3 space-y-8 mb-24 md:mb-0">
+          {/* Account Settings */}
+          <div className="p-6 customContainer">
+            <div className="flex items-center mb-6">
+              <Shield className="w-6 h-6 mr-3" />
+              <h2 className="text-xl font-semibold">Account Settings</h2>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                <EmailSettings />
+              </div>
+
+              <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                <div>
+                  <h3 className="font-medium">Name</h3>
+                  <p className="text-sm text-gray-400">
+                    {user?.name || "Not set"}
+                  </p>
+                </div>
+                <button className="text-sm text-purple-400 light:text-purple-600 hover:text-purple-700 cursor-pointer">
+                  Edit
+                </button>
+              </div>
+            </div>
+          </div>
         {/* Main Settings */}
-        <div className="lg:col-span-2 space-y-8">
+
           {/* Notification Preferences */}
           <div className="customContainer p-6">
             <div className="flex items-center mb-6">
@@ -297,36 +324,11 @@ function SettingsContent() {
               </button>
             </div>
           </div>
-          {/* Account Settings */}
-          <div className="p-6 customContainer">
-            <div className="flex items-center mb-6">
-              <Shield className="w-6 h-6 mr-3" />
-              <h2 className="text-xl font-semibold">Account Settings</h2>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
-               <EmailSettings />
-              </div>
-
-              <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
-                <div>
-                  <h3 className="font-medium">Name</h3>
-                  <p className="text-sm text-gray-400">
-                    {user?.name || "Not set"}
-                  </p>
-                </div>
-                <button className="text-sm text-purple-400 light:text-purple-600 hover:text-purple-700 cursor-pointer">
-                  Edit
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Subscription Sidebar */}
+        {/*  
         <div className="space-y-8">
-          {/* Current Plan */}
+       
           <div className="customContainer p-6">
             <div className="flex items-center mb-4">
               <CreditCard className="w-6 h-6 text-green-600 mr-3" />
@@ -370,7 +372,7 @@ function SettingsContent() {
             )}
           </div>
 
-          {/* Available Plans */}
+  
           {!subscription?.hasSubscription && (
             <div className="space-y-4" id="subscribe">
               {SUBSCRIPTION_PLANS.map((plan) => (
@@ -407,7 +409,7 @@ function SettingsContent() {
               ))}
             </div>
           )}
-        </div>
+        </div>*/}
       </div>
     </div>
   );

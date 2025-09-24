@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cosmic Journal
+
+[https://cosmicjournal.app](https://cosmicjournal.app)
+
+_Secure site that allows users to track daily habits they are working on. Along with allowing users to provide daily journal entries they can document. Users can also make lists of short term goals and longterm bucket list goals._
+
+<!--
+## Demo
+
+[Live Demo](https://your-demo-url.com)  
+Screenshots:  
+![Screenshot](screenshots/main.png)
+ -->
+
+## Tech Stack
+
+- **Frontend:** React / NEXTjs / Tailwind / tanstack
+- **Backend:** POCKETbase
+- **Database:** POCKETbase 
+- **Other:** Docker / Coolify
+
+## Features
+
+- User Authorization
+    - Google SSO
+- Add Habits and complete them on a daily bases
+- Add Journal Entrys Daily
+    - Users can Bookmark Journal Entries
+- Add short term goals
+    - Users can complete goals which adds to completed list
+    - Users can edit existing goals
+    - Users can Delete goals
+- Add Bucket List Goals
+    - Users can complete bucket list items which adds to completed list
+    - Users can Delete bucket list
+    - Adding Bucket List item can be global so others can add that item to their list
+- Website Theme toggle
+- Verify Email
+- Email Notifications
 
 ## Getting Started
 
-First, run the development server:
+
+
+### Running Locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Start frontend
+cd frontend
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to change.
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
+[MIT](LICENSE)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contact
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Created by [@apmanager001](https://github.com/apmanager001)  
+Contact: contact@robertfoley.us

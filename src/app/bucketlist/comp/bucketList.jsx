@@ -63,7 +63,11 @@ const BucketList = () => {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return (
+    <div className="min-h-72 flex justify-center items-center">
+      <span className="loading loading-bars loading-lg loading-primary"></span>
+    </div>
+  );
   if (error) {
     console.error("BucketList encountered an error:", error);
     return <div>Error loading bucket list items.</div>;

@@ -169,7 +169,7 @@ const DailyJournal = ({ selectedDate, bookmarked=false }) => {
   }
 
   return (
-    <div className="bg-base-300/50 rounded-lg hover:bg-base-300/70 transition-colors">
+    <div className="bg-base-300/50 rounded-lg hover:bg-base-300/70 transition-colors mx-4 md:mx-0">
       {/* Header - Clickable to toggle dropdown */}
       <div
         className="flex flex-row items-center justify-between p-4 cursor-pointer"

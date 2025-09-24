@@ -28,7 +28,7 @@ const ButtonComp = () => {
 
       {showGoalsModal && (
         <div className="modal modal-open">
-          <div className="modal-box bg-black/30 border border-base-200">
+          <div className="modal-box bg-black/30 backdrop-blur-md border border-base-200 text-base-content p-6 rounded-xl shadow-xl">
             <div className="flex justify-end items-center mb-4">
               <button
                 className="btn btn-sm btn-circle btn-ghost"
@@ -45,7 +45,7 @@ const ButtonComp = () => {
 
       {showBucketListModal && (
         <div className="modal modal-open">
-          <div className="modal-box modalContainer">
+          <div className="modal-box bg-black/30 backdrop-blur-md border border-base-200 text-base-content p-6 rounded-xl shadow-xl">
             <div className="flex justify-between items-center mb-4">
               <button
                 className="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost"

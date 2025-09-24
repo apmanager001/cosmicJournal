@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { NotebookPen, NotebookText } from "lucide-react";
+import { NotebookPen, NotebookText, ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import {
   useUserHabits,
   useHabitLogs,
@@ -120,7 +120,7 @@ function HabitRow({
 
   return (
     <>
-      <div className="flex flex-row items-center gap-4 p-4 bg-base-300/50 rounded-lg hover:bg-base-300/70 transition-colors">
+      <div className="flex flex-row items-center gap-4 p-4 bg-base-300/50 rounded-lg hover:bg-base-300/70 transition-colors mx-4 md:mx-0">
         <span className="text-3xl flex-shrink-0">{habit.habit.icon}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
@@ -428,65 +428,13 @@ export default function WeeklyCalendar({
       }
     }
   }, [selectedDate, weekDates]);
-
   return (
     // <div
     //   className={`bg-white/10 backdrop-blur-sm rounded-xl shadow-lg border border-primary/20 pt-4 md:p-6 ${className}`}
     // >
-    <div className={`customContainer pt-4 md:p-6 ${className}`}>
-      <div className="flex items-center justify-between mb-1 mx-2 md:mx-0 gap-4">
-        <div>
-          <h2 className="text-center text-xl font-semibold text-base-content">
-            {getWeekDisplayText()}
-          </h2>
-        </div>
-        <div className="bg-base-300/50 rounded-lg p-2 text-center">
-          <div className="text-lg font-bold text-base-content">
-            {currentSelectedDate.toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </div>
-          <div className="text-sm text-base-content/70">
-            {currentSelectedDate.toLocaleDateString("en-US", {
-              weekday: "long",
-            })}
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center justify-between mx-2 mb-1">
-        <p className="text-xs text-base-content/50">Timezone: {userTimezone}</p>
-        <button
-          onClick={goToToday}
-          className="btn btn-sm btn-neutral rounded-full cursor-pointer text-base-content/70"
-        >
-          Today
-        </button>
-      </div>
-
+    <div className={`customContainer md:p-6 ${className} min-h-screen`}>
       {/* Week Header with Navigation */}
-      <div className="flex items-center justify-between mb-4 bg-base-300/50 md:rounded-lg p-2">
-        <button
-          onClick={goToPreviousWeek}
-          className="md:p-2 rounded-full hover:bg-base-300 transition-colors cursor-pointer"
-          aria-label="Previous week"
-        >
-          <svg
-            className="w-5 h-5 text-base-content/60"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
-
+      <div className="flex items-center justify-between  bg-base-300/50 md:rounded-lg p-2">
         <div className="grid grid-cols-7 md:gap-2 flex-1 md:mx-4">
           {weekDates.map((date) => {
             const isSelected =
@@ -523,26 +471,63 @@ export default function WeeklyCalendar({
             );
           })}
         </div>
-
+      </div>
+      <div className="flex justify-between items-center px-2 mb-2 gap-2 w-full">
+        <p className="text-xs text-base-content/50 text-left sm:text-left">
+          Timezone: {userTimezone}
+        </p>
         <button
-          onClick={goToNextWeek}
-          className="md:p-2 rounded-full hover:bg-base-300 transition-colors cursor-pointer"
-          aria-label="Next week"
+          onClick={goToToday}
+          className="btn btn-xs btn-neutral rounded-full text-xs flex items-center mt-1"
         >
-          <svg
-            className="w-5 h-5 text-base-content/60"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          <CalendarIcon className="w-3 h-3" />
+          Today
         </button>
+      </div>
+      <div className="flex items-center justify-between mb-1 mx-2 md:mx-0 gap-4">
+        <div className="flex items-center justify-between gap-2 mb-2 px-2 w-full">
+          <div className="flex items-center justify-left gap-2">
+            <button
+              onClick={goToPreviousWeek}
+              className="md:p-2 rounded-full hover:bg-base-300 transition-colors cursor-pointer"
+              aria-label="Previous week"
+            >
+              <ChevronLeft className="text-base-content/60" />
+            </button>
+            {getWeekDisplayText()}
+            <button
+              onClick={goToNextWeek}
+              className="md:p-2 rounded-full hover:bg-base-300 transition-colors cursor-pointer"
+              aria-label="Next week"
+            >
+              <ChevronRight className="text-base-content/60" />
+            </button>
+          </div>
+          <div className="flex justify-center items-center gap-2">
+            <div className="text-lg font-bold text-base-content sm:hidden">
+              {currentSelectedDate.toLocaleDateString("en-US", {
+                month: "2-digit",
+                day: "2-digit",
+                year: "numeric",
+              })}
+            </div>
+
+            {/* Desktop: Month Day, Year */}
+            <div className="text-lg font-bold text-base-content hidden sm:block">
+              {currentSelectedDate.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </div>
+
+            <div className="text-sm text-base-content/70">
+              {currentSelectedDate.toLocaleDateString("en-US", {
+                weekday: "long",
+              })}
+            </div>
+          </div>
+        </div>
       </div>
       <ButtonComp />
       <div className="mb-3">

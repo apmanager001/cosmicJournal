@@ -1,9 +1,25 @@
-import React from "react";
+'use client'
+import React, {useState} from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useAuth } from "../utility/tanstack/authContext";
+import ThemeToggle from "../utility/ThemeToggle";
+import HeaderLinks from "./headerLinks";
+
+
+
+
+
+
 import {
   Rocket,
+  CircleUser,
+  LogOut,
+  Star,
   Moon,
   Heart,
+  House,
+  LayoutDashboard,
   Github,
   Twitter,
   Mail,
@@ -15,12 +31,20 @@ import {
   HelpCircle,
   Phone,
   Shield,
+  X,
+  Menu,
 } from "lucide-react";
 
 const CosmicFooter: React.FC = () => {
+  const { user, isLoading, logout } = useAuth();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+    const toggleMobileMenu = () => {
+      setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
   return (
     <footer className="bg-base-200 border-t border-base-300 mt-auto">
-      <div className="container mx-auto px-4 py-12">
+      <div className="hidden md:block container mx-auto px-4 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
@@ -175,6 +199,101 @@ const CosmicFooter: React.FC = () => {
           </div>
         </div>
       </div>
+      <div className="dock md:hidden z-10">
+        <Link href="/" >
+          <House />
+          <span className="dock-label">Home</span>
+        </Link>
+
+        <Link
+          href="/dashboard"
+         
+        >
+          <LayoutDashboard />
+          <span className="dock-label">Dashboard</span>
+        </Link>
+
+        <Link
+          href="/settings"
+        
+        >
+          <Settings />
+          <span className="dock-label">Settings</span>
+        </Link>
+
+        <button
+          onClick={toggleMobileMenu}
+          aria-label="Toggle mobile menu"
+        >
+          <Menu />
+          <span className="dock-label">Menu</span>
+        </button>
+      </div>
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 lg:hidden"
+          onClick={toggleMobileMenu}
+        >
+          <div className="fixed top-0 right-0 w-80 h-full bg-base-100 shadow-2xl p-6 ">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold text-base-content">Menu</h3>
+              <button
+                onClick={toggleMobileMenu}
+                className="btn btn-ghost btn-circle btn-sm"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Mobile Navigation */}
+            <nav className="mb-6">
+              <ul className="menu menu-vertical gap-2">
+                <HeaderLinks />
+              </ul>
+            </nav>
+
+            {/* Mobile Actions */}
+            <div className="space-y-4">
+              <ThemeToggle />
+              {user ? (
+                <div className="space-y-2">
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-3 p-3 bg-base-200 rounded-lg"
+                  >
+                    <CircleUser size={20} className="text-base-content" />
+                    <span className="text-sm text-base-content">
+                      {user.name || user.email || "User"}
+                    </span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      toggleMobileMenu();
+                      // router.push("/");
+                      window.location.href = "/";
+                    }}
+                    className="flex items-center gap-3 p-3 bg-error/10 hover:bg-error/20 rounded-lg w-full text-left transition-colors"
+                  >
+                    <LogOut size={20} className="text-error" />
+                    <span className="text-sm text-error">Sign Out</span>
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={toggleMobileMenu}
+                  className="btn btn-primary w-full"
+                >
+                  <Star className="w-4 h-4 mr-2" />
+                  Sign In
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </footer>
   );
 };

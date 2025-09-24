@@ -42,6 +42,7 @@ env.example
 next-env.d.ts
 
 #readme
+readme
 POCKETBASE_DB_STRUCTURE.md
 OAUTH_SETUP.md
 AUTH_SETUP.md

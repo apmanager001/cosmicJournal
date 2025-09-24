@@ -30,7 +30,7 @@ const Header = () => {
   }
 
   return (
-    <header className="navbar bg-base-100 border-b border-base-300 shadow-sm sticky top-0 z-50">
+    <header className="hidden md:navbar bg-base-100 border-b border-base-300 shadow-sm sticky top-0 z-50">
       {/* Desktop Header */}
       <div className="navbar-start">
         <div className="flex items-center gap-3">
