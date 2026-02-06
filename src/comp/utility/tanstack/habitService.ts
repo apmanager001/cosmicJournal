@@ -8,6 +8,29 @@ import {
   NotificationSettings,
 } from "./habitTypes";
 
+// Normalize various date/time string formats to a YYYY-MM-DD day string
+const normalizeDateToDayString = (date: string): string => {
+  if (!date) return "";
+
+  // Handle ISO strings (2025-08-18T12:34:56Z) or space-separated
+  const firstPart = date.split("T")[0].split(" ")[0];
+
+  // Basic guard in case something unexpected is passed in
+  if (!/\d{4}-\d{2}-\d{2}/.test(firstPart)) {
+    try {
+      const parsed = new Date(date);
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed.toISOString().split("T")[0];
+      }
+    } catch {
+      // fall through to empty
+    }
+    return "";
+  }
+
+  return firstPart;
+};
+
 export const habitService = {
   // Get all public habits
   getPublicHabits: async (): Promise<PublicHabit[]> => {
@@ -23,7 +46,7 @@ export const habitService = {
 
   // Create a new public habit
   createPublicHabit: async (
-    habitData: Omit<PublicHabit, "id" | "created" | "updated">
+    habitData: Omit<PublicHabit, "id" | "created" | "updated">,
   ): Promise<PublicHabit> => {
     try {
       const record = await pb.collection("public_habits").create(habitData);
@@ -54,7 +77,7 @@ export const habitService = {
 
   // Create a new user habit
   createUserHabit: async (
-    habitData: Omit<UserHabit, "id" | "created" | "updated" | "habit">
+    habitData: Omit<UserHabit, "id" | "created" | "updated" | "habit">,
   ): Promise<UserHabit> => {
     try {
       // Ensure we have the userId from the authenticated user
@@ -89,7 +112,7 @@ export const habitService = {
   // Update user habit
   updateUserHabit: async (
     id: string,
-    updates: Partial<UserHabit>
+    updates: Partial<UserHabit>,
   ): Promise<UserHabit> => {
     try {
       const record = await pb.collection("user_habits").update(id, updates);
@@ -124,7 +147,7 @@ export const habitService = {
       // Handle auto-cancelled requests gracefully
       if (
         (error as { message?: string; name?: string })?.message?.includes(
-          "autocancelled"
+          "autocancelled",
         ) ||
         (error as { name?: string })?.name === "AbortError"
       ) {
@@ -141,7 +164,7 @@ export const habitService = {
   logHabitCompletion: async (
     habitId: string,
     completed: boolean,
-    notes?: string
+    notes?: string,
   ): Promise<HabitLog> => {
     try {
       const today = new Date().toISOString().split("T")[0];
@@ -176,7 +199,7 @@ export const habitService = {
       // Handle auto-cancelled requests gracefully
       if (
         (error as { message?: string; name?: string })?.message?.includes(
-          "autocancelled"
+          "autocancelled",
         ) ||
         (error as { name?: string })?.name === "AbortError"
       ) {
@@ -202,7 +225,7 @@ export const habitService = {
 
       // Sort logs by date (newest first)
       const sortedLogs = logs.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       );
 
       // Calculate current streak
@@ -229,7 +252,7 @@ export const habitService = {
               const currentDate = new Date(log.date);
               const prevDate = new Date(prevLog.date);
               const diffTime = Math.abs(
-                currentDate.getTime() - prevDate.getTime()
+                currentDate.getTime() - prevDate.getTime(),
               );
               const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -267,10 +290,10 @@ export const habitService = {
       // Handle auto-cancelled requests gracefully
       if (
         (error as { message?: string; name?: string })?.message?.includes(
-          "autocancelled"
+          "autocancelled",
         ) ||
         (error as { message?: string; name?: string })?.message?.includes(
-          "Request was cancelled"
+          "Request was cancelled",
         ) ||
         (error as { name?: string })?.name === "AbortError"
       ) {
@@ -286,10 +309,10 @@ export const journalService = {
   // Get journal entry for a specific date
   getJournalEntry: async (date: string): Promise<JournalEntry | null> => {
     try {
-      // Query for entries on the specific date using date range
-      // This handles both YYYY-MM-DD and YYYY-MM-DD HH:MM:SS formats
-      const startOfDay = `${date} 00:00:00`;
-      const endOfDay = `${date} 23:59:59`;
+      // Normalize to a day string and query for entries on that day
+      const day = normalizeDateToDayString(date);
+      const startOfDay = `${day} 00:00:00`;
+      const endOfDay = `${day} 23:59:59`;
 
       const records = await pb.collection("journal_entries").getList(1, 1, {
         filter: `date >= "${startOfDay}" && date <= "${endOfDay}" && userId = "${pb.authStore.model?.id}"`,
@@ -331,11 +354,12 @@ export const journalService = {
 
   // Create or update journal entry
   saveJournalEntry: async (
-    entry: Omit<JournalEntry, "id" | "created" | "updated">
+    entry: Omit<JournalEntry, "id" | "created" | "updated">,
   ): Promise<JournalEntry> => {
     try {
-      // Check if entry already exists for this date
-      const existingEntry = await journalService.getJournalEntry(entry.date);
+      // Use normalized day string to check for an existing entry for that day
+      const day = normalizeDateToDayString(entry.date);
+      const existingEntry = await journalService.getJournalEntry(day);
 
       if (existingEntry) {
         // Update existing entry
@@ -352,6 +376,7 @@ export const journalService = {
       } else {
         // Create new entry
         const record = await pb.collection("journal_entries").create({
+          // Store the exact date string (which may include time)
           ...entry,
           userId: pb.authStore.model?.id,
           bookmarked: entry.bookmarked || false, // Default to false if not provided
@@ -363,10 +388,22 @@ export const journalService = {
     }
   },
 
+  // Get journal entry by id
+  getJournalEntryById: async (id: string): Promise<JournalEntry | null> => {
+    try {
+      if (!id) return null;
+      const record = await pb.collection("journal_entries").getOne(id);
+      return record as unknown as JournalEntry;
+    } catch (error) {
+      // If not found, PocketBase throws; return null for missing entries
+      return null;
+    }
+  },
+
   // Toggle bookmark status of a journal entry
   toggleBookmark: async (
     entryId: string,
-    bookmarked: boolean
+    bookmarked: boolean,
   ): Promise<JournalEntry> => {
     try {
       const record = await pb.collection("journal_entries").update(entryId, {
@@ -408,7 +445,7 @@ export const notificationService = {
 
   // Update notification settings
   updateNotificationSettings: async (
-    settings: Partial<NotificationSettings>
+    settings: Partial<NotificationSettings>,
   ): Promise<NotificationSettings> => {
     try {
       const existingSettings =

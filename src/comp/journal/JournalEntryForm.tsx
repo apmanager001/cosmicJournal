@@ -58,7 +58,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
 
   const handleChange = (
     field: keyof typeof formData,
-    value: string | boolean
+    value: string | boolean,
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -73,14 +73,14 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
     if (!existingEntry) {
       if (!canPerformAction("canCreateJournalEntries")) {
         alert(
-          "You don't have permission to create journal entries. Please upgrade to Pro."
+          "You don't have permission to create journal entries. Please upgrade to Pro.",
         );
         return;
       }
 
       if (hasReachedLimit("journalEntries", allEntries?.length || 0)) {
         alert(
-          "You've reached your journal entry limit on the free plan. Please upgrade to Pro for unlimited entries."
+          "You've reached your journal entry limit on the free plan. Please upgrade to Pro for unlimited entries.",
         );
         upgradeToPro();
         return;
@@ -107,6 +107,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
         whatIDid: formData.whatIDid.trim(),
         whatILearned: formData.whatILearned.trim(),
         additionalNotes: formData.additionalNotes.trim(),
+        mood: formData.mood,
         bookmarked: formData.bookmarked,
       });
 
@@ -301,11 +302,11 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
                 !formData.bookmarked &&
                 hasReachedLimit(
                   "bookmarks",
-                  allEntries?.filter((e) => e.bookmarked).length || 0
+                  allEntries?.filter((e) => e.bookmarked).length || 0,
                 )
               ) {
                 alert(
-                  "You've reached your bookmark limit on the free plan. Please upgrade to Pro for unlimited bookmarks."
+                  "You've reached your bookmark limit on the free plan. Please upgrade to Pro for unlimited bookmarks.",
                 );
                 upgradeToPro();
                 return;

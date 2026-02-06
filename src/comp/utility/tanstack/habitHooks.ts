@@ -65,7 +65,7 @@ export const useCreateUserHabit = () => {
 
   return useMutation({
     mutationFn: (
-      habitData: Omit<UserHabit, "id" | "created" | "updated" | "habit">
+      habitData: Omit<UserHabit, "id" | "created" | "updated" | "habit">,
     ) => habitService.createUserHabit(habitData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userHabits", user?.id] });
@@ -185,7 +185,7 @@ export const useLogHabitCompletion = () => {
 };
 
 export const useHabitLogs = (
-  habitId: string
+  habitId: string,
 ): ReturnType<
   typeof useQuery<HabitLog[], Error, HabitLog[], [string, string]>
 > => {
@@ -294,6 +294,17 @@ export const useJournalEntry = (date: string) => {
     queryFn: () => journalService.getJournalEntry(date),
     enabled: !!user?.id && !!date,
     staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+export const useJournalEntryById = (id: string) => {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ["journalEntryById", id, user?.id],
+    queryFn: () => journalService.getJournalEntryById(id),
+    enabled: !!user?.id && !!id,
+    staleTime: 2 * 60 * 1000,
   });
 };
 

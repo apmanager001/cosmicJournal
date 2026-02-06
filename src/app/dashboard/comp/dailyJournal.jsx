@@ -8,7 +8,7 @@ import {
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 
-const DailyJournal = ({ selectedDate, bookmarked=false }) => {
+const DailyJournal = ({ selectedDate, bookmarked = false }) => {
   // Ensure selectedDate is a Date object at the start
   if (!(selectedDate instanceof Date)) {
     selectedDate = new Date(selectedDate);
@@ -76,14 +76,14 @@ const DailyJournal = ({ selectedDate, bookmarked=false }) => {
     if (!existingEntry) {
       if (!canPerformAction("canCreateJournalEntries")) {
         alert(
-          "You don't have permission to create journal entries. Please upgrade to Pro."
+          "You don't have permission to create journal entries. Please upgrade to Pro.",
         );
         return;
       }
 
       if (hasReachedLimit("journalEntries", allEntries?.length || 0)) {
         alert(
-          "You've reached your journal entry limit on the free plan. Please upgrade to Pro for unlimited entries."
+          "You've reached your journal entry limit on the free plan. Please upgrade to Pro for unlimited entries.",
         );
         upgradeToPro();
         return;
@@ -110,6 +110,7 @@ const DailyJournal = ({ selectedDate, bookmarked=false }) => {
         whatIDid: formData.whatIDid.trim(),
         whatILearned: formData.whatILearned.trim(),
         additionalNotes: formData.additionalNotes.trim(),
+        mood: formData.mood,
         bookmarked: formData.bookmarked,
       });
     } catch {
@@ -242,12 +243,12 @@ const DailyJournal = ({ selectedDate, bookmarked=false }) => {
                   {isToday
                     ? "Today's Journal"
                     : selectedDate
-                    ? selectedDate.toLocaleDateString("en-US", {
-                        weekday: "long",
-                        month: "short",
-                        day: "numeric",
-                      })
-                    : formatDate(journalDate)}
+                      ? selectedDate.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : formatDate(journalDate)}
                 </h3>
                 <p className="text-sm">
                   {isToday
@@ -275,11 +276,11 @@ const DailyJournal = ({ selectedDate, bookmarked=false }) => {
                     !formData.bookmarked &&
                     hasReachedLimit(
                       "bookmarks",
-                      allEntries?.filter((e) => e.bookmarked).length || 0
+                      allEntries?.filter((e) => e.bookmarked).length || 0,
                     )
                   ) {
                     alert(
-                      "You've reached your bookmark limit on the free plan. Please upgrade to Pro for unlimited bookmarks."
+                      "You've reached your bookmark limit on the free plan. Please upgrade to Pro for unlimited bookmarks.",
                     );
                     upgradeToPro();
                     return;
@@ -388,7 +389,7 @@ const DailyJournal = ({ selectedDate, bookmarked=false }) => {
                 placeholder="Any other thoughts or reflections..."
               />
             </div>
-                <div className='divider'></div>
+            <div className="divider"></div>
             {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
               <button

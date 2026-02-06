@@ -99,32 +99,32 @@ export default function SubscriptionLimitBanner({
   // Show approaching limit warning
   return (
     <div
-      className={`bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 ${className}`}
+      className={`bg-base-200 rounded-lg p-4 customContainer`}
     >
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0">
-          <Sparkles className="w-5 h-5 text-blue-600" />
+          <Sparkles className="w-5 h-5 text-primary" />
         </div>
         <div className="flex-1">
-          <h3 className="text-sm font-medium text-blue-800 mb-1">
+          <h3 className="text-sm font-medium  mb-1">
             {getResourceIcon()} Approaching{" "}
             {getResourceLabel().charAt(0).toUpperCase() +
               getResourceLabel().slice(1)}{" "}
             Limit
           </h3>
-          <p className="text-sm text-blue-700 mb-3">
+          <p className="text-sm text-base-content/60 mb-3">
             You&apos;ve used {currentCount} of {limit} {getResourceLabel()} on
             the free plan. Consider upgrading to Pro for unlimited access!
           </p>
           <div className="flex flex-col sm:flex-row gap-2">
             <button
               onClick={upgradeToPro}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+              className="btn btn-primary rounded-xl"
             >
               <Crown className="w-4 h-4" />
               Upgrade to Pro
             </button>
-            <button className="px-4 py-2 text-blue-700 text-sm font-medium hover:text-blue-800 transition-colors">
+            <button className="btn btn-secondary rounded-xl">
               Maybe Later
             </button>
           </div>

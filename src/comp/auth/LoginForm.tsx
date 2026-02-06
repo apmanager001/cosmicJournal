@@ -69,7 +69,7 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-white/20 rounded-lg shadow-xl p-8 backdrop-blur-sm">
+    <div className="">
       <form onSubmit={handleSubmit} className="space-y-4 ">
         {/* Google */}
         <div className="flex flex-col gap-2 justify-center">
@@ -108,7 +108,7 @@ const LoginForm: React.FC = () => {
             </svg>
             {isLoading ? "Signing in..." : "Login with Google"}
           </button>
-          <button
+          {/* <button
             type="button"
             onClick={handleFacebookLogin}
             disabled={isLoading}
@@ -127,8 +127,8 @@ const LoginForm: React.FC = () => {
               ></path>
             </svg>
             {isLoading ? "Signing in..." : "Login with Facebook"}
-          </button>
-          <button
+          </button> */}
+          {/* <button
             type="button"
             onClick={handleAppleLogin}
             disabled={isLoading}
@@ -147,7 +147,7 @@ const LoginForm: React.FC = () => {
               ></path>
             </svg>
             {isLoading ? "Signing in..." : "Login with Apple"}
-          </button>
+          </button> */}
         </div>
         <div className="divider">OR</div>
         <div>
@@ -216,7 +216,7 @@ const LoginForm: React.FC = () => {
         <div className="text-center">
           <p className="text-sm ">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-primary font-medium ">
+            <Link href="/register" className="text-primary hover:text-secondary hover:underline font-medium ">
               Sign up here
             </Link>
           </p>

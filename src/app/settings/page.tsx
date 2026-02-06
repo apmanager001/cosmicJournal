@@ -17,8 +17,10 @@ import {
   Zap,
   CheckCircle,
   AlertCircle,
+  Cog,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import Signout from "../login/comp/signout"
 
 export default function SettingsPage() {
   return (
@@ -29,7 +31,7 @@ export default function SettingsPage() {
 }
 
 function SettingsContent() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { data: notificationSettings } = useNotificationSettings();
   const updateSettingsMutation = useUpdateNotificationSettings();
 
@@ -135,37 +137,41 @@ function SettingsContent() {
 
   return (
     <div className="container mx-auto md:px-4 md:py-8">
-      {/* Header */}
-      <div className="hidden md:block customContainer p-6 mb-8">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Settings</h1>
-            <p className="text-gray-400">
-              Manage your preferences and subscription
-            </p>
+      <div className="flex-1 customContainer flex justify-center items-center p-6 mb-2 md:mb-4">
+        <div className="flex justify-between items-center w-full">
+          <div className="flex gap-4 items-center">
+            <div
+              className={`border-4 p-3 rounded-2xl text-2xl bg-emerald-100 border-emerald-300 text-emerald-700 shadow-sm hover:shadow-md transition-transform hover:scale-105`}
+            >
+              <Cog strokeWidth={2.5} />
+            </div>
+
+            <div>
+              <h1 className="text-3xl font-bold leading-tight">Settings</h1>
+              <p className="text-base-content/60 text-sm mt-1">
+                Manage your preferences and subscription
+              </p>
+            </div>
           </div>
-          <div className="flex gap-4">
-            <Link
-              href="/dashboard"
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              Dashboard
-            </Link>
-            <button
-              onClick={logout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer"
-            >
-              Sign Out
-            </button>
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row justify-between items-center gap-2">
+              <div className="flex gap-4 items-center justify-center flex-wrap">
+                <Link
+                  href="/dashboard"
+                  className="btn btn-primary"
+                >
+                  Dashboard
+                </Link>
+                <Signout />
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="grid lg:grid-cols-3 gap-8">
-
-        <div className="md:col-span-3 space-y-8 mb-24 md:mb-0">
+      <div className="grid lg:grid-cols-3 gap-2 md:gap-4">
+        <div className="md:col-span-3 space-y-8 mb-20 md:mb-0">
           {/* Account Settings */}
-          <div className="p-6 customContainer">
+          <div className="p-6 customContainer mb-2 md:mb-4">
             <div className="flex items-center mb-6">
               <Shield className="w-6 h-6 mr-3" />
               <h2 className="text-xl font-semibold">Account Settings</h2>
@@ -183,18 +189,18 @@ function SettingsContent() {
                     {user?.name || "Not set"}
                   </p>
                 </div>
-                <button className="text-sm text-purple-400 light:text-purple-600 hover:text-purple-700 cursor-pointer">
+                <Link href="#" className="text-sm hover:text-gray-400 hover:underline">
                   Edit
-                </button>
+                </Link>
               </div>
             </div>
           </div>
-        {/* Main Settings */}
+          {/* Main Settings */}
 
           {/* Notification Preferences */}
           <div className="customContainer p-6">
             <div className="flex items-center mb-6">
-              <Bell className="w-6 h-6 text-blue-600 mr-3" />
+              <Bell className="w-6 h-6 mr-3" />
               <h2 className="text-xl font-semibold">
                 Notification Preferences
               </h2>
@@ -204,7 +210,7 @@ function SettingsContent() {
               {/* In-App Notifications */}
               <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                  <div className="border-4 border-blue-600 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4 hover:scale-110">
                     <Bell className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
@@ -221,7 +227,7 @@ function SettingsContent() {
                     onChange={(e) =>
                       handleSettingChange(
                         "inAppNotifications",
-                        e.target.checked
+                        e.target.checked,
                       )
                     }
                     className="sr-only peer"
@@ -232,7 +238,7 @@ function SettingsContent() {
               {/* Email Notifications */}
               <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                  <div className="border-4 border-green-600 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4 hover:scale-110">
                     <Mail className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
@@ -249,7 +255,7 @@ function SettingsContent() {
                     onChange={(e) =>
                       handleSettingChange(
                         "emailNotifications",
-                        e.target.checked
+                        e.target.checked,
                       )
                     }
                     className="sr-only peer"
@@ -263,7 +269,7 @@ function SettingsContent() {
               {/* Daily Reminder */}
               <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                  <div className="border-4 border-purple-600 w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4 hover:scale-110">
                     <Zap className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
@@ -288,7 +294,7 @@ function SettingsContent() {
               {/* Weekly Report */}
               <div className="flex items-center justify-between p-4 border-2 border-dashed border-gray-300 rounded-lg">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                  <div className="border-4 border-orange-600 w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-4 hover:scale-110">
                     <CheckCircle className="w-5 h-5 text-orange-600" />
                   </div>
                   <div>
@@ -316,7 +322,7 @@ function SettingsContent() {
               <button
                 onClick={handleSaveSettings}
                 disabled={updateSettingsMutation.isPending}
-                className="cursor-pointer w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                className="btn btn-primary w-full"
               >
                 {updateSettingsMutation.isPending
                   ? "Saving..."

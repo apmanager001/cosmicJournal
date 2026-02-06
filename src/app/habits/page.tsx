@@ -6,7 +6,6 @@ import {
   useCreateUserHabit,
   useHabitLogs,
 } from "@/comp/utility/tanstack/habitHooks";
-import WeeklyCalendar from "../dashboard/comp/WeeklyCalendar";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { useState, useMemo } from "react";
@@ -43,7 +42,7 @@ function HabitsContent() {
   const { isLoading: publicHabitsLoading } = usePublicHabits();
 
   const [viewMode, setViewMode] = useState<"cards" | "list" | "analytics">(
-    "cards"
+    "cards",
   );
   const [showCreateForm, setShowCreateForm] = useState(false);
 
@@ -55,10 +54,10 @@ function HabitsContent() {
     const total = userHabits.length;
     const active = userHabits.filter((habit) => habit.isActive).length;
     const daily = userHabits.filter(
-      (habit) => habit.streakType === "daily"
+      (habit) => habit.streakType === "daily",
     ).length;
     const weekly = userHabits.filter(
-      (habit) => habit.streakType === "weekly"
+      (habit) => habit.streakType === "weekly",
     ).length;
 
     // Calculate total streaks (simplified - you can enhance this with actual streak data)
@@ -82,13 +81,13 @@ function HabitsContent() {
 
   if (habitsLoading || publicHabitsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen">
         <div className="container mx-auto px-4 py-8">
           <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+            <div className="h-8 rounded w-1/3"></div>
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-32 bg-gray-200 rounded-lg"></div>
+                <div key={i} className="h-32  rounded-lg"></div>
               ))}
             </div>
           </div>
@@ -97,24 +96,74 @@ function HabitsContent() {
     );
   }
 
+  const statConatiners = [
+    {
+      title: "Total Habits",
+      value: stats.total,
+      icon: <Target className="w-5 h-5 text-blue-600" strokeWidth={2.5} />,
+      iconColor: "bg-blue-100",
+      borderColor: "border-blue-600",
+    },
+    {
+      title: "Active",
+      value: stats.active,
+      icon: (
+        <CheckCircle className="w-5 h-5 text-green-600" strokeWidth={2.5} />
+      ),
+      iconColor: "bg-green-100",
+      borderColor: "border-green-600",
+    },
+    {
+      title: "Daily",
+      value: stats.daily,
+      icon: (
+        <TrendingUp className="w-5 h-5 text-purple-600" strokeWidth={2.5} />
+      ),
+      iconColor: "bg-purple-100",
+      borderColor: "border-purple-600",
+    },
+    {
+      title: "Weekly",
+      value: stats.weekly,
+      icon: <Calendar className="w-5 h-5 text-yellow-600" strokeWidth={2.5} />,
+      iconColor: "bg-yellow-100",
+      borderColor: "border-yellow-600",
+    },
+    {
+      title: "Total Streaks",
+      value: stats.totalStreaks,
+      icon: <Flame className="w-5 h-5 text-red-600" strokeWidth={2.5} />,
+      iconColor: "bg-red-100",
+      borderColor: "border-red-600",
+    },
+  ];
+
   return (
-    <div className="min-h-screen ">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto  md:px-4 md:py-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row gap-6 mb-8">
-          {/* Left Section - Icon, Title, and Description */}
-          <div className="flex-1 customContainer p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <Target className="w-6 h-6 text-green-600" />
+        <div className="flex flex-col md:flex-row gap-4 mb-2 md:mb-4">
+          <div className="flex-1 customContainer flex justify-center items-center p-6">
+            <div className="flex justify-between items-center w-full">
+              <div className="flex gap-4 items-center">
+                <div
+                  className={`border-4 p-3 rounded-2xl text-2xl bg-emerald-100 border-emerald-300 text-emerald-700 shadow-sm hover:shadow-md transition-transform hover:scale-105`}
+                >
+                  <Target strokeWidth={2.5} />
+                </div>
+
+                <div>
+                  <h1 className="text-3xl font-bold leading-tight">Habits</h1>
+                  <p className="text-base-content/60 text-sm mt-1">
+                    Track your daily habits and build consistency
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col gap-2 w-full">
+              <div className="flex flex-col gap-2">
                 <div className="flex flex-row justify-between items-center gap-2">
-                  <h1 className="text-3xl font-bold">Habits</h1>
                   <div className="flex gap-4 items-center justify-center flex-wrap">
                     <Link
                       href="/dashboard"
-                      className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                      className="btn btn-primary"
                     >
                       Dashboard
                     </Link>
@@ -135,125 +184,80 @@ function HabitsContent() {
                         !canPerformAction("canCreateHabits") ||
                         hasReachedLimit("habits", userHabits?.length || 0)
                       }
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="btn btn-success disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Plus className="w-4 h-4" />
                       New Habit
                     </button>
                   </div>
                 </div>
-                <p className="text-gray-400">
-                  Track your daily habits and build consistency
-                </p>
               </div>
             </div>
-          </div>
-
-          {/* Right Section - Subscription Status */}
-          <div className="min-w-72">
-            <SubscriptionStatusIndicator />
           </div>
         </div>
-
-        {/* Subscription Limit Banner */}
-        <SubscriptionLimitBanner
-          resource="habits"
-          currentCount={userHabits?.length || 0}
-          className="mb-6"
-        />
-
         {/* Stats Overview */}
-        <div className="grid md:grid-cols-6 gap-6 mb-8">
-          <div className="customContainer p-6">
-            <div className="flex items-center gap-3">
-              <div className="min-w-10 min-h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Target className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-center">Total Habits</p>
-                <p className="text-2xl font-bold text-center">{stats.total}</p>
-              </div>
-            </div>
-          </div>
+        <div className="grid md:grid-cols-6 md:gap-4 mb-2 md:mb-4">
+          {/* Left: stats + subscription info */}
+          <div className="grid md:grid-cols-5 gap-4 col-span-5">
+            {/* Stat cards row */}
+            <div className="col-span-5 grid grid-cols-2 md:grid-cols-5 gap-2">
+              {statConatiners.map((stat) => (
+                <div
+                  key={stat.title}
+                  className="customContainer p-4 flex gap-4 items-center justify-left md:justify-center "
+                >
+                  <div
+                    className={`border-4 p-3 rounded-2xl text-2xl ${stat.iconColor} ${stat.borderColor} shadow-sm hover:shadow-md transition-transform hover:scale-105`}
+                  >
+                    {stat.icon}
+                  </div>
 
-          <div className="customContainer p-6">
-            <div className="flex items-center gap-3">
-              <div className="min-w-10 min-h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-center">Active</p>
-                <p className="text-2xl text-center font-bold">{stats.active}</p>
-              </div>
+                  <div className="text-left md:text-center">
+                    <h1 className="text-lg font-bold leading-tight">
+                      {stat.title}
+                    </h1>
+                    <p className="text-base-content/60 mt-1">{stat.value}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
 
-          <div className="customContainer p-6">
-            <div className="flex items-center gap-3">
-              <div className="min-w-10 min-h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-purple-600" />
+            {/* Subscription banner + status row */}
+            <div className="col-span-5 grid md:grid-cols-5 gap-2 md:gap-4 items-stretch">
+              <div className="md:col-span-3">
+                <SubscriptionLimitBanner
+                  resource="habits"
+                  currentCount={userHabits?.length || 0}
+                />
               </div>
-              <div>
-                <p className="text-sm font-medium text-center">Daily</p>
-                <p className="text-2xl font-bold text-center">{stats.daily}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="customContainer p-6">
-            <div className="flex items-center gap-3">
-              <div className="min-w-10 min-h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-center">Weekly</p>
-                <p className="text-2xl font-bold text-center">{stats.weekly}</p>
+              <div className="md:col-span-2">
+                <SubscriptionStatusIndicator />
               </div>
             </div>
           </div>
-
-          <div className="customContainer p-6">
-            <div className="flex items-center gap-3">
-              <div className="min-w-10 min-h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                <Flame className="w-5 h-5 text-red-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-center">Total Streaks</p>
-                <p className="text-2xl font-bold text-center">
-                  {stats.totalStreaks}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="customContainer p-6">
+          <div className="customContainer mt-2 md:mt-0 p-2">
             {/* View Mode Toggle */}
-            <div className="flex flex-col gap-2 justify-center">
+            <div className="flex flex-col gap-2 justify-center items-center h-full w-full">
               <button
                 onClick={() => setViewMode("cards")}
-                className={`cursor-pointer px-3 py-2 rounded-lg text-sm font-medium transition-colors btn btn-sm ${
-                  viewMode === "cards"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className={`btn ${
+                  viewMode === "cards" ? "btn-success" : "btn-ghost"
                 }`}
               >
                 Cards
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`cursor-pointer px-3 py-2 rounded-lg text-sm font-medium transition-colors btn btn-sm ${
-                  viewMode === "list"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className={`btn ${
+                  viewMode === "list" ? "btn-success" : "btn-ghost"
                 }`}
               >
                 List
               </button>
               <button
                 onClick={() => setViewMode("analytics")}
-                className={`cursor-pointer px-3 py-2 rounded-lg text-sm font-medium transition-colors btn btn-sm ${
-                  viewMode === "analytics"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className={`btn ${
+                  viewMode === "analytics" ? "btn-success" : "btn-ghost"
                 }`}
               >
                 Analytics
@@ -261,20 +265,19 @@ function HabitsContent() {
             </div>
           </div>
         </div>
-        <WeeklyCalendar />
+        {/* <HabitFillCalendar /> */}
+        {/* <WeeklyCalendar /> */}
         {/* Create New Habit Form */}
         {showCreateForm && (
           <div
-            className="bg-white rounded-lg shadow-lg p-6 mb-8"
+            className={`customContainer rounded-lg shadow-lg p-6 mb-8`}
             id="showCreateForm"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">
-                Create New Habit
-              </h2>
+              <h2 className="text-xl font-semibold">Create New Habit</h2>
               <button
                 onClick={() => setShowCreateForm(false)}
-                className="text-gray-500 hover:text-gray-700 cursor-pointer"
+                className=" hover:text-gray-700 cursor-pointer"
               >
                 ✕
               </button>
@@ -286,9 +289,9 @@ function HabitsContent() {
 
         {/* Habits Display */}
         {viewMode === "cards" && (
-          <div className="space-y-6">
+          <div className="space-y-6 md:mt-4 mb-16">
             {userHabits && userHabits.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
                 {userHabits.map((habit) => (
                   <HabitCard key={habit.id} habit={habit} />
                 ))}
@@ -328,10 +331,10 @@ function HabitsContent() {
 
         {/* List View */}
         {viewMode === "list" && (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="customContainer rounded-lg shadow-lg overflow-hidden mt-4">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-400">
+                <thead className="bg-base-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Habit
@@ -353,27 +356,27 @@ function HabitsContent() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200">
                   {userHabits &&
                     userHabits.map((habit) => (
-                      <tr key={habit.id} className="hover:bg-gray-50">
+                      <tr key={habit.id} className="hover:bg-base-100">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <span className="text-2xl mr-3">
                               {habit.habit.icon}
                             </span>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">
+                              <div className="text-sm font-medium">
                                 {habit.habit.name}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-base-200">
                                 {habit.habit.category}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 max-w-xs truncate">
+                          <div className="text-sm max-w-xs truncate">
                             {habit.personalDescription}
                           </div>
                         </td>
@@ -422,10 +425,10 @@ function HabitsContent() {
 
         {/* Analytics View */}
         {viewMode === "analytics" && (
-          <div className="space-y-6">
+          <div className="space-y-6 mt-4 mb-16">
             {/* Habit Completion Charts */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="customContainer rounded-lg shadow-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">
                 Habit Completion Trends
               </h3>
               <div className="text-center py-8 text-gray-500">
@@ -439,24 +442,9 @@ function HabitsContent() {
                 </p>
               </div>
             </div>
-
-            {/* Individual Habit Calendars */}
-            {userHabits && userHabits.length > 0 && (
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Habit Calendars
-                </h3>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {userHabits.map((habit) => (
-                    <HabitCalendarWithLogs key={habit.id} habit={habit} />
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
-    </div>
   );
 }
 
@@ -596,14 +584,14 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
     // Check subscription limits
     if (!canPerformAction("canCreateHabits")) {
       alert(
-        "You don't have permission to create habits. Please upgrade to Pro."
+        "You don't have permission to create habits. Please upgrade to Pro.",
       );
       return;
     }
 
     if (hasReachedLimit("habits", userHabits?.length || 0)) {
       alert(
-        "You've reached your habit limit on the free plan. Please upgrade to Pro for unlimited habits."
+        "You've reached your habit limit on the free plan. Please upgrade to Pro for unlimited habits.",
       );
       upgradeToPro();
       return;
@@ -661,7 +649,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium mb-2">
           {selectedHabit || showCreateNew
             ? "Your Habit Type"
             : "Search for Habit Type"}
@@ -673,9 +661,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
             <div className="inline-flex items-center gap-2 bg-green-100 border border-green-300 rounded-full px-3 py-2">
               <span className="text-xl">{selectedHabit.icon}</span>
               <div className="text-sm">
-                <span className="font-medium text-green-800">
-                  {selectedHabit.name}
-                </span>
+                <span className="font-medium">{selectedHabit.name}</span>
                 <span className="text-green-600 ml-1">
                   • {selectedHabit.category}
                 </span>
@@ -914,7 +900,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium mb-2">
           Your Personal Goal
         </label>
         <textarea
@@ -933,9 +919,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Streak Type
-        </label>
+        <label className="block text-sm font-medium mb-2">Streak Type</label>
         <div className="flex gap-4">
           <label className="flex items-center">
             <input
@@ -995,14 +979,14 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
         <button
           type="submit"
           disabled={createHabitMutation.isPending}
-          className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="btn btn-success disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {createHabitMutation.isPending ? "Creating..." : "Create Habit"}
         </button>
         <button
           type="button"
           onClick={onSuccess}
-          className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors cursor-pointer"
+          className="btn btn-ghost"
         >
           Cancel
         </button>
@@ -1023,8 +1007,8 @@ function HabitCalendarWithLogs({ habit }: { habit: UserHabit }) {
           <h4 className="font-medium text-gray-900">{habit.habit.name}</h4>
         </div>
         <div className="animate-pulse space-y-2">
-          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-4  rounded w-3/4"></div>
+          <div className="h-4 rounded w-1/2"></div>
         </div>
       </div>
     );

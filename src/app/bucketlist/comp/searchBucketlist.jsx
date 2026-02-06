@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -112,9 +113,14 @@ const SearchBucketlist = () => {
           ""
         )}
       </div>
-      <ul className={`flex flex-col gap-2 bg-base-100 pt-2 w-full rounded-b-2xl absolute z-10 shadow-lg ${searchTerm? 'border': ''} border-base-content/40`}>
+      <ul
+        className={`flex flex-col gap-2 bg-base-100 pt-2 w-full rounded-b-2xl absolute z-10 shadow-lg ${searchTerm ? "border" : ""} border-base-content/40`}
+      >
         {searchResults.slice(0, 5).map((item) => (
-          <li key={item.id} className="flex justify-between items-center gap-2 ">
+          <li
+            key={item.id}
+            className="flex justify-between items-center gap-2 "
+          >
             <button
               className="btn btn-soft btn-success rounded-full ml-4"
               onClick={async () => {
@@ -129,14 +135,14 @@ const SearchBucketlist = () => {
                 }
               }}
             >
-              <Plus className="w-4 h-4 text-green-500" />
+              <Plus className="w-4 h-4" />
             </button>
             <p className="font-bold truncate flex-grow text-center">
               {item.title}
             </p>
             <div className="dropdown dropdown-end dropdown-hover mr-4">
               <button className="btn btn-error btn-soft rounded-full ">
-                <Flag className="w-4 h-4 text-red-500" />
+                <Flag className="w-4 h-4" />
               </button>
               <ul className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52">
                 {["Spam", "Inappropriate", "Other"].map((reason) => (
@@ -163,7 +169,7 @@ const SearchBucketlist = () => {
           (data?.length >
           parseInt(
             process.env.NEXT_PUBLIC_FREE_TIER_BUCKET_LIMIT || "0",
-            10
+            10,
           ) ? (
             <button className="btn btn-lg btn-error text-error-content text-sm cursor-pointer flex justify-center items-center gap-2 shadow-md p-4 mt-2 rounded-b-2xl">
               <Info className="w-6 h-6 mr-2" />
@@ -184,71 +190,82 @@ const SearchBucketlist = () => {
           ))}
       </ul>
 
-      {isModalOpen && (
-        <div className="modal modal-open flex items-center justify-center">
-          <div className="modal-box min-w-96 p-6 modalContainer">
-            <h3 className="font-bold text-2xl mb-4">Add New Bucketlist Item</h3>
-            <div className="fieldset mb-4">
-              <label htmlFor="title" className="label">
-                <span className="label-text">Title</span>
-              </label>
-              <input
-                id="title"
-                type="text"
-                className="input input-bordered"
-                value={newItem.title}
-                onChange={(e) =>
-                  setNewItem({ ...newItem, title: e.target.value })
-                }
-              />
-            </div>
-            <div className="fieldset mb-4">
-              <label htmlFor="description" className="label">
-                <span className="label-text">Description</span>
-              </label>
-              <textarea
-                id="description"
-                className="textarea textarea-bordered"
-                value={newItem.description}
-                onChange={(e) =>
-                  setNewItem({ ...newItem, description: e.target.value })
-                }
-              ></textarea>
-            </div>
-            <div className="fieldset mb-4">
-              <span className="label-text">Category</span>
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <span
-                    id={`category-${category.id}`}
-                    key={category.id}
-                    className={`badge badge-soft cursor-pointer ${
-                      newItem.category === category.id ? "badge-primary" : ""
-                    }`}
-                    onClick={() =>
-                      setNewItem({ ...newItem, category: category.id })
-                    }
-                    data-tip={category.description}
-                  >
-                    {category.name}
-                  </span>
-                ))}
+      {isModalOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div className="modal modal-open">
+            <div className="modal-box min-w-96 p-6 modalContainer">
+              <h3 className="font-bold text-2xl mb-4">
+                Add New Bucketlist Item
+              </h3>
+              <div className="fieldset mb-4">
+                <label htmlFor="title" className="label">
+                  <span className="label-text">Title</span>
+                </label>
+                <input
+                  id="title"
+                  type="text"
+                  className="input input-bordered"
+                  value={newItem.title}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, title: e.target.value })
+                  }
+                />
+              </div>
+              <div className="fieldset mb-4">
+                <label htmlFor="description" className="label">
+                  <span className="label-text">Description</span>
+                </label>
+                <textarea
+                  id="description"
+                  className="textarea textarea-bordered"
+                  value={newItem.description}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, description: e.target.value })
+                  }
+                ></textarea>
+              </div>
+              <div className="fieldset mb-4">
+                <span className="label-text">Category</span>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((category) => (
+                    <span
+                      id={`category-${category.id}`}
+                      key={category.id}
+                      className={`badge badge-soft cursor-pointer ${
+                        newItem.category === category.id ? "badge-primary" : ""
+                      }`}
+                      onClick={() =>
+                        setNewItem({ ...newItem, category: category.id })
+                      }
+                      data-tip={category.description}
+                    >
+                      {category.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="modal-action flex justify-between">
+                <button className="btn btn-primary" onClick={handleAddNewItem}>
+                  Add Item
+                </button>
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </button>
               </div>
             </div>
-            <div className="modal-action flex justify-between">
-              <button className="btn btn-primary" onClick={handleAddNewItem}>
-                Add Item
-              </button>
-              <button
-                className="btn btn-ghost"
-                onClick={() => setIsModalOpen(false)}
-              >
-                Cancel
-              </button>
+            <div
+              className="modal-backdrop"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <button>close</button>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

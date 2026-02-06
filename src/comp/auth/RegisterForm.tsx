@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../utility/tanstack/authContext";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 
@@ -13,8 +14,14 @@ const RegisterForm: React.FC = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const router = useRouter();
+  const { register, isLoading, user, loginWithGoogle } = useAuth();
 
-  const { register, isLoading } = useAuth();
+    useEffect(() => {
+      if (user) {
+        router.push("/dashboard");
+      }
+    }, [user, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,6 +29,14 @@ const RegisterForm: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+    } catch (error) {
+      console.error("Google login failed:", error);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,15 +59,53 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-white/20 rounded-lg shadow-xl p-8 backdrop-blur-sm">
-      <form onSubmit={handleSubmit} className="space-y-4 text-gray-500">
+    <div className="">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex flex-col gap-2 justify-center">
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+            className="btn bg-white text-black border-[#e5e5e5]"
+          >
+            <svg
+              aria-label="Google logo"
+              width="16"
+              height="16"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+            >
+              <g>
+                <path d="m0 0H512V512H0" fill="#fff"></path>
+                <path
+                  fill="#34a853"
+                  d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
+                ></path>
+                <path
+                  fill="#4285f4"
+                  d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
+                ></path>
+                <path
+                  fill="#fbbc02"
+                  d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
+                ></path>
+                <path
+                  fill="#ea4335"
+                  d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
+                ></path>
+              </g>
+            </svg>
+            {isLoading ? "Signing in..." : "Login with Google"}
+          </button>
+        </div>
+        <div className="divider">OR</div>
         <div>
           <label htmlFor="name" className="block text-sm font-medium  mb-2">
             Full Name
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <User className="h-5 w-5 text-gray-400" />
+              <User className="h-5 w-5" />
             </div>
             <input
               id="name"
@@ -61,7 +114,7 @@ const RegisterForm: React.FC = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="block w-full input input-lg rounded-2xl"
               placeholder="Enter your full name"
               disabled={isLoading}
             />
@@ -74,7 +127,7 @@ const RegisterForm: React.FC = () => {
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Mail className="h-5 w-5 text-gray-400" />
+              <Mail className="h-5 w-5" />
             </div>
             <input
               id="email"
@@ -83,7 +136,7 @@ const RegisterForm: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="block w-full input input-lg rounded-2xl"
               placeholder="Enter your email"
               disabled={isLoading}
             />
@@ -106,7 +159,7 @@ const RegisterForm: React.FC = () => {
               onChange={handleChange}
               required
               minLength={8}
-              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="block w-full input input-lg rounded-2xl truncate"
               placeholder="Create a password (min 8 characters)"
               disabled={isLoading}
             />
@@ -144,7 +197,7 @@ const RegisterForm: React.FC = () => {
               onChange={handleChange}
               required
               minLength={8}
-              className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="block w-full input input-lg rounded-2xl truncate"
               placeholder="Confirm your password"
               disabled={isLoading}
             />
@@ -174,7 +227,7 @@ const RegisterForm: React.FC = () => {
         <button
           type="submit"
           disabled={isLoading || formData.password !== formData.passwordConfirm}
-          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full btn btn-primary rounded-lg font-medium"
         >
           {isLoading ? (
             <div className="flex items-center gap-2">
@@ -193,7 +246,7 @@ const RegisterForm: React.FC = () => {
           Already have an account?{" "}
           <Link
             href="/login"
-            className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+            className="font-medium text-primary hover:text-secondary hover:underline"
           >
             Sign in
           </Link>

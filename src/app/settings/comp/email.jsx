@@ -100,8 +100,8 @@ const EmailSettings = () => {
   return (
     <div className="space-y-4 w-full">
       <div>
-        <h3 className="font-medium text-gray-900 dark:text-gray-100">Email</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <h3 className="font-medium ">Email</h3>
+        <p className="text-sm text-base-content/40 mt-1">
           Manage your email address and verification status
         </p>
       </div>
@@ -109,7 +109,7 @@ const EmailSettings = () => {
       {/* Current Email Display */}
       <div className="flex flex-col md:flex-row gap-2 md:gap-0 md:items-center justify-between w-full">
         <div className="flex items-center space-x-3">
-          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <span className="text-sm font-medium">
             {user?.email}
           </span>
         </div>
@@ -119,7 +119,7 @@ const EmailSettings = () => {
             <button
               onClick={handleResendVerification}
               disabled={isLoading}
-              className="cursor-pointer inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary btn-sm"
             >
               {isLoading ? "Sending..." : "Resend Verification"}
             </button>
@@ -136,13 +136,13 @@ const EmailSettings = () => {
       {/* Email Editing */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <h4 className="text-sm font-medium text-base-content/60">
             Change Email Address
           </h4>
           {!isEditing ? (
             <button
               onClick={() => setIsEditing(true)}
-              className="cursor-pointer text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+              className="hover:underline hover:text-gray-400 cursor-pointer"
             >
               Edit
             </button>
@@ -151,14 +151,14 @@ const EmailSettings = () => {
               <button
                 onClick={handleUpdateEmail}
                 disabled={isLoading || !newEmail || newEmail === user?.email}
-                className="text-sm text-green-600 hover:text-green-500 dark:text-green-400 dark:hover:text-green-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn btn-success btn-sm "
               >
                 Save
               </button>
               <button
                 onClick={handleCancelEdit}
                 disabled={isLoading}
-                className="cursor-pointer text-sm text-gray-600 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn btn-error btn-sm"
               >
                 Cancel
               </button>
@@ -170,12 +170,14 @@ const EmailSettings = () => {
           <div className="space-y-3">
             <input
               type="email"
+              id='email'
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               placeholder="Enter new email address"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+              className="w-full input input-success"
+              autoComplete="email"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-base-content/60">
               A confirmation email will be sent to your new email address. Click
               the link in the email to complete the change.
             </p>

@@ -7,6 +7,7 @@ import {
   useHabitLogs,
 } from "../utility/tanstack/habitHooks";
 import { CheckCircle, Circle, TrendingUp, Flame } from "lucide-react";
+import IndividualFillCalendar from "@/app/habits/comp/individualFillCalendar";
 
 export default function HabitCard({
   habit,
@@ -131,14 +132,10 @@ export default function HabitCard({
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <span className="text-blue-600 font-semibold text-sm">
-                {habit.habit.icon || "🎯"}
-              </span>
+            <div className="border-4 border-info h-16 w-16 bg-blue-100 flex items-center justify-center hover:scale-105 p-3 rounded-xl text-2xl">
+              {habit.habit.icon || "🎯"}
             </div>
-            <h3 className="text-lg font-semibold ">
-              {habit.habit.name}
-            </h3>
+            <h3 className="text-lg font-semibold ">{habit.habit.name}</h3>
           </div>
           <p className="text-sm text-gray-400 mb-2">
             {habit.personalDescription}
@@ -155,6 +152,19 @@ export default function HabitCard({
                 ? "Daily"
                 : `${habit.weeklyGoal || 5}/7 days`}
             </span>
+            {streakData && (
+              <div className="badge badge-neutral badge-soft badge-lg flex items-center gap-2 whitespace-nowrap">
+                {getStreakIcon(streakData.currentStreak)}
+                <span
+                  className={`font-semibold ${getStreakColor(
+                    streakData.currentStreak,
+                  )}`}
+                >
+                  {streakData.currentStreak} day
+                  {streakData.currentStreak !== 1 ? "s" : ""} streak
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -201,25 +211,29 @@ export default function HabitCard({
       {/* Streak Information */}
       {!showLoading && streakData && (
         <div className="border-t border-gray-100 pt-4 mb-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {getStreakIcon(streakData.currentStreak)}
-              <span
-                className={`font-semibold ${getStreakColor(
-                  streakData.currentStreak
-                )}`}
-              >
-                {streakData.currentStreak} day
-                {streakData.currentStreak !== 1 ? "s" : ""} streak
-              </span>
+          <div className="flex flex-col gap-4 items-center justify-between">
+            <div className="text-right text-sm text-gray-600 flex gap-2 flex-wrap items-center">
+              <div className="badge badge-primary badge-lg flex items-center whitespace-nowrap">
+                <span className="text-xs">Best:</span>
+                <span className="ml-1 font-medium">
+                  {streakData.longestStreak} days
+                </span>
+              </div>
+
+              <div className="badge badge-secondary badge-lg flex items-center whitespace-nowrap">
+                <span className="text-xs">Total:</span>
+                <span className="ml-1 font-medium">
+                  {streakData.totalCompletions} times
+                </span>
+              </div>
             </div>
-            <div className="text-right text-sm text-gray-600 flex flex-col gap-2">
-              <div className="badge badge-primary">
-                Best: {streakData.longestStreak} days
-              </div>
-              <div className="badge badge-secondary">
-                Total: {streakData.totalCompletions} times
-              </div>
+            <div className="flex items-center gap-2">
+              {habit && (
+                <IndividualFillCalendar
+                  habitId={habit.id}
+                  title={habit.habit.name}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -279,13 +293,13 @@ export default function HabitCard({
           <>
             <button
               onClick={() => setShowNotes(!showNotes)}
-              className="text-sm text-blue-600 hover:text-blue-700 mb-2 cursor-pointer"
+              className="text-sm mb-2 cursor-pointer hover:underline hover:text-gray-400"
             >
               {showNotes
                 ? "Hide"
                 : todayLog && todayLog.length > 0 && todayLog[0]?.notes
-                ? "Edit"
-                : "Add"}{" "}
+                  ? "Edit"
+                  : "Add"}{" "}
               notes for today
             </button>
 
@@ -301,13 +315,13 @@ export default function HabitCard({
                 <div className="flex gap-2">
                   <button
                     onClick={handleSaveNotes}
-                    className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                    className="btn btn-primary"
                   >
                     {isCompletedToday ? "Update notes" : "Save with notes"}
                   </button>
                   <button
                     onClick={() => setShowNotes(false)}
-                    className="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hover:bg-gray-400"
+                    className="btn btn-secondary"
                   >
                     Cancel
                   </button>
