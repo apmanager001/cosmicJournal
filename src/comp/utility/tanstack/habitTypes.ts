@@ -45,6 +45,8 @@ export interface JournalEntry {
   additionalNotes: string;
   mood?: string; // User's mood for the day (emoji or text)
   bookmarked: boolean; // Whether entry is bookmarked by user
+  // PocketBase system fields (available on records)
+  created_on?: string; // Backwards-compatible field used in some components
   created: string;
   updated: string;
 }

@@ -19,15 +19,22 @@ const DashJournalCalendar = () => {
     const days = [];
     const loopDate = new Date(startDate);
 
+    const toLocalDateString = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
     // Generate 42 days (6 weeks) to fill the calendar grid
     for (let i = 0; i < 42; i++) {
-      const dateStr = loopDate.toISOString().split("T")[0];
+      const dateStr = toLocalDateString(loopDate);
 
       // Find the entry (if any) that matches this date (normalize entry dates to YYYY-MM-DD)
       const matchingEntry = entries?.find((entry) => {
         if (!entry.date) return false;
         const entryDate = new Date(entry.date);
-        const entryDateStr = entryDate.toISOString().split("T")[0];
+        const entryDateStr = toLocalDateString(entryDate);
         return entryDateStr === dateStr;
       });
 

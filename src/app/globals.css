@@ -66,6 +66,8 @@ body {
 @media (max-width: 768px) {
   .customContainer {
     border-radius: 0;
+    width: 100vw;
+   
   }
 }
 

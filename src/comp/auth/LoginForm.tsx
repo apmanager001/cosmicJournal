@@ -168,6 +168,7 @@ const LoginForm: React.FC = () => {
               className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               placeholder="Enter your email"
               disabled={isLoading}
+              autoComplete="email"
             />
           </div>
         </div>

@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { pb } from "./pocketbase";
 import { User, authService } from "./auth";
+import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   user: User | null;
@@ -40,7 +41,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const router = useRouter();
   const isAuthenticated = !!user;
 
   // Initialize auth state
@@ -124,6 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     pb.authStore.clear();
     setUser(null);
+    router.push("/");
   };
 
   const refreshUser = async () => {

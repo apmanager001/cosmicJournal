@@ -3,7 +3,7 @@ import ProtectedRoute from "@/comp/utility/tanstack/ProtectedRoute";
 import { useBookmarkedJournalEntries } from "@/comp/utility/tanstack/habitHooks";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
-import { Bookmark } from "lucide-react";
+import { Bookmark, Star } from "lucide-react";
 import Link from "next/link";
 import DailyJournal from "../dashboard/comp/dailyJournal";
 
@@ -37,6 +37,30 @@ function BookmarksContent() {
     );
   }
 
+  const getMoodEmoji = (mood: string) => {
+    const moodEmojis: { [key: string]: string } = {
+      Happy: "😊",
+      Sad: "😢",
+      Excited: "🤩",
+      Calm: "😌",
+      Energetic: "⚡",
+      Tired: "😴",
+      Focused: "🎯",
+      Creative: "🎨",
+      Grateful: "🙏",
+      Motivated: "💪",
+    };
+    return moodEmojis[mood] || "😐";
+  };
+
+  const formatDateLong = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
   return (
     <div className="container mx-auto md:px-4 md:py-8">
       <div className="flex-1 customContainer flex justify-center items-center p-6 mb-2 md:mb-4">
@@ -77,11 +101,38 @@ function BookmarksContent() {
       </div>
       {/* Bookmarked Entries */}
       {bookmarkedEntries && bookmarkedEntries.length > 0 ? (
-        <div className="space-y-3">
-          {bookmarkedEntries.map((entry) => {
-            const formattedDate = new Date(entry.date).toString(); // Format the date to the required format
-            return <DailyJournal key={entry.id} selectedDate={formattedDate} />;
-          })}
+        <div className="customContainer p-6 mt-6 text-left w-full min-h-[500px]">
+          <span className="text-base-content/60">Bookmarked Journal Entries</span>
+          <div className="mt-3 space-y-3">
+            {bookmarkedEntries.slice(0, 5).map((entry) => (
+              <Link
+                key={entry.id}
+                href={`/journal/${entry.id}`}
+                className="block"
+              >
+                <div className="flex items-center justify-between p-3 rounded-lg bg-base-200/60 hover:bg-base-200 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="text-xl">
+                      {entry.mood ? getMoodEmoji(entry.mood) : "📝"}
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm lg:text-base">
+                        {formatDateLong(entry.date)}
+                      </p>
+                      {entry.whatIDid && (
+                        <p className="text-xs lg:text-sm text-base-content/70 truncate max-w-65">
+                          {entry.whatIDid}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  {entry.bookmarked && (
+                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       ) : (
         <div className="customContainer items-center rounded-lg shadow-lg p-12 text-center min-h-[500px]">

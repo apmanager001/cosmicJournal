@@ -117,6 +117,7 @@ const RegisterForm: React.FC = () => {
               className="block w-full input input-lg rounded-2xl"
               placeholder="Enter your full name"
               disabled={isLoading}
+              autoComplete="false"
             />
           </div>
         </div>
@@ -139,6 +140,7 @@ const RegisterForm: React.FC = () => {
               className="block w-full input input-lg rounded-2xl"
               placeholder="Enter your email"
               disabled={isLoading}
+              autoComplete="email"
             />
           </div>
         </div>

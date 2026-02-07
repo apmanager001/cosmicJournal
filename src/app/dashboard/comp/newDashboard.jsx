@@ -3,8 +3,8 @@
 import React from "react";
 import Link from "next/link.js";
 import { useUserHabits } from "@/comp/utility/tanstack/habitHooks";
-import IndividualFillCalendar from "../../habits/comp/individualFillCalendar.jsx";
-import DashBookmarks from "../comps/dashbookmarks.jsx";
+import IndividualFillCalendar from "../../habits/comp/individualFillCalendar";
+import DashBookmarks from "../comps/dashbookmarks";
 import DashGoals from "../comps/dashGoals.jsx";
 import DashBucketList from "../comps/dashBucketList";
 import DashCreateJournal from "../comps/dashCreateJournal";
@@ -38,7 +38,7 @@ const NewDash = () => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-6">
             <div className="btn btn-primary">
               <Link href="/settings">Settings</Link>
             </div>
