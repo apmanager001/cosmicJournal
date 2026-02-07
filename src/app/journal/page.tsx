@@ -8,6 +8,7 @@ import DashCreateJournal from "../dashboard/comps/dashCreateJournal";
 import { Calendar, Notebook, Star } from "lucide-react";
 import DashJournalCalendar from "@/app/dashboard/comps/dashJournalCalendar";
 import Link from "next/link";
+import PageHeaderCard from "@/comp/headers/PageHeaderCard";
 
 export default function JournalPage() {
   return (
@@ -98,25 +99,20 @@ function JournalContent() {
   }
 
   return (
-    <div className="container mx-auto px-0 py-0 md:px-4 md:py-8 flex flex-col gap-2 md:gap-4">
-      {/* Header */}
-      <div className="customContainer p-6">
-        <div className="flex justify-between items-center">
-          <div className="flex gap-4 items-center">
-            <div className="border-4 p-3 rounded-2xl text-2xl bg-emerald-100 border-emerald-300 text-emerald-700 shadow-sm hover:shadow-md transition-transform hover:scale-105">
-              <Notebook strokeWidth={2.5} />
+    <div className="container mx-auto px-0 py-0 md:px-4 md:py-8 flex flex-col md:gap-4">
+      <PageHeaderCard
+        icon={<Notebook strokeWidth={2.5} />}
+        title="Journal"
+        description="Reflect on your day and track your personal growth"
+        rightContent={
+          <>
+            <div className="btn btn-primary btn-sm md:btn-md">
+              <Link href="/dashboard">Dashboard</Link>
             </div>
-
-            <div>
-              <h1 className="text-3xl font-bold leading-tight">Journal</h1>
-              <p className="text-gray-500 text-sm mt-1">
-                Reflect on your day and track your personal growth
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col lg:flex-row gap-2 md:gap-6 mb-16">
+          </>
+        }
+      />
+      <div className="flex flex-col lg:flex-row md:gap-6 mb-16">
         <div className="w-full md:max-w-96 lg:flex-shrink-0 customContainer flex flex-col items-center p-6">
           <DashJournalCalendar />
           <div className="mt-6 text-left w-full">
@@ -153,7 +149,7 @@ function JournalContent() {
                 ))}
               </div>
             ) : (
-              <div className="customContainer text-center py-8 lg:py-12 backdrop-blur-sm mt-4">
+              <div className="customContainer text-center py-8 lg:py-12 backdrop-blur-sm md:mt-4">
                 <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Calendar className="w-6 h-6 lg:w-8 lg:h-8 text-gray-400" />
                 </div>

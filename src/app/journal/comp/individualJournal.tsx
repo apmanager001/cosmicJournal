@@ -34,9 +34,8 @@ const IndividualJournal = (props: {
     };
     return moodEmojis[mood] || "😐";
   };
-console.log(entry)
   return (
-    <div className="customContainer m-4 p-6">
+    <div className="customContainer min-h-[400px] p-6">
       <div className="flex justify-between">
         <h2 className="text-2xl font-semibold mb-2">
           {new Date(entry.date).toLocaleString()}

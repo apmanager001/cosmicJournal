@@ -68,14 +68,6 @@ export default function SubscriptionStatusIndicator({
       </div>
       <div className="flex justify-between w-full">
         <p className="text-xs mb-2">{statusInfo.description}</p>
-        {subscriptionStatus === "free" && (
-            <Link
-              href="/settings#subscribe"
-              className="text-xs font-medium text-accent hover:underline"
-            >
-              View Plans →
-            </Link>
-        )}
       </div>
       {showUsage && subscriptionStatus === "free" && (
         <div className="space-y-1">
@@ -98,6 +90,15 @@ export default function SubscriptionStatusIndicator({
             </span>
           </div>
         </div>
+      )}
+      <div className="divider" />
+      {subscriptionStatus === "free" && (
+        <Link
+          href="/settings#subscribe"
+          className="text-xs font-medium text-accent hover:underline"
+        >
+          View Plans →
+        </Link>
       )}
     </div>
   );

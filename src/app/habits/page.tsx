@@ -27,6 +27,7 @@ import { PublicHabit, UserHabit } from "@/comp/utility/tanstack/habitTypes";
 import { habitService } from "@/comp/utility/tanstack/habitService";
 import SubscriptionLimitBanner from "@/comp/utility/SubscriptionLimitBanner";
 import SubscriptionStatusIndicator from "@/comp/utility/SubscriptionStatusIndicator";
+import PageHeaderCard from "@/comp/headers/PageHeaderCard";
 
 export default function HabitsPage() {
   return (
@@ -96,7 +97,7 @@ function HabitsContent() {
     );
   }
 
-  const statConatiners = [
+  const statContainers = [
     {
       title: "Total Habits",
       value: stats.total,
@@ -138,73 +139,60 @@ function HabitsContent() {
     },
   ];
 
-  return (
-      <div className="container mx-auto  md:px-4 md:py-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row gap-4 mb-2 md:mb-4">
-          <div className="flex-1 customContainer flex justify-center items-center p-6">
-            <div className="flex justify-between items-center w-full">
-              <div className="flex gap-4 items-center">
-                <div
-                  className={`border-4 p-3 rounded-2xl text-2xl bg-emerald-100 border-emerald-300 text-emerald-700 shadow-sm hover:shadow-md transition-transform hover:scale-105`}
-                >
-                  <Target strokeWidth={2.5} />
-                </div>
+  const hasOddNumberOfStats = statContainers.length % 2 === 1;
 
-                <div>
-                  <h1 className="text-3xl font-bold leading-tight">Habits</h1>
-                  <p className="text-base-content/60 text-sm mt-1">
-                    Track your daily habits and build consistency
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-row justify-between items-center gap-2">
-                  <div className="flex gap-4 items-center justify-center flex-wrap">
-                    <Link
-                      href="/dashboard"
-                      className="btn btn-primary"
-                    >
-                      Dashboard
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setShowCreateForm(true);
-                        // Scroll to the form section smoothly
-                        setTimeout(() => {
-                          document
-                            .getElementById("showCreateForm")
-                            ?.scrollIntoView({
-                              behavior: "smooth",
-                              block: "start",
-                            });
-                        }, 100); // Small delay to ensure the form is rendered
-                      }}
-                      disabled={
-                        !canPerformAction("canCreateHabits") ||
-                        hasReachedLimit("habits", userHabits?.length || 0)
-                      }
-                      className="btn btn-success disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <Plus className="w-4 h-4" />
-                      New Habit
-                    </button>
-                  </div>
-                </div>
-              </div>
+  return (
+    <div className="container mx-auto  md:px-4 md:py-8">
+      <PageHeaderCard
+        icon={<Target strokeWidth={2.5} />}
+        title="Habits"
+        description="Track your daily habits and build consistency"
+        rightContent={
+          <>
+            <div className="btn btn-primary btn-sm md:btn-md">
+              <Link href="/dashboard">Dashboard</Link>
             </div>
-          </div>
-        </div>
-        {/* Stats Overview */}
-        <div className="grid md:grid-cols-6 md:gap-4 mb-2 md:mb-4">
-          {/* Left: stats + subscription info */}
-          <div className="grid md:grid-cols-5 gap-4 col-span-5">
-            {/* Stat cards row */}
-            <div className="col-span-5 grid grid-cols-2 md:grid-cols-5 gap-2">
-              {statConatiners.map((stat) => (
+            <div className="flex gap-4 items-center justify-center flex-wrap">
+              <button
+                onClick={() => {
+                  setShowCreateForm(true);
+                  // Scroll to the form section smoothly
+                  setTimeout(() => {
+                    document.getElementById("showCreateForm")?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }, 100); // Small delay to ensure the form is rendered
+                }}
+                disabled={
+                  !canPerformAction("canCreateHabits") ||
+                  hasReachedLimit("habits", userHabits?.length || 0)
+                }
+                className="btn btn-success btn-sm md:btn-md"
+              >
+                <Plus className="w-4 h-4" />
+                New Habit
+              </button>
+            </div>
+          </>
+        }
+      />
+      {/* Stats Overview */}
+      <div className="grid md:grid-cols-6 md:gap-4 md:mb-4">
+        {/* Left: stats + subscription info */}
+        <div className="md:grid grid-cols-5 gap-4 col-span-5">
+          {/* Stat cards row */}
+          <div className="max-w-screen col-span-2 md:col-span-5 grid grid-cols-2 md:grid-cols-5 md:gap-2 w-full">
+            {statContainers.map((stat, index) => {
+              const isLastSingleCard =
+                hasOddNumberOfStats && index === statContainers.length - 1;
+
+              return (
                 <div
                   key={stat.title}
-                  className="customContainer p-4 flex gap-4 items-center justify-left md:justify-center "
+                  className={`customContainer col-span-1 p-4 flex gap-4 items-center justify-left md:justify-center ${
+                    isLastSingleCard ? "col-span-2 md:col-span-1" : ""
+                  }`}
                 >
                   <div
                     className={`border-4 p-3 rounded-2xl text-2xl ${stat.iconColor} ${stat.borderColor} shadow-sm hover:shadow-md transition-transform hover:scale-105`}
@@ -219,232 +207,225 @@ function HabitsContent() {
                     <p className="text-base-content/60 mt-1">{stat.value}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Subscription banner + status row */}
-            <div className="col-span-5 grid md:grid-cols-5 gap-2 md:gap-4 items-stretch">
-              <div className="md:col-span-3">
-                <SubscriptionLimitBanner
-                  resource="habits"
-                  currentCount={userHabits?.length || 0}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <SubscriptionStatusIndicator />
-              </div>
-            </div>
+              );
+            })}
           </div>
-          <div className="customContainer mt-2 md:mt-0 p-2">
-            {/* View Mode Toggle */}
-            <div className="flex flex-col gap-2 justify-center items-center h-full w-full">
-              <button
-                onClick={() => setViewMode("cards")}
-                className={`btn ${
-                  viewMode === "cards" ? "btn-success" : "btn-ghost"
-                }`}
-              >
-                Cards
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`btn ${
-                  viewMode === "list" ? "btn-success" : "btn-ghost"
-                }`}
-              >
-                List
-              </button>
-              <button
-                onClick={() => setViewMode("analytics")}
-                className={`btn ${
-                  viewMode === "analytics" ? "btn-success" : "btn-ghost"
-                }`}
-              >
-                Analytics
-              </button>
+
+          {/* Subscription banner + status row */}
+          <div className="col-span-5 grid md:grid-cols-5 md:gap-4 items-stretch">
+            <div className="customContainer col-span-2 flex justify-center items-center">
+              <div role="tablist" className="tabs tabs-box">
+                <a
+                  role="tab"
+                  onClick={() => setViewMode("cards")}
+                  className={`tab ${viewMode === "cards" ? "tab-active text-success hover:text-green-200" : ""}`}
+                >
+                  Cards
+                </a>
+                <a
+                  role="tab"
+                  onClick={() => setViewMode("list")}
+                  className={`tab ${viewMode === "list" ? "tab-active text-success hover:text-green-200" : ""}`}
+                >
+                  List
+                </a>
+                <a
+                  role="tab"
+                  onClick={() => setViewMode("analytics")}
+                  className={`tab ${viewMode === "analytics" ? "tab-active text-success hover:text-green-200" : ""}`}
+                >
+                  Analytics
+                </a>
+              </div>
+            </div>
+            <div className="hidden md:block md:col-span-3">
+              <SubscriptionLimitBanner
+                resource="habits"
+                currentCount={userHabits?.length || 0}
+              />
             </div>
           </div>
         </div>
-        {/* <HabitFillCalendar /> */}
-        {/* <WeeklyCalendar /> */}
-        {/* Create New Habit Form */}
-        {showCreateForm && (
-          <div
-            className={`customContainer rounded-lg shadow-lg p-6 mb-8`}
-            id="showCreateForm"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Create New Habit</h2>
+        <div className="hidden md:block">
+        <SubscriptionStatusIndicator />
+        </div>
+      </div>
+      {/* <HabitFillCalendar /> */}
+      {/* <WeeklyCalendar /> */}
+      {/* Create New Habit Form */}
+      {showCreateForm && (
+        <div
+          className={`customContainer rounded-lg shadow-lg p-6`}
+          id="showCreateForm"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold">Create New Habit</h2>
+            <button
+              onClick={() => setShowCreateForm(false)}
+              className=" hover:text-gray-700 cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+
+          <CreateHabitForm onSuccess={() => setShowCreateForm(false)} />
+        </div>
+      )}
+
+      {/* Habits Display */}
+      {viewMode === "cards" && (
+        <div className="space-y-6 md:mt-4 mb-16 md:mb-0">
+          {userHabits && userHabits.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 ">
+              {userHabits.map((habit) => (
+                <HabitCard key={habit.id} habit={habit} />
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-lg shadow-lg p-12 text-center">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Target className="w-10 h-10 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                No habits set up yet
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Start tracking your daily habits to build consistency
+              </p>
               <button
-                onClick={() => setShowCreateForm(false)}
-                className=" hover:text-gray-700 cursor-pointer"
+                onClick={() => {
+                  setShowCreateForm(true);
+                  // Scroll to the form section smoothly
+                  setTimeout(() => {
+                    document.getElementById("showCreateForm")?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }, 100); // Small delay to ensure the form is rendered
+                }}
+                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
-                ✕
+                Create Your First Habit
               </button>
             </div>
+          )}
+        </div>
+      )}
 
-            <CreateHabitForm onSuccess={() => setShowCreateForm(false)} />
-          </div>
-        )}
-
-        {/* Habits Display */}
-        {viewMode === "cards" && (
-          <div className="space-y-6 md:mt-4 mb-16">
-            {userHabits && userHabits.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
-                {userHabits.map((habit) => (
-                  <HabitCard key={habit.id} habit={habit} />
-                ))}
-              </div>
-            ) : (
-              <div className="bg-white rounded-lg shadow-lg p-12 text-center">
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Target className="w-10 h-10 text-gray-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  No habits set up yet
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Start tracking your daily habits to build consistency
-                </p>
-                <button
-                  onClick={() => {
-                    setShowCreateForm(true);
-                    // Scroll to the form section smoothly
-                    setTimeout(() => {
-                      document
-                        .getElementById("showCreateForm")
-                        ?.scrollIntoView({
-                          behavior: "smooth",
-                          block: "start",
-                        });
-                    }, 100); // Small delay to ensure the form is rendered
-                  }}
-                  className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                >
-                  Create Your First Habit
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* List View */}
-        {viewMode === "list" && (
-          <div className="customContainer rounded-lg shadow-lg overflow-hidden mt-4">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-400">
-                <thead className="bg-base-200">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Habit
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Description
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Type
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Created
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {userHabits &&
-                    userHabits.map((habit) => (
-                      <tr key={habit.id} className="hover:bg-base-100">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <span className="text-2xl mr-3">
-                              {habit.habit.icon}
-                            </span>
-                            <div>
-                              <div className="text-sm font-medium">
-                                {habit.habit.name}
-                              </div>
-                              <div className="text-sm text-base-200">
-                                {habit.habit.category}
-                              </div>
+      {/* List View */}
+      {viewMode === "list" && (
+        <div className="customContainer rounded-lg shadow-lg overflow-hidden mb-16 md:mb-0">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-400">
+              <thead className="bg-base-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Habit
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Description
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Type
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Created
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {userHabits &&
+                  userHabits.map((habit) => (
+                    <tr key={habit.id} className="hover:bg-base-100">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <span className="text-2xl mr-3">
+                            {habit.habit.icon}
+                          </span>
+                          <div>
+                            <div className="text-sm font-medium">
+                              {habit.habit.name}
+                            </div>
+                            <div className="text-sm text-base-200">
+                              {habit.habit.category}
                             </div>
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm max-w-xs truncate">
-                            {habit.personalDescription}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              habit.streakType === "daily"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-purple-100 text-purple-800"
-                            }`}
-                          >
-                            {habit.streakType === "daily" ? "Daily" : "Weekly"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              habit.isActive
-                                ? "bg-green-100 text-green-800"
-                                : "bg-gray-100 text-gray-800"
-                            }`}
-                          >
-                            {habit.isActive ? "Active" : "Inactive"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDate(habit.created)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex gap-2">
-                            <button className="text-blue-600 hover:text-blue-900">
-                              <Edit3 className="w-4 h-4" />
-                            </button>
-                            <button className="text-red-600 hover:text-red-900">
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm max-w-xs truncate">
+                          {habit.personalDescription}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            habit.streakType === "daily"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-purple-100 text-purple-800"
+                          }`}
+                        >
+                          {habit.streakType === "daily" ? "Daily" : "Weekly"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            habit.isActive
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {habit.isActive ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDate(habit.created)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex gap-2">
+                          <button className="text-blue-600 hover:text-blue-900">
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button className="text-red-600 hover:text-red-900">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Analytics View */}
-        {viewMode === "analytics" && (
-          <div className="space-y-6 mt-4 mb-16">
-            {/* Habit Completion Charts */}
-            <div className="customContainer rounded-lg shadow-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">
-                Habit Completion Trends
-              </h3>
-              <div className="text-center py-8 text-gray-500">
-                <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-lg font-medium mb-2">
-                  Analytics Coming Soon
-                </p>
-                <p className="text-sm">
-                  This feature will show detailed habit completion analytics and
-                  trends
-                </p>
-              </div>
+      {/* Analytics View */}
+      {viewMode === "analytics" && (
+        <div className="space-y-6 mb-16 md:mb-0">
+          {/* Habit Completion Charts */}
+          <div className="customContainer rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-semibold mb-4">
+              Habit Completion Trends
+            </h3>
+            <div className="text-center py-8 text-gray-500">
+              <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-lg font-medium mb-2">Analytics Coming Soon</p>
+              <p className="text-sm">
+                This feature will show detailed habit completion analytics and
+                trends
+              </p>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -983,11 +964,7 @@ function CreateHabitForm({ onSuccess }: { onSuccess: () => void }) {
         >
           {createHabitMutation.isPending ? "Creating..." : "Create Habit"}
         </button>
-        <button
-          type="button"
-          onClick={onSuccess}
-          className="btn btn-ghost"
-        >
+        <button type="button" onClick={onSuccess} className="btn btn-ghost">
           Cancel
         </button>
       </div>

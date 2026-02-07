@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
-import { Crown, AlertCircle, Sparkles } from "lucide-react";
+import { Crown, AlertCircle, Sparkles, Sparkle } from "lucide-react";
 
 interface SubscriptionLimitBannerProps {
   resource: "habits" | "journalEntries" | "bookmarks";
@@ -98,38 +98,32 @@ export default function SubscriptionLimitBanner({
 
   // Show approaching limit warning
   return (
-    <div
-      className={`bg-base-200 rounded-lg p-4 customContainer`}
-    >
-      <div className="flex items-start gap-3">
-        <div className="flex-shrink-0">
-          <Sparkles className="w-5 h-5 text-primary" />
-        </div>
-        <div className="flex-1">
-          <h3 className="text-sm font-medium  mb-1">
-            {getResourceIcon()} Approaching{" "}
-            {getResourceLabel().charAt(0).toUpperCase() +
-              getResourceLabel().slice(1)}{" "}
-            Limit
-          </h3>
-          <p className="text-sm text-base-content/60 mb-3">
-            You&apos;ve used {currentCount} of {limit} {getResourceLabel()} on
-            the free plan. Consider upgrading to Pro for unlimited access!
-          </p>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <button
-              onClick={upgradeToPro}
-              className="btn btn-primary rounded-xl"
-            >
-              <Crown className="w-4 h-4" />
-              Upgrade to Pro
-            </button>
-            <button className="btn btn-secondary rounded-xl">
-              Maybe Later
-            </button>
-          </div>
-        </div>
+    <div className="customContainer p-2 flex items-start gap-3">
+      <div
+        className={`border-4 p-3 rounded-2xl text-2xl bg-green-100 border-success shadow-sm hover:shadow-md transition-transform hover:scale-105`}
+      >
+        <Sparkles className="w-6 h-6 text-success" />
       </div>
+      <div className="flex-1">
+        <h3 className="text-sm font-medium  mb-1">
+          {getResourceIcon()} Approaching{" "}
+          {getResourceLabel().charAt(0).toUpperCase() +
+            getResourceLabel().slice(1)}{" "}
+          Limit
+        </h3>
+        <p className="text-sm text-base-content/60 mb-3">
+          You&apos;ve used {currentCount} of {limit} {getResourceLabel()} on the
+          free plan. Consider upgrading to Pro for unlimited access!
+        </p>
+      </div>
+      <div className="flex flex-col gap-2">
+        <button onClick={upgradeToPro} className="btn btn-primary rounded-xl btn-sm">
+          <Crown className="w-4 h-4" />
+          Upgrade to Pro
+        </button>
+        <button className="btn btn-secondary rounded-xl btn-sm">Maybe Later</button>
+      </div>
+      
     </div>
   );
 }

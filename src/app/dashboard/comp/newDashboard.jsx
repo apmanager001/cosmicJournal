@@ -11,6 +11,7 @@ import DashCreateJournal from "../comps/dashCreateJournal";
 import DashJournalCalendar from "../comps/dashJournalCalendar";
 import { LayoutDashboard } from "lucide-react";
 import Signout from "../../login/comp/signout";
+import PageHeaderCard from "@/comp/headers/PageHeaderCard";
 
 const NewDash = () => {
   const { data: userHabits = [], isLoading: habitsLoading } = useUserHabits();
@@ -19,37 +20,21 @@ const NewDash = () => {
   }
   return (
     <div className="container mx-auto md:px-4 md:py-8 ">
-      <div className="flex-1 customContainer flex justify-center items-center p-6 mb-2 md:mb-4">
-        <div className="flex justify-between items-center w-full">
-          <div className="flex gap-4 items-center">
-            <div
-              className={`border-4 p-3 rounded-2xl text-2xl bg-emerald-100 border-emerald-300 text-emerald-700 shadow-sm hover:shadow-md transition-transform hover:scale-105`}
-            >
-              <LayoutDashboard strokeWidth={2.5} />
-            </div>
-
-            <div className="md:w-3/4">
-              <h1 className="text-3xl font-bold leading-tight">Dashboard</h1>
-              <p className="text-base-content/60 text-sm mt-1">
-                Welcome to your dashboard! Here you can get a quick overview of
-                your habits, journal entries, bookmarks, goals, and bucket list
-                items. Stay organized and keep track of your progress all in
-                one place!
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="btn btn-primary">
+      <PageHeaderCard
+        icon={<LayoutDashboard strokeWidth={2.5} />}
+        title="Dashboard"
+        description="Keep track of your progress all in one place!"
+        rightContent={
+          <>
+            <div className="btn btn-primary btn-sm md:btn-md">
               <Link href="/settings">Settings</Link>
             </div>
-            <div className="flex gap-4 items-center justify-center flex-wrap">
-              <Signout />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 min-w-96">
-        <div className="customContainer p-4 w-full lg:col-span-2">
+            <Signout />
+          </>
+        }
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+        <div className="customContainer p-4 lg:col-span-2">
           <div className="flex justify-between mb-2">
             <h2 className="text-2xl font-bold">Your Habits</h2>
             <button className="btn btn-sm btn-primary">
@@ -66,7 +51,7 @@ const NewDash = () => {
             ))}
           </div>
         </div>
-        <div className="customContainer p-4 w-full">
+        <div className="customContainer p-4">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-2xl font-bold ">Journal Calendar</h2>
           </div>

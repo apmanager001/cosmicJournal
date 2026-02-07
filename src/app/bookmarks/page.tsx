@@ -5,6 +5,7 @@ import { useAuth } from "@/comp/utility/tanstack/authContext";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { Bookmark, Star } from "lucide-react";
 import Link from "next/link";
+import PageHeaderCard from "@/comp/headers/PageHeaderCard";
 import DailyJournal from "../dashboard/comp/dailyJournal";
 
 export default function BookmarksPage() {
@@ -63,46 +64,24 @@ function BookmarksContent() {
   };
   return (
     <div className="container mx-auto md:px-4 md:py-8">
-      <div className="flex-1 customContainer flex justify-center items-center p-6 mb-2 md:mb-4">
-        <div className="flex justify-between items-center w-full">
-          <div className="flex gap-4 items-center">
-            <div
-              className={`border-4 p-3 rounded-2xl text-2xl bg-emerald-100 border-emerald-300 text-emerald-700 shadow-sm hover:shadow-md transition-transform hover:scale-105`}
-            >
-              <Bookmark strokeWidth={2.5} />
+      <PageHeaderCard
+        icon={<Bookmark strokeWidth={2.5} />}
+        title="Bookmarks"
+        description="Your Bookmarked journal entries and reflections"
+        rightContent={
+          <>
+            <div className="btn btn-primary btn-sm md:btn-md">
+              <Link href="/dashboard">Dashboard</Link>
             </div>
-
-            <div>
-              <h1 className="text-3xl font-bold leading-tight">Bookmarks</h1>
-              <p className="text-base-content/60 text-sm mt-1">
-                Your favorite journal entries and reflections
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-row justify-between items-center gap-2">
-              <div className="flex flex-col md:flex-row gap-4">
-                <Link
-                  href="/dashboard"
-                  className="px-4 py-2 bg-primary rounded-lg text-center"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/journal"
-                  className="px-4 py-2 bg-secondary rounded-lg text-center"
-                >
-                  Journal
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
       {/* Bookmarked Entries */}
       {bookmarkedEntries && bookmarkedEntries.length > 0 ? (
-        <div className="customContainer p-6 mt-6 text-left w-full min-h-[500px]">
-          <span className="text-base-content/60">Bookmarked Journal Entries</span>
+        <div className="customContainer p-6 md:mt-2 text-left w-full min-h-screen">
+          <span className="text-base-content/60">
+            Bookmarked Journal Entries
+          </span>
           <div className="mt-3 space-y-3">
             {bookmarkedEntries.slice(0, 5).map((entry) => (
               <Link

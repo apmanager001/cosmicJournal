@@ -5,7 +5,7 @@ const Signout = () => {
     const { logout } = useAuth();
 
   return (
-    <button onClick={logout} className="btn btn-error btn-soft">
+    <button onClick={logout} className="btn btn-error btn-soft btn-sm md:btn-md">
       Sign Out
     </button>
   );

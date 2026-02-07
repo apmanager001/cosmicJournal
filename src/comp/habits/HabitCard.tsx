@@ -127,7 +127,7 @@ export default function HabitCard({
   };
 
   return (
-    <div className={`customContainer p-6 ${className}`}>
+    <div className={`customContainer p-2 xl:p-6 w-full ${className} min-w-82`}>
       {/* Habit Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
@@ -313,10 +313,7 @@ export default function HabitCard({
                   rows={2}
                 />
                 <div className="flex gap-2">
-                  <button
-                    onClick={handleSaveNotes}
-                    className="btn btn-primary"
-                  >
+                  <button onClick={handleSaveNotes} className="btn btn-primary">
                     {isCompletedToday ? "Update notes" : "Save with notes"}
                   </button>
                   <button
