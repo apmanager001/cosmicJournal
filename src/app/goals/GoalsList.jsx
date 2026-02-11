@@ -72,7 +72,6 @@ const GoalsList = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Your Goals</h2>
       {incompleteGoals.length === 0 && completedGoals.length === 0 && (
         <p className="text-gray-500">No goals found. Start adding some!</p>
       )}
@@ -83,6 +82,13 @@ const GoalsList = () => {
         {incompleteGoals.map((goal) => (
           <li key={goal.id} className="flex flex-col space-y-1">
             <div className="flex items-center space-x-2">
+              <button className="btn btn-soft btn-error btn-sm rounded-full">
+                <Trash2
+                  size={24}
+                  className="cursor-pointer"
+                  onClick={() => handleDeleteClick(goal.id)}
+                />
+              </button>
               <input
                 id={`checkbox-${goal.id}`}
                 type="checkbox"
@@ -90,10 +96,7 @@ const GoalsList = () => {
                 checked={goal.completed || false}
                 onChange={() => handleCheckboxChange(goal.id, true)}
               />
-              <div className="flex justify-around items-center w-full">
-                <span className="flex-2 text-left">
-                  {goal.title || "Unknown Goal"}
-                </span>
+              <div className="flex justify-around items-center gap-4 w-full">
                 <div className="flex justify-end gap-2">
                   <button
                     className="btn btn-soft btn-info rounded-full"
@@ -101,14 +104,11 @@ const GoalsList = () => {
                   >
                     <NotebookText />
                   </button>
-                  <button className="btn btn-soft btn-error rounded-full">
-                    <Trash2
-                      size={24}
-                      className="cursor-pointer"
-                      onClick={() => handleDeleteClick(goal.id)}
-                    />
-                  </button>
                 </div>
+                <span className="flex-2 text-left">
+                  {goal.title || "Unknown Goal"}
+                </span>
+                
               </div>
             </div>
             {openNotesId === goal.id && (

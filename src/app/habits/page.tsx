@@ -214,7 +214,7 @@ function HabitsContent() {
           {/* Subscription banner + status row */}
           <div className="col-span-5 grid md:grid-cols-5 md:gap-4 items-stretch">
             <div className="customContainer col-span-2 flex justify-center items-center">
-              <div role="tablist" className="tabs tabs-box">
+              <div role="tablist" className="tabs tabs-box tabs-xl">
                 <a
                   role="tab"
                   onClick={() => setViewMode("cards")}

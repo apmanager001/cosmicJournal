@@ -21,7 +21,10 @@ const Page = () => {
         }
       />
       <div className="customContainer p-4 w-full min-h-[500px]">
-        <SearchGoals />
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold mb-4">Your Goals</h2>
+          <SearchGoals />
+        </div>
         <GoalsList />
       </div>
     </div>

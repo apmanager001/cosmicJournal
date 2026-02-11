@@ -10,10 +10,48 @@ import Toasters from "@/comp/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const metadataBase = new URL("https://cosmicjournal.app");
+
 export const metadata: Metadata = {
-  title: "Cosmic Journal - Track Habits & Journal Your Journey",
+  title: {
+    default: "Cosmic Journal — Habit Tracker & Guided Journaling App",
+    template: "%s | Cosmic Journal",
+  },
   description:
-    "A cosmic-themed habit tracking and journaling app to help you build consistency and explore your thoughts through the cosmos.",
+    "Cosmic Journal helps you build consistent habits and capture daily reflections with guided journaling, habit tracking, reminders, and progress insights.",
+  keywords: [
+    "habit tracker",
+    "journal app",
+    "guided journaling",
+    "habit tracking",
+    "bucket list",
+    "goals",
+    "productivity",
+    "wellness",
+    "self-improvement",
+  ],
+  authors: [{ name: "Cosmic Journal" }],
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "Cosmic Journal — Habit Tracker & Guided Journaling App",
+    description:
+      "Build consistent habits and capture daily reflections with guided journaling. Track progress, set reminders, and grow over time.",
+    siteName: "Cosmic Journal",
+    type: "website",
+    images: [`${metadataBase.origin}/icon.png`],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cosmic Journal — Habit Tracker & Guided Journaling App",
+    description:
+      "Build consistent habits and capture daily reflections with guided journaling.",
+    images: [
+      `${metadataBase.origin}/icon.png`,
+    ],
+  },
 };
 
 export default function RootLayout({

@@ -6,7 +6,7 @@ import PageHeaderCard from "@/comp/headers/PageHeaderCard";
 
 const Page = () => {
   return (
-    <div className="container mx-auto md:px-4 md:py-8 min-h-screen">
+    <div className="container mx-auto md:px-4 md:py-8">
       <PageHeaderCard
         icon={<PaintBucket strokeWidth={2.5} />}
         title="Bucket List"
@@ -19,11 +19,11 @@ const Page = () => {
           </>
         }
       />
-      <div className="flex flex-col md:flex-row gap-2 md:gap-4">
-        <div className="customContainer p-4 w-full md:w-1/2 min-h-[400px]">
+      <div className="flex flex-col md:flex-row gap-0 md:gap-4">
+        <div className="customContainer p-4 w-full lg:flex-1">
           <SearchBucketlist />
         </div>
-        <div className="customContainer p-4 w-full md:w-1/2 min-h-[500px]">
+        <div className="customContainer p-4 w-full flex-2">
           <BucketList />
         </div>
       </div>

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Disallowed private/user pages
+Disallow: /dashboard
+Disallow: /journal
+Disallow: /bookmarks
+Disallow: /settings
+
+Sitemap: https://cosmicjournal.app/sitemap.xml

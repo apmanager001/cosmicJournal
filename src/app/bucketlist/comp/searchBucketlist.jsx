@@ -11,7 +11,7 @@ import {
   flagBucketlistItem,
   fetchCategories,
 } from "@/comp/utility/tanstack/bucketlistService";
-import { Flag, Plus, X, Info } from "lucide-react";
+import { Flag, Plus, X, Info, InfoIcon } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 const SearchBucketlist = () => {
@@ -82,7 +82,7 @@ const SearchBucketlist = () => {
   };
 
   return (
-    <div className="form-control relative max-w-96">
+    <div className="form-control relative w-full min-h-[400px]">
       <label htmlFor="search" className="label mb-3">
         <span className="label-text">Search Bucketlist</span>
         <div
@@ -199,26 +199,33 @@ const SearchBucketlist = () => {
                 Add New Bucketlist Item
               </h3>
               <div className="fieldset mb-4">
-                <label htmlFor="title" className="label">
-                  <span className="label-text">Title</span>
-                </label>
+                <div className="flex gap-2 label tooltip tooltip-top" data-tip="Items are public, max title length is 50 characters">
+                  <label htmlFor="title">
+                    <span className="label-text">Title</span>
+                  </label>
+                  <InfoIcon />
+                </div>
                 <input
                   id="title"
                   type="text"
-                  className="input input-bordered"
+                  className="input input-xl input-bordered rounded-xl w-full"
                   value={newItem.title}
                   onChange={(e) =>
                     setNewItem({ ...newItem, title: e.target.value })
                   }
+                  maxLength={50}
                 />
               </div>
               <div className="fieldset mb-4">
-                <label htmlFor="description" className="label">
-                  <span className="label-text">Description</span>
-                </label>
+                <div className="flex gap-2 label tooltip tooltip-top" data-tip="Descriptions are public">
+                  <label htmlFor="description">
+                    <span className="label-text">Description</span>
+                  </label>
+                  <InfoIcon />
+                </div>
                 <textarea
                   id="description"
-                  className="textarea textarea-bordered"
+                  className="textarea textarea-xl textarea-bordered rounded-xl w-full"
                   value={newItem.description}
                   onChange={(e) =>
                     setNewItem({ ...newItem, description: e.target.value })

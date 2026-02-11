@@ -232,6 +232,7 @@ export default function HabitCard({
                 <IndividualFillCalendar
                   habitId={habit.id}
                   title={habit.habit.name}
+                  removeButton={false}
                 />
               )}
             </div>
