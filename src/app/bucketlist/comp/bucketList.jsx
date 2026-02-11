@@ -96,6 +96,15 @@ const BucketList = () => {
         {incompleteItems.map((item) => (
           <li key={item?.id} className="flex flex-col space-y-1">
             <div className="flex items-center space-x-2">
+              <span className="flex-1 md:flex-2 text-right flex justify-center items-center">
+                <button className="btn btn-soft btn-error rounded-full btn-sm">
+                  <Trash2
+                    size={24}
+                    className="cursor-pointer"
+                    onClick={() => handleDeleteClick(item.id)}
+                  />
+                </button>
+              </span>
               <input
                 id={`checkbox-${item.id}`}
                 type="checkbox"
@@ -103,23 +112,22 @@ const BucketList = () => {
                 checked={item?.completed || false}
                 onChange={() => handleCheckboxChange(item.id, true)}
               />
-              <div className="flex justify-between w-full">
-                <span className="flex-1 min-w-36 md:min-w-52 text-left flex justify-left items-center">
+              <div className="w-full text-left ml-4">
+                <p className="flex-1 min-w-36 md:min-w-52 text-left flex flex-col justify-left items-start">
                   {item.item?.title || "Unknown Item"}
-                </span>
-                <span className="flex-1 md:flex-2 text-center w-32 flex justify-center items-center">
-                  {formatDate(item.created)}
-                </span>
-                <span className="flex-1 md:flex-2 text-right flex justify-center items-center">
+                  <span className="text-sm text-base-content/60 ml-2">
+                    {formatDate(item.created)}
+                  </span>
+                </p>
+                {/* <span className="flex-1 md:flex-2 text-right flex justify-center items-center">
                   <button className="btn btn-soft btn-error rounded-full">
                     <Trash2
-                      color="red"
                       size={24}
                       className="cursor-pointer"
                       onClick={() => handleDeleteClick(item.id)}
                     />
                   </button>
-                </span>
+                </span> */}
               </div>
             </div>
           </li>
@@ -141,12 +149,12 @@ const BucketList = () => {
                 onChange={() => handleCheckboxChange(item.id, false)}
               />
               <div className="flex justify-between w-full">
-                <span className="flex-1 text-left line-through">
+                <p className="flex-1 text-left line-through flex flex-col">
                   {item.item?.title || "Unknown Item"}
-                </span>
-                <span className="flex-none text-center w-32">
-                  {formatDate(item.created)}
-                </span>
+                  <span className="text-sm text-base-content/60 ml-2">
+                    {formatDate(item.created)}
+                  </span>
+                </p>
               </div>
             </div>
           </li>

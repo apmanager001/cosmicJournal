@@ -352,7 +352,7 @@ function HabitsContent() {
                             <div className="text-sm font-medium">
                               {habit.habit.name}
                             </div>
-                            <div className="text-sm text-base-200">
+                            <div className="text-sm text-base-content/60">
                               {habit.habit.category}
                             </div>
                           </div>
@@ -385,7 +385,7 @@ function HabitsContent() {
                           {habit.isActive ? "Active" : "Inactive"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-base-content/60">
                         {formatDate(habit.created)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

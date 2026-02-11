@@ -49,7 +49,6 @@ export const addGoal = async (
     if (!currentUser) {
       throw new Error("User not authenticated");
     }
-        console.log("Adding goal with data:", goalData);
     const payload = {
       ...goalData,
       user: currentUser.id,

@@ -194,9 +194,42 @@ const DashCreateJournal: React.FC<DashCreateJournalProps> = ({
       <form onSubmit={handleSubmit} className="space-y-2">
         {/* What I Did Today */}
         <div>
-          <label htmlFor="whatIDid" className="block text-sm font-medium mb-2">
-            What did I do today?
-          </label>
+          <div className="flex justify-between items-center">
+            <label
+              htmlFor="whatIDid"
+              className="block text-sm font-medium mb-2"
+            >
+              What did I do today?
+            </label>
+            <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="block text-sm font-medium">
+                  Bookmark:
+                </span>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-primary"
+                  checked={formData.bookmarked}
+                  onChange={() => {
+                    // Check bookmark limits before allowing toggle on
+                    if (
+                      !formData.bookmarked &&
+                      hasReachedLimit(
+                        "bookmarks",
+                        allEntries?.filter((e: any) => e.bookmarked).length ||
+                          0,
+                      )
+                    ) {
+                      alert(
+                        "You've reached your bookmark limit on the free plan. Please upgrade to Pro for unlimited bookmarks.",
+                      );
+                      upgradeToPro();
+                      return;
+                    }
+                    handleChange("bookmarked", !formData.bookmarked);
+                  }}
+                />
+            </div>
+          </div>
           <textarea
             id="whatIDid"
             value={formData.whatIDid}
@@ -289,41 +322,12 @@ const DashCreateJournal: React.FC<DashCreateJournalProps> = ({
             >
               Clear Form
             </button>
-          </div>
-          <div className="">
-            {hasContent && (
-              <div className="text-sm text-green-600 font-medium">
-                ✓ Entry saved
-              </div>
-            )}
-          </div>
-          <div className="">
-            <div className="flex flex-col items-center justify-between gap-2">
-              <span className="block text-sm font-medium">
-                Bookmark this entry
-              </span>
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={formData.bookmarked}
-                onChange={() => {
-                  // Check bookmark limits before allowing toggle on
-                  if (
-                    !formData.bookmarked &&
-                    hasReachedLimit(
-                      "bookmarks",
-                      allEntries?.filter((e: any) => e.bookmarked).length || 0,
-                    )
-                  ) {
-                    alert(
-                      "You've reached your bookmark limit on the free plan. Please upgrade to Pro for unlimited bookmarks.",
-                    );
-                    upgradeToPro();
-                    return;
-                  }
-                  handleChange("bookmarked", !formData.bookmarked);
-                }}
-              />
+            <div className="">
+              {hasContent && (
+                <div className="text-sm text-green-600 font-medium">
+                  ✓ Entry saved
+                </div>
+              )}
             </div>
           </div>
         </div>

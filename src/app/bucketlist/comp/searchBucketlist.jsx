@@ -169,7 +169,7 @@ const SearchBucketlist = () => {
           (data?.length >
           parseInt(
             process.env.NEXT_PUBLIC_FREE_TIER_BUCKET_LIMIT || "0",
-            10,
+            15,
           ) ? (
             <button className="btn btn-lg btn-error text-error-content text-sm cursor-pointer flex justify-center items-center gap-2 shadow-md p-4 mt-2 rounded-b-2xl">
               <Info className="w-6 h-6 mr-2" />
@@ -194,7 +194,7 @@ const SearchBucketlist = () => {
         typeof document !== "undefined" &&
         createPortal(
           <div className="modal modal-open">
-            <div className="modal-box min-w-96 p-6 modalContainer">
+            <div className="modal-box min-w-96 p-6 bg-base-200 border border-base-content/40">
               <h3 className="font-bold text-2xl mb-4">
                 Add New Bucketlist Item
               </h3>

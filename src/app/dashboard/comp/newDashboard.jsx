@@ -34,7 +34,7 @@ const NewDash = () => {
         }
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4">
-        <div className="customContainer p-4 lg:col-span-2">
+        <div className="customContainer p-4 lg:col-span-1">
           <div className="flex justify-between mb-2">
             <h2 className="text-2xl font-bold">Your Habits</h2>
             <button className="btn btn-sm btn-primary">
@@ -51,15 +51,7 @@ const NewDash = () => {
             ))}
           </div>
         </div>
-        <div className="customContainer p-4">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-2xl font-bold ">Journal Calendar</h2>
-          </div>
-          <div className="flex justify-center items-center">
-            <DashJournalCalendar />
-          </div>
-        </div>
-        <div className="customContainer p-4 lg:col-span-2">
+        <div className="customContainer p-4 lg:col-span-1">
           <div className="flex justify-between items-center gap-2 mb-2">
             <h2 className="text-2xl font-bold">Today's Journal Entry</h2>
             <button className="btn btn-sm btn-primary">
@@ -77,18 +69,36 @@ const NewDash = () => {
           </div>
           <DashBookmarks />
         </div>
-        <div className="customContainer p-4 lg:col-span-2">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Your Bucket List</h2>
+        <div className="customContainer p-4">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-2xl font-bold ">Journal Calendar</h2>
+          </div>
+          <div className="flex justify-center items-center">
+            <DashJournalCalendar />
+          </div>
+        </div>
+        <div className="customContainer p-4 lg:col-span-1">
+          <div className="flex justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">Your Bucket List</h2>
+              <h3 className="text-lg font-semibold mb-2 text-base-content/60">
+                You Still have time to Achieve
+              </h3>
+            </div>
             <button className="btn btn-sm btn-primary">
               <Link href="/bucketlist">View All</Link>
             </button>
           </div>
           <DashBucketList />
         </div>
-        <div className="customContainer flex flex-col justify-center p-4">
-          <div className="flex justify-between mb-4">
-            <h2 className="text-2xl font-bold">Your Goals</h2>
+        <div className="customContainer p-4 lg:col-span-1">
+          <div className="flex justify-between">
+            <div className="mr-2">
+              <h2 className="text-2xl font-bold">Your Goals</h2>
+              <h3 className="text-lg font-semibold mb-2 text-base-content/60">
+                Achieve your goals!
+              </h3>
+            </div>
             <button className="btn btn-sm btn-primary">
               <Link href="/goals">View All</Link>
             </button>

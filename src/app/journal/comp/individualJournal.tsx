@@ -1,5 +1,6 @@
 "use client";
 import { useJournalEntryById } from "@/comp/utility/tanstack/habitHooks";
+import JournalSidebar from "./journalSidebar";
 import { useParams } from "next/navigation";
 
 const IndividualJournal = (props: {
@@ -35,34 +36,37 @@ const IndividualJournal = (props: {
     return moodEmojis[mood] || "😐";
   };
   return (
-    <div className="customContainer min-h-[400px] p-6">
-      <div className="flex justify-between">
-        <h2 className="text-2xl font-semibold mb-2">
-          {new Date(entry.date).toLocaleString()}
-        </h2>
-        <div className="text-xl">
-          <span className="text-base-content/60">{entry.mood}</span>{" "}
-          {entry.mood ? getMoodEmoji(entry.mood) : "📝"}
+    <div className="flex flex-col lg:flex-row md:gap-6 mb-16">
+      <JournalSidebar />
+      <div className="customContainer min-h-[400px] p-6">
+        <div className="flex justify-between">
+          <h2 className="text-2xl font-semibold mb-2">
+            {new Date(entry.date).toLocaleString()}
+          </h2>
+          <div className="text-xl">
+            <span className="text-base-content/60">{entry.mood}</span>{" "}
+            {entry.mood ? getMoodEmoji(entry.mood) : "📝"}
+          </div>
         </div>
-      </div>
-      <section className="mb-4">
-        <h3 className="font-medium text-base-content/60">What I did</h3>
-        <p className="whitespace-pre-wrap">{entry.whatIDid}</p>
-      </section>
+        <section className="mb-4">
+          <h3 className="font-medium text-base-content/60">What I did</h3>
+          <p className="whitespace-pre-wrap">{entry.whatIDid}</p>
+        </section>
 
-      <section className="mb-4">
-        <h3 className="font-medium text-base-content/60">What I learned</h3>
-        <p className="whitespace-pre-wrap">{entry.whatILearned}</p>
-      </section>
-      {entry.additionalNotes?.trim() && (
-      <section className="mb-4">
-        <h3 className="font-medium text-base-content/60">Additional notes</h3>
-        <p className="whitespace-pre-wrap">{entry.additionalNotes}</p>
-      </section>
-      )}
-      <div className="text-sm text-gray-400">
-        Created:{" "}
-        {new Date((entry as any).created_on ?? entry.created).toLocaleString()}
+        <section className="mb-4">
+          <h3 className="font-medium text-base-content/60">What I learned</h3>
+          <p className="whitespace-pre-wrap">{entry.whatILearned}</p>
+        </section>
+        {entry.additionalNotes?.trim() && (
+        <section className="mb-4">
+          <h3 className="font-medium text-base-content/60">Additional notes</h3>
+          <p className="whitespace-pre-wrap">{entry.additionalNotes}</p>
+        </section>
+        )}
+        <div className="text-sm text-gray-400">
+          Created:{" "}
+          {new Date((entry as any).created_on ?? entry.created).toLocaleString()}
+        </div>
       </div>
     </div>
   );

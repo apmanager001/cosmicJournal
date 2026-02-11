@@ -5,12 +5,6 @@ import Image from "next/image";
 import { useAuth } from "../utility/tanstack/authContext";
 import ThemeToggle from "../utility/ThemeToggle";
 import HeaderLinks from "./headerLinks";
-
-
-
-
-
-
 import {
   Rocket,
   CircleUser,
@@ -33,6 +27,8 @@ import {
   Shield,
   X,
   Menu,
+  Trophy,
+  PaintBucket,
 } from "lucide-react";
 
 const CosmicFooter: React.FC = () => {
@@ -126,6 +122,24 @@ const CosmicFooter: React.FC = () => {
                   Bookmarks
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/bucketlist"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
+                >
+                  <PaintBucket className="w-4 h-4 group-hover:text-primary" />
+                  BucketList
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/goals"
+                  className="flex items-center gap-3 text-base-content/70 hover:text-base-content transition-colors group"
+                >
+                  <Trophy className="w-4 h-4 group-hover:text-primary" />
+                  Goals
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -200,31 +214,22 @@ const CosmicFooter: React.FC = () => {
         </div>
       </div>
       <div className="dock md:hidden z-10">
-        <Link href="/" >
+        <Link href="/">
           <House />
           <span className="dock-label">Home</span>
         </Link>
 
-        <Link
-          href="/dashboard"
-         
-        >
+        <Link href="/dashboard">
           <LayoutDashboard />
           <span className="dock-label">Dashboard</span>
         </Link>
 
-        <Link
-          href="/settings"
-        
-        >
+        <Link href="/settings">
           <Settings />
           <span className="dock-label">Settings</span>
         </Link>
 
-        <button
-          onClick={toggleMobileMenu}
-          aria-label="Toggle mobile menu"
-        >
+        <button onClick={toggleMobileMenu} aria-label="Toggle mobile menu">
           <Menu />
           <span className="dock-label">Menu</span>
         </button>
