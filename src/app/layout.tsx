@@ -48,9 +48,7 @@ export const metadata: Metadata = {
     title: "Cosmic Journal — Habit Tracker & Guided Journaling App",
     description:
       "Build consistent habits and capture daily reflections with guided journaling.",
-    images: [
-      `${metadataBase.origin}/icon.png`,
-    ],
+    images: [`${metadataBase.origin}/icon.png`],
   },
 };
 
