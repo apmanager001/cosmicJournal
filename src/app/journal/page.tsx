@@ -4,8 +4,7 @@ import { useAuth } from "@/comp/utility/tanstack/authContext";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import DashCreateJournal from "../dashboard/comps/dashCreateJournal";
 import JournalSidebar from "./comp/journalSidebar";
-import { Calendar, Notebook, Star } from "lucide-react";
-import DashJournalCalendar from "@/app/dashboard/comps/dashJournalCalendar";
+import { Notebook } from "lucide-react";
 import Link from "next/link";
 import PageHeaderCard from "@/comp/headers/PageHeaderCard";
 

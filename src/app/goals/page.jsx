@@ -1,4 +1,3 @@
-import React from "react";
 import GoalsList from "./GoalsList";
 import SearchGoals from "./SearchGoals";
 import { Trophy } from "lucide-react";

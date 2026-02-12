@@ -6,7 +6,6 @@ import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
 import { Bookmark, Star } from "lucide-react";
 import Link from "next/link";
 import PageHeaderCard from "@/comp/headers/PageHeaderCard";
-import DailyJournal from "../dashboard/comp/dailyJournal";
 
 export default function BookmarksPage() {
   return (
