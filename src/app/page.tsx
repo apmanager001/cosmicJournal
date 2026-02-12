@@ -121,7 +121,7 @@ export default function HomePage() {
           return (
             <div
               key={f.title}
-              className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-purple-200/20 text-center"
+              className="customContainer p-6 text-center"
             >
               <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Icon className="w-8 h-8 text-primary" />
@@ -205,7 +205,7 @@ export default function HomePage() {
 
       {/* CTA Section */}
       {!user && (
-        <div className="text-center bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-purple-200/20">
+        <div className="text-center customContainer p-8">
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to Start Your Cosmic Journey?
           </h2>

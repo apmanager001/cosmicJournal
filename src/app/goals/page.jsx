@@ -21,7 +21,7 @@ const Page = () => {
         }
       />
       <div className="customContainer p-4 w-full min-h-[500px]">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col md:flex-row justify-between md:items-center mb-4">
           <h2 className="text-xl font-bold mb-4">Your Goals</h2>
           <SearchGoals />
         </div>

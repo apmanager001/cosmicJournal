@@ -22,6 +22,7 @@ import {
 import toast from "react-hot-toast";
 import PageHeaderCard from "@/comp/headers/PageHeaderCard";
 import Signout from "../login/comp/signout";
+import Download from "./comp/download";
 
 export default function SettingsPage() {
   return (
@@ -178,7 +179,9 @@ function SettingsContent() {
               </div>
             </div>
           </div>
-          {/* Main Settings */}
+          <div className="customContainer p-6">
+            <Download />
+          </div>
 
           {/* Notification Preferences */}
           <div className="customContainer p-6">

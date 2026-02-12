@@ -75,7 +75,6 @@ const DashGoals = () => {
     if (error) return <div>Error loading goals.</div>;
 
     const incompleteItems = goals.filter((goal) => !goal.completed);
-    const completedItems = goals.filter((goal) => goal.completed);
 
     const totalIncomplete = incompleteItems.length;
     const totalPages = totalIncomplete
@@ -100,7 +99,7 @@ const DashGoals = () => {
 
   return (
     <div
-      className={`inline-flex flex-col ${incompleteGoals.length === 0 ? "justify-center" : ""} gap-2 p-3 mb-2 h-full`}
+      className={`inline-flex flex-col ${incompleteGoals.length === 0 ? "justify-center" : ""} gap-2 p-3 mb-2 h-full w-full`}
     >
       {incompleteGoals.length === 0 && (
         <div className="text-center pt-4">

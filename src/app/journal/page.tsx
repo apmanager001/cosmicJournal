@@ -2,8 +2,6 @@
 import ProtectedRoute from "@/comp/utility/tanstack/ProtectedRoute";
 import { useAuth } from "@/comp/utility/tanstack/authContext";
 import { useSubscription } from "@/comp/utility/tanstack/subscriptionContext";
-import { useAllJournalEntries } from "@/comp/utility/tanstack/habitHooks";
-import { useMemo } from "react";
 import DashCreateJournal from "../dashboard/comps/dashCreateJournal";
 import JournalSidebar from "./comp/journalSidebar";
 import { Calendar, Notebook, Star } from "lucide-react";
@@ -22,9 +20,6 @@ export default function JournalPage() {
 function JournalContent() {
   const {} = useAuth();
   const {} = useSubscription();
-  const { data: allEntries, isLoading, error } = useAllJournalEntries();
-
-  
 
   return (
     <div className="container mx-auto px-0 py-0 md:px-4 md:py-8 flex flex-col md:gap-4">

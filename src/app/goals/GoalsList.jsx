@@ -10,6 +10,15 @@ import { Trash2, NotebookText } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
+const formatDate = (isoDate) => {
+  const date = new Date(isoDate);
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 const GoalsList = () => {
   const queryClient = useQueryClient();
   const {
@@ -71,7 +80,7 @@ const GoalsList = () => {
   const completedGoals = goals.filter((goal) => goal.completed);
 
   return (
-    <div className="p-4">
+    <div className="p-4 mb-16 md:mb-0">
       {incompleteGoals.length === 0 && completedGoals.length === 0 && (
         <p className="text-gray-500">No goals found. Start adding some!</p>
       )}
@@ -81,7 +90,7 @@ const GoalsList = () => {
       <ul className="space-y-2">
         {incompleteGoals.map((goal) => (
           <li key={goal.id} className="flex flex-col space-y-1">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-start space-x-2">
               <button className="btn btn-soft btn-error btn-sm rounded-full">
                 <Trash2
                   size={24}
@@ -97,25 +106,17 @@ const GoalsList = () => {
                 onChange={() => handleCheckboxChange(goal.id, true)}
               />
               <div className="flex justify-around items-center gap-4 w-full">
-                <div className="flex justify-end gap-2">
-                  <button
-                    className="btn btn-soft btn-info rounded-full"
-                    onClick={() => toggleNotes(goal.id)}
-                  >
-                    <NotebookText />
-                  </button>
-                </div>
-                <span className="flex-2 text-left">
+                <p className="ml-4 flex-1 min-w-36 md:min-w-52 text-left flex flex-col justify-left items-start">
                   {goal.title || "Unknown Goal"}
-                </span>
-                
+                  <span className="text-sm text-base-content/60 ml-2">
+                    {goal.notes || "No notes available."}
+                  </span>
+                  <span className="text-sm text-base-content/60 ml-4">
+                    {formatDate(goal.created)}
+                  </span>
+                </p>
               </div>
             </div>
-            {openNotesId === goal.id && (
-              <div className="ml-8 mt-1 text-sm p-2 border border-base-content/10 rounded-2xl">
-                {goal.notes || "No notes available."}
-              </div>
-            )}
           </li>
         ))}
       </ul>

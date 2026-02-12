@@ -41,10 +41,10 @@ const SearchGoals = () => {
 
   return (
     <div>
-      <div className="flex justify-end">
+      <div className="flex flex-col md:flex-row md:justify-end">
         {data?.length >
         parseInt(process.env.NEXT_PUBLIC_FREE_TIER_GOALS_LIMIT || "0", 10) ? (
-          <button className="btn btn-lg btn-error text-error-content text-sm cursor-pointer flex justify-center items-center gap-2 shadow-md p-4 mt-2 rounded-b-2xl">
+          <button className="btn md:btn-lg btn-error text-error-content text-sm cursor-pointer flex justify-center items-center gap-2 shadow-md p-4 mt-2 rounded-b-2xl">
             <Info className="w-6 h-6 mr-2" />
             Goals limit reached. Please upgrade your plan to add more items.
           </button>

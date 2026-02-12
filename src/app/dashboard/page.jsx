@@ -1,10 +1,8 @@
-import NewDash from './comp/newDashboard'
-import WeeklyCalendar from './comp/WeeklyCalendar'
+import NewDash from './comps/newDashboard'
 
 const Page = () => {
   return (
     <div>
-        {/* <WeeklyCalendar className="mb-8" /> */}
         <NewDash />
     </div>
   )
